@@ -1,0 +1,39 @@
+<section id="certifications" class="certifications-section" aria-label="Certifications and Credentials">
+  <div class="certifications-container container">
+    <h2 class="section-title">Certifications</h2>
+    
+    <div class="certifications-grid" role="list">
+      @for (cert of state.portfolioData()?.certifications; track cert.name) {
+        <div class="cert-card glow-card" role="listitem">
+          <div class="cert-icon-wrapper" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="cert-icon">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+          </div>
+          
+          <div class="cert-body">
+            <h3 class="cert-name">{{ cert.name }}</h3>
+            <span class="cert-issuer">{{ cert.issuer }}</span>
+            
+            <div class="cert-meta">
+              <span class="cert-date">Issued: {{ cert.date }}</span>
+              @if (cert.credentialId) {
+                <span class="cert-id">Credential ID: {{ cert.credentialId }}</span>
+              }
+            </div>
+            
+            @if (cert.credentialUrl) {
+              <a [href]="cert.credentialUrl" target="_blank" rel="noopener noreferrer" [attr.aria-label]="'Verify credential for ' + cert.name" class="cert-link">
+                Verify
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="link-arrow" aria-hidden="true">
+                  <line x1="7" y1="17" x2="17" y2="7"/>
+                  <polyline points="7 7 17 7 17 17"/>
+                </svg>
+              </a>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</section>
