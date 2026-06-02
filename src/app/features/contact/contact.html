@@ -1,0 +1,132 @@
+<section id="contact" class="contact-section" aria-label="Contact Information and Form">
+  <div class="contact-container container">
+    <h2 class="section-title">Get in Touch</h2>
+    
+    <div class="contact-grid">
+      <!-- Contact Info Card -->
+      <div class="contact-info glow-card">
+        <h3 class="contact-subtitle">Let's build something together</h3>
+        <p class="contact-text">
+          Have an exciting project in mind, a job opportunity, or just want to chat about web technology? Feel free to send a message. I'd love to connect.
+        </p>
+        
+        @if (state.portfolioData()?.personal; as personal) {
+          <div class="info-list" role="list">
+            <div class="info-item" role="listitem">
+              <div class="info-icon" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              </div>
+              <div class="info-details">
+                <span class="info-label">Email</span>
+                <a [href]="'mailto:' + personal.email" class="info-value">{{ personal.email }}</a>
+              </div>
+            </div>
+            
+            <div class="info-item" role="listitem">
+              <div class="info-icon" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+              </div>
+              <div class="info-details">
+                <span class="info-label">Location</span>
+                <span class="info-value">{{ personal.location }}</span>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+      
+      <!-- Contact Form Container -->
+      <div class="contact-form-container glow-card">
+        <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" novalidate>
+          <div class="form-row">
+            <!-- Name Field -->
+            <div class="form-group">
+              <label for="name">Name</label>
+              <input 
+                id="name"
+                type="text" 
+                formControlName="name"
+                [attr.aria-invalid]="isFieldInvalid('name')"
+                [attr.aria-describedby]="isFieldInvalid('name') ? 'name-error' : null"
+                placeholder="John Doe"
+                required>
+              @if (isFieldInvalid('name')) {
+                <span class="error-msg" id="name-error" role="alert">Please enter your name (min 2 characters).</span>
+              }
+            </div>
+            
+            <!-- Email Field -->
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input 
+                id="email"
+                type="email" 
+                formControlName="email"
+                [attr.aria-invalid]="isFieldInvalid('email')"
+                [attr.aria-describedby]="isFieldInvalid('email') ? 'email-error' : null"
+                placeholder="john@example.com"
+                required>
+              @if (isFieldInvalid('email')) {
+                <span class="error-msg" id="email-error" role="alert">Please enter a valid email address.</span>
+              }
+            </div>
+          </div>
+          
+          <!-- Subject Field -->
+          <div class="form-group">
+            <label for="subject">Subject</label>
+            <input 
+              id="subject"
+              type="text" 
+              formControlName="subject"
+              [attr.aria-invalid]="isFieldInvalid('subject')"
+              [attr.aria-describedby]="isFieldInvalid('subject') ? 'subject-error' : null"
+              placeholder="Project Collaboration"
+              required>
+            @if (isFieldInvalid('subject')) {
+              <span class="error-msg" id="subject-error" role="alert">Please enter a subject (min 4 characters).</span>
+            }
+          </div>
+          
+          <!-- Message Field -->
+          <div class="form-group">
+            <label for="message">Message</label>
+            <textarea 
+              id="message"
+              formControlName="message"
+              rows="6"
+              [attr.aria-invalid]="isFieldInvalid('message')"
+              [attr.aria-describedby]="isFieldInvalid('message') ? 'message-error' : null"
+              placeholder="Hi, I'd like to talk about..."
+              required></textarea>
+            @if (isFieldInvalid('message')) {
+              <span class="error-msg" id="message-error" role="alert">Please write a message (min 10 characters).</span>
+            }
+          </div>
+          
+          <!-- Submit Button -->
+          <button 
+            type="submit" 
+            class="btn btn-primary submit-btn" 
+            [disabled]="isSubmitting() || contactForm.invalid">
+            @if (isSubmitting()) {
+              <span class="spinner" aria-hidden="true"></span>
+              <span>Sending...</span>
+            } @else {
+              <span>Send Message</span>
+            }
+          </button>
+        </form>
+      </div>
+    </div>
+    
+    <!-- Dynamic ARIA Toast Notification for Screen Readers and Users -->
+    <div 
+      class="toast" 
+      [class.show]="submitSuccess() === true"
+      role="status" 
+      aria-live="polite">
+      {{ toastMessage() }}
+    </div>
+  </div>
+</section>

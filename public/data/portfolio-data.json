@@ -1,0 +1,137 @@
+{
+  "personal": {
+    "name": "Francisco Noletto",
+    "title": "Senior Full-Stack Developer",
+    "subTitle": "Building premium web applications with modern architecture and high accessibility standards.",
+    "bio": "I am a passionate software engineer specializing in frontend craftsmanship and robust backend systems. With over 6 years of experience, I focus on creating fast, accessible, and beautiful digital experiences. My architecture values clean code, type safety, and user-centric designs.",
+    "avatar": "images/profile.png",
+    "resumeUrl": "#",
+    "email": "hello@franciscodev.com.br",
+    "location": "Brazil",
+    "socials": [
+      { "name": "GitHub", "url": "https://github.com", "icon": "github" },
+      { "name": "LinkedIn", "url": "https://linkedin.com", "icon": "linkedin" },
+      { "name": "Twitter/X", "url": "https://x.com", "icon": "twitter" }
+    ]
+  },
+  "skills": [
+    {
+      "category": "Frontend",
+      "items": ["Angular 21", "TypeScript", "ReactJS", "HTML5 & CSS3", "Tailwind CSS", "RxJS / Signals"]
+    },
+    {
+      "category": "Backend",
+      "items": ["Node.js", "Express", "PHP", "Go (Golang)", "RESTful APIs", "GraphQL"]
+    },
+    {
+      "category": "Databases & DevOps",
+      "items": ["MySQL", "PostgreSQL", "MongoDB", "Docker", "AWS", "CI/CD (GitHub Actions)"]
+    },
+    {
+      "category": "A11y & SEO",
+      "items": ["WCAG AA Compliance", "Screen Readers", "Semantic HTML", "Angular SSR/SSG", "Schema.org (JSON-LD)"]
+    }
+  ],
+  "experience": [
+    {
+      "role": "Senior Full-Stack Developer",
+      "company": "TechCorp Solutions",
+      "location": "Remote",
+      "duration": "2024 - Present",
+      "isCurrent": true,
+      "description": [
+        "Architecting modern Angular applications using Signals-based state management, improving rendering performance by 30%.",
+        "Developing scalable backend APIs in Node.js and Go to handle high-traffic operations of over 100k daily active users.",
+        "Mentoring junior engineers and advocating for strict testing and WCAG accessibility standards across products."
+      ],
+      "tags": ["Angular", "TypeScript", "Go", "Docker", "AWS", "GraphQL"]
+    },
+    {
+      "role": "Full-Stack Developer",
+      "company": "WebFlow Digital",
+      "location": "São Paulo, Brazil",
+      "duration": "2021 - 2024",
+      "isCurrent": false,
+      "description": [
+        "Implemented high-performance PHP/Laravel web portals with search engine optimization, increasing organic traffic by 45%.",
+        "Created an interactive drag-and-drop dashboard in ReactJS, significantly reducing administrative task times for client partners.",
+        "Managed database optimization, partitioning tables in PostgreSQL to resolve query timeouts under high load."
+      ],
+      "tags": ["ReactJS", "PHP", "Laravel", "PostgreSQL", "Tailwind CSS"]
+    },
+    {
+      "role": "Frontend Developer",
+      "company": "Startup Hub",
+      "location": "São Paulo, Brazil",
+      "duration": "2019 - 2021",
+      "isCurrent": false,
+      "description": [
+        "Built responsive user interfaces for SaaS web applications using Angular and RxJS.",
+        "Established a reusable UI component library adhering to semantic HTML principles and accessibility guidelines.",
+        "Collaborated with UI/UX designers to translate Figma mockups into interactive animations and responsive views."
+      ],
+      "tags": ["Angular", "TypeScript", "HTML5/CSS3", "RxJS", "Sass"]
+    }
+  ],
+  "projects": [
+    {
+      "title": "Enterprise Cloud Dashboard",
+      "subtitle": "High-performance DevOps management hub",
+      "description": "An interactive cloud resource analytics dashboard. Features real-time resource usage updates, customizable grid layouts, server status controls, and integrated credential security.",
+      "tags": ["Angular", "TypeScript", "RxJS", "Signals", "WebSockets"],
+      "githubUrl": "https://github.com",
+      "liveUrl": "https://demo.com",
+      "featured": true
+    },
+    {
+      "title": "Collaborative Workspace API",
+      "subtitle": "Real-time sync engine and project board",
+      "description": "A high-performance backend supporting real-time collaborative boards. Implemented using Go and WebSockets for sub-millisecond updates with token-based access controls.",
+      "tags": ["Go", "WebSockets", "Redis", "PostgreSQL", "Docker"],
+      "githubUrl": "https://github.com",
+      "liveUrl": "https://demo.com",
+      "featured": true
+    },
+    {
+      "title": "A11y e-Commerce Portal",
+      "subtitle": "Accessible online shopping experience",
+      "description": "A fully accessible e-Commerce store complying with WCAG AA guidelines. Implemented keyboard traps, full screen-reader announcements, and responsive semantic lists.",
+      "tags": ["ReactJS", "Node.js", "Stripe", "MongoDB", "A11y"],
+      "githubUrl": "https://github.com",
+      "liveUrl": "https://demo.com",
+      "featured": true
+    },
+    {
+      "title": "Dynamic Content CMS",
+      "subtitle": "JSON/TOML powered light website engine",
+      "description": "A lightweight headless CMS engine that renders web pages purely based on static JSON configurations, optimized for Static Site Generation.",
+      "tags": ["PHP", "MySQL", "Prerendering", "SEO"],
+      "githubUrl": "https://github.com",
+      "liveUrl": "https://demo.com",
+      "featured": false
+    }
+  ],
+  "certifications": [
+    {
+      "name": "Angular Advanced Certified Developer",
+      "issuer": "Google Developer Group (GDG)",
+      "date": "2025",
+      "credentialId": "GDG-ANG-9831",
+      "credentialUrl": "#"
+    },
+    {
+      "name": "AWS Certified Solutions Architect – Associate",
+      "issuer": "Amazon Web Services (AWS)",
+      "date": "2024",
+      "credentialId": "AWS-ASA-2248",
+      "credentialUrl": "#"
+    },
+    {
+      "name": "Professional Scrum Master I (PSM I)",
+      "issuer": "Scrum.org",
+      "date": "2023",
+      "credentialId": "PSM-I-88349",
+      "credentialUrl": "#"
+    }
+  ]
+}
