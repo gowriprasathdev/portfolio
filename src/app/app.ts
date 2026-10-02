@@ -54,7 +54,7 @@ export class App implements OnInit, OnDestroy {
             'Full Stack Developer Portfolio'
           ],
           image: data.personal.avatar,
-          url: 'https://franciscodev.com.br'
+          url: 'https://gowriprasath.dev'
         });
 
         this.seo.injectStructuredData({

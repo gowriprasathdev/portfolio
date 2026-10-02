@@ -3,7 +3,10 @@
     @if (state.portfolioData()?.personal; as personal) {
       <div class="hero-content">
         <span class="hero-intro">Hi, my name is</span>
-        <h1 class="hero-name">{{ personal.name }}</h1>
+        <h1 class="hero-name" (click)="retype()" [attr.aria-label]="personal.name" title="Click to replay typing animation">
+          <span class="name-text">{{ displayedName() }}</span>
+          <span class="typing-cursor" [class.blink]="isTypingDone()" aria-hidden="true">|</span>
+        </h1>
         <h2 class="hero-title">{{ personal.title }}</h2>
         <p class="hero-description">{{ personal.subTitle }}</p>
         
