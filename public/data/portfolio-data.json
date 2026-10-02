@@ -1,0 +1,241 @@
+{
+  "personal": {
+    "name": "Gowri Prasath",
+    "title": "Senior Software Developer",
+    "subTitle": "Specializing in full-stack engineering, cloud-native architectures, and application modernization for high-availability enterprise environments.",
+    "bio": "Passionate Software Developer with 4.5 years of experience specializing in full-stack development, distributed architectures, and legacy-to-cloud modernization within large-scale banking and capital markets. Proven track record of architecting concurrent Golang microservices and building highly responsive, WCAG-compliant Angular applications for enterprise systems. I thrive on clean architecture principles, robust DevSecOps practices, and delivering scalable, secure digital solutions.",
+    "avatar": "images/profile.jpg",
+    "resumeUrl": "#",
+    "email": "gowriprasath0304@gmail.com",
+    "location": "Chennai, India",
+    "socials": [
+      {
+        "name": "GitHub",
+        "url": "https://github.com/gowriprasathdev",
+        "icon": "github"
+      },
+      {
+        "name": "LinkedIn",
+        "url": "https://www.linkedin.com/in/gowri-prasath",
+        "icon": "linkedin"
+      }
+    ]
+  },
+  "skills": [
+    {
+      "category": "Frontend & Accessibility",
+      "items": [
+        "Angular v8 - v20",
+        "TypeScript",
+        "RxJS / Signals",
+        "HTML5 & CSS3",
+        "AODA / WCAG Compliance",
+        "Responsive Designs"
+      ]
+    },
+    {
+      "category": "Backend",
+      "items": [
+        "Go (Golang)",
+        "Java (Spring Boot, Struts)",
+        "Node.js",
+        "RESTful APIs",
+        "gRPC"
+      ]
+    },
+    {
+      "category": "Cloud & DevOps",
+      "items": [
+        "Azure (AZ-900, AZ-104 prep)",
+        "BytePlus",
+        "OpenShift Container Platform (OCP)",
+        "Kubernetes & Helm",
+        "Docker",
+        "Azure CI/CD Pipelines"
+      ]
+    },
+    {
+      "category": "Databases & DevSecOps",
+      "items": [
+        "Azure SQL / Oracle SQL / MS SQL / PostgreSQL",
+        "Redis",
+        "Blob Storage",
+        "Snyk (SAST/SCA/DAST) / Aqua / Blackduck"
+      ]
+    }
+  ],
+  "experience": [
+    {
+      "role": "Programmer",
+      "company": "Kumaran Systems",
+      "companyUrl": "https://kumaran.com",
+      "location": "Chennai, India",
+      "duration": "Sept 2022 - Present",
+      "isCurrent": true,
+      "description": [
+        "Led migration of legacy applications from Java & Java Struts to Golang & Angular, improving system performance, scalability, and maintainability while quickly adapting to new technologies.",
+        "Designed and developed scalable microservices using Golang, leveraging concurrency patterns (goroutines, channels) to handle high-throughput workloads.",
+        "Built and integrated RESTful APIs and third-party market data services, enabling real-time data streaming using Server-Sent Events (SSE), marking a key initiative for the team.",
+        "Developed and enhanced Angular applications, including major upgrades from v8/9 to v17/18, improving performance, maintainability, SEO, and ensuring long-term framework support.",
+        "Implemented frontend features such as web crawling support, cookie consent, and cross-platform optimizations to enhance user experience and compliance.",
+        "Designed and implemented CI/CD pipelines using Azure DevOps/Jenkins for microservices, enabling automated build, test, and deployment workflows.",
+        "Standardized and enhanced Helm-based deployment strategies for OpenShift, improving release consistency and operational efficiency.",
+        "Containerized and deployed applications on OpenShift, leveraging Kubernetes concepts such as orchestration, scaling, and resource management.",
+        "Owning and managing 10+ business-critical microservices (frontend and backend), handling end-to-end lifecycle including development, deployment, monitoring, and production support.",
+        "Collaborated in Agile teams, contributing to system design, code reviews, and performance optimization initiatives."
+      ],
+      "tags": [
+        "Angular",
+        "Golang",
+        "Microservices",
+        "OpenShift",
+        "Docker",
+        "Helm",
+        "CI/CD",
+        "SAST, SCA, DAST",
+        "AODA(WCAG AA)",
+        "MS SQL",
+        "Redis",
+        "Blob Storage",
+        "Node.JS",
+        "Playwright"
+      ]
+    },
+    {
+      "role": "Trainee Programmer",
+      "company": "Kumaran Systems",
+      "location": "Chennai, India",
+      "duration": "Sept 2021 - Aug 2022",
+      "isCurrent": false,
+      "description": [
+        "Contributed to full-stack development, bug resolution, and unit testing using Karma and Jasmine across capital markets applications.",
+        "Assisted in DB migrations (Oracle to Azure SQL) and automated test workflows using proprietary automation frameworks.",
+        "Authored comprehensive test cases to achieve 90%+ code coverage, ensuring application stability and production readiness."
+      ],
+      "tags": [
+        "Java",
+        "Angular",
+        "SQL",
+        "Jasmine",
+        "Karma"
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "title": "CDR (Canadian Depositary Receipts)",
+      "subtitle": "Capital Markets - Asset Pricing & Shareholder Voting",
+      "description": "A high-availability capital markets ecosystem managing real-time market pricing synchronization, shareholder voting for Corporate Actions, and administrative portal workflows. Features a dedicated Market Data Microservice integrated with Refinitiv (LSEG) APIs via WebSockets and Server-Sent Events (SSE) to stream low-latency pricing updates.",
+      "tags": [
+        "Go",
+        "Angular SSR",
+        "WebSockets",
+        "SSE",
+        "Go routine",
+        "Refinitiv APIs",
+        "i18n"
+      ],
+      "featured": true
+    },
+    {
+      "title": "OII (Online Insurance Inquiry)",
+      "subtitle": "Cards Technology - Legacy Modernization & ETL",
+      "description": "A highly regulated system allowing insurance advisors to verify travel medical coverage. Orchestrated the transition from a Java Struts monolith to Golang microservices, executed secure Oracle-to-Azure SQL data migration of sensitive user profiles via Go-ORM, and integrated mTLS claim retrievals.",
+      "tags": [
+        "Go",
+        "Angular",
+        "SSO(Single Sign On)",
+        "MFA",
+        "MS SQL"
+      ],
+      "featured": true
+    },
+    {
+      "title": "Securitization",
+      "subtitle": "Capital Markets - ABCP Conduit Management",
+      "description": "Enterprise platform supporting Asset-Backed Commercial Paper (ABCP) debt operations. Modernized backend to Go, upgraded frontend to Angular v20 with Signals, integrated Solace messaging for publication alerts, and resolved firewall-restricted build issues via a JFrog-backed Go module proxy.",
+      "tags": [
+        "Go",
+        "Angular",
+        "Solace Queue",
+        "Redis",
+        "Azure Blob Storage"
+      ],
+      "featured": true
+    },
+    {
+      "title": "go-gmail",
+      "subtitle": "Open Source Go Library",
+      "description": "A fluent, rate-limited Go wrapper for the official Gmail API. Enables building complex MIME emails with a clean, chainable API while automatically protecting your Google account from API quota blocks using intelligent rate limiting.",
+      "tags": [
+        "Go",
+        "Gmail API",
+        "Rate Limiting",
+        "Open Source"
+      ],
+      "githubUrl": "https://github.com/gowriprasathdev/go-gmail",
+      "liveUrl": "https://pkg.go.dev/github.com/gowriprasathdev/go-gmail",
+      "featured": true
+    },
+    {
+      "title": "CWF (Common Web Framework)",
+      "subtitle": "Capital Markets - Shared Angular Library",
+      "description": "An enterprise-grade, accessibility-compliant Angular-based framework distributed as an internal npm package. Establishes standardized reusable UI/UX elements, layout patterns, and automated accessibility testing (a11y) workflows using Axe DevTools to ensure WCAG compliance.",
+      "tags": [
+        "Angular",
+        "A11y",
+        "Lighthouse",
+        "NPM Library"
+      ],
+      "featured": true
+    },
+    {
+      "title": "CAH - Admin Authentication Module",
+      "subtitle": "Shared Platform Technology- Role-Based Portal",
+      "description": "Secure administrative portal for configuration and cryptographic operations (encryption/hashing) using Microsoft Entra ID. Features a role-based request/approval workflow, multi-factor authentication, bilingual support (i18n), and OpenShift Service Mesh integration.",
+      "tags": [
+        "Angular",
+        "Microsoft Entra ID",
+        "Service Mesh"
+      ],
+      "featured": false
+    },
+    {
+      "title": "FICC Strategy",
+      "subtitle": "Capital Markets - Research Portal Security Hardening",
+      "description": "Frontline backend server and web app for FICC Strategy research. Enhanced the security posture of the platform by mitigating penetration testing vulnerabilities, shifting environment configurations behind a Go reverse proxy, and implementing rate-limited server-side CAPTCHA.",
+      "tags": [
+        "Go",
+        "Angular"
+      ],
+      "featured": false
+    }
+  ],
+  "certifications": [
+    {
+      "name": "Microsoft Certified: Azure Fundamentals",
+      "issuer": "Microsoft",
+      "date": "Jan 2023"
+    },
+    {
+      "name": "Azure Administrator Associate AZ-104",
+      "issuer": "Microsoft (Udemy Prep)",
+      "date": "2026"
+    },
+    {
+      "name": "Bits and Bytes of Computer Networking",
+      "issuer": "Google",
+      "date": "Dec 2020"
+    },
+    {
+      "name": "Social Media Advertising",
+      "issuer": "University of Colorado Boulder",
+      "date": "Nov 2020"
+    },
+    {
+      "name": "Machine Learning",
+      "issuer": "Stanford University",
+      "date": "Aug 2020"
+    }
+  ]
+}

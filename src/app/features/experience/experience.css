@@ -1,0 +1,218 @@
+.experience-section {
+  background-color: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+  transition: background-color 0.5s ease, border-color 0.5s ease;
+}
+
+.timeline-container {
+  position: relative;
+  margin-top: 2rem;
+  padding-left: 2rem;
+}
+
+@media (min-width: 768px) {
+  .timeline-container {
+    padding-left: 3.5rem;
+  }
+}
+
+.timeline-line {
+  position: absolute;
+  top: 0;
+  left: 5px;
+  bottom: 0;
+  width: 2px;
+  background-color: var(--border-color-strong);
+}
+
+@media (min-width: 768px) {
+  .timeline-line {
+    left: 9px;
+  }
+}
+
+.timeline-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+.timeline-item {
+  position: relative;
+}
+
+/* Timeline dot marker */
+.timeline-marker {
+  position: absolute;
+  top: 24px;
+  left: -27px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: var(--bg-primary);
+  border: 2px solid var(--border-color-strong);
+  z-index: 2;
+  transition: var(--transition);
+}
+
+@media (min-width: 768px) {
+  .timeline-marker {
+    left: -33px;
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.timeline-marker.active {
+  border-color: var(--accent);
+  background-color: var(--accent);
+  box-shadow: 0 0 10px rgba(var(--accent-rgb), 0.6);
+}
+
+/* Timeline card content */
+.timeline-content {
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.75rem;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+}
+
+.timeline-content:hover {
+  border-color: var(--border-color-strong);
+  box-shadow: var(--shadow), var(--glow);
+  transform: translateX(4px);
+}
+
+.timeline-content:hover ~ .timeline-marker {
+  border-color: var(--accent);
+  transform: scale(1.2);
+}
+
+/* Timeline header details */
+.timeline-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 1rem;
+}
+
+@media (min-width: 768px) {
+  .timeline-header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+}
+
+.timeline-role {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.timeline-company {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--accent);
+}
+
+.timeline-company a {
+  color: var(--accent);
+}
+
+.timeline-company a:hover {
+  color: var(--accent-hover);
+  text-decoration: underline;
+}
+
+.timeline-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+@media (min-width: 768px) {
+  .timeline-meta {
+    align-items: flex-end;
+    text-align: right;
+  }
+}
+
+.timeline-duration {
+  font-weight: 600;
+  color: var(--text-secondary);
+  background-color: var(--bg-tertiary);
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  border: 1px solid var(--border-color);
+  width: fit-content;
+}
+
+.timeline-duration.current {
+  border-color: var(--accent);
+  color: var(--accent);
+  background-color: var(--accent-muted);
+}
+
+.timeline-location {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 0.25rem;
+}
+
+.location-icon {
+  margin-right: 4px;
+}
+
+/* Bullet list details */
+.timeline-description {
+  margin-bottom: 1.5rem;
+  padding-left: 1.25rem;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+.timeline-description li {
+  margin-bottom: 0.5rem;
+}
+
+.timeline-description li::marker {
+  color: var(--accent);
+}
+
+/* Technology badges in timeline */
+.timeline-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.timeline-tag {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  padding: 0.3rem 0.65rem;
+  border-radius: 4px;
+  transition: var(--transition);
+}
+
+.timeline-content:hover .timeline-tag {
+  border-color: var(--border-color-strong);
+}
+
+.timeline-tag:hover {
+  border-color: var(--accent) !important;
+  color: var(--accent);
+  background-color: var(--accent-muted);
+}

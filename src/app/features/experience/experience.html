@@ -1,0 +1,57 @@
+<section id="experience" class="experience-section" aria-label="Work Experience">
+  <div class="experience-container container">
+    <h2 class="section-title">Work Experience</h2>
+    
+    <div class="timeline-container">
+      <div class="timeline-line"></div>
+      
+      <ul class="timeline-list" role="list">
+        @for (exp of state.portfolioData()?.experience; track exp.role + exp.company) {
+          <li class="timeline-item" role="listitem">
+            <div class="timeline-marker" [class.active]="exp.isCurrent" aria-hidden="true"></div>
+            
+            <div class="timeline-content glow-card">
+              <div class="timeline-header">
+                <div class="role-company">
+                  <h3 class="timeline-role">{{ exp.role }}</h3>
+                  <span class="timeline-company">
+                    @if (exp.companyUrl) {
+                      <a [href]="exp.companyUrl" target="_blank" rel="noopener noreferrer" [attr.aria-label]="'Visit ' + exp.company + ' website'">
+                        {{ exp.company }}
+                      </a>
+                    } @else {
+                      {{ exp.company }}
+                    }
+                  </span>
+                </div>
+                
+                <div class="timeline-meta">
+                  <span class="timeline-duration" [class.current]="exp.isCurrent">{{ exp.duration }}</span>
+                  <span class="timeline-location">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="location-icon" aria-hidden="true">
+                      <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/>
+                      <circle cx="12" cy="10" r="3"/>
+                    </svg>
+                    {{ exp.location }}
+                  </span>
+                </div>
+              </div>
+              
+              <ul class="timeline-description">
+                @for (desc of exp.description; track desc) {
+                  <li>{{ desc }}</li>
+                }
+              </ul>
+              
+              <div class="timeline-tags" aria-label="Technologies used">
+                @for (tag of exp.tags; track tag) {
+                  <span class="timeline-tag">{{ tag }}</span>
+                }
+              </div>
+            </div>
+          </li>
+        }
+      </ul>
+    </div>
+  </div>
+</section>

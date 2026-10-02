@@ -1,0 +1,66 @@
+<header [class.scrolled]="isScrolled()" role="banner">
+  <div class="header-container container">
+    <!-- Brand / Logo -->
+    <a href="#home" class="logo" (click)="scrollTo('home', $event)" aria-label="Gowri Prasath Home">
+      <span class="logo-text">GP</span>
+      <span class="logo-dot">.</span>
+    </a>
+
+    <!-- Desktop Navigation -->
+    <nav class="desktop-nav" aria-label="Main navigation" role="navigation">
+      <ul class="nav-list" role="list">
+        @for (item of navItems; track item.id) {
+          <li role="listitem">
+            <a 
+              [href]="'#' + item.id"
+              [class.active]="state.activeSection() === item.id"
+              (click)="scrollTo(item.id, $event)"
+              [attr.aria-current]="state.activeSection() === item.id ? 'page' : null">
+              {{ item.label }}
+            </a>
+          </li>
+        }
+      </ul>
+      <app-theme-toggle></app-theme-toggle>
+    </nav>
+
+    <!-- Mobile Navigation Toggle -->
+    <div class="mobile-actions">
+      <app-theme-toggle class="mobile-theme-toggle"></app-theme-toggle>
+      <button 
+        class="menu-toggle" 
+        [class.open]="isMobileMenuOpen()"
+        (click)="toggleMobileMenu()"
+        [attr.aria-expanded]="isMobileMenuOpen()"
+        aria-controls="mobile-menu"
+        [attr.aria-label]="isMobileMenuOpen() ? 'Close navigation menu' : 'Open navigation menu'">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile Menu Panel -->
+  <div 
+    id="mobile-menu" 
+    class="mobile-menu-panel" 
+    [class.open]="isMobileMenuOpen()"
+    [attr.aria-hidden]="!isMobileMenuOpen()">
+    <nav aria-label="Mobile navigation">
+      <ul class="mobile-nav-list" role="list">
+        @for (item of navItems; track item.id) {
+          <li role="listitem">
+            <a 
+              [href]="'#' + item.id"
+              [class.active]="state.activeSection() === item.id"
+              (click)="scrollTo(item.id, $event)"
+              [attr.aria-current]="state.activeSection() === item.id ? 'page' : null">
+              {{ item.label }}
+            </a>
+          </li>
+        }
+      </ul>
+    </nav>
+  </div>
+</header>

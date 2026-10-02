@@ -1,0 +1,41 @@
+<!-- Accessibility skip-link for keyboard navigation -->
+<a href="#main-content" class="skip-link">Skip to main content</a>
+
+<!-- Application Header Shell -->
+<app-header></app-header>
+
+<!-- Main Page Sections -->
+<main id="main-content">
+  <!-- Critical Above-the-fold content rendered instantly -->
+  <app-hero></app-hero>
+  <app-about></app-about>
+  <app-experience></app-experience>
+
+  <!-- Non-critical heavy views deferred until viewport entry for performance -->
+  @defer (on viewport) {
+    <app-projects></app-projects>
+  } @placeholder {
+    <section class="defer-section container">
+      <div class="defer-loader-card">Loading Projects...</div>
+    </section>
+  }
+
+  @defer (on viewport) {
+    <app-certifications></app-certifications>
+  } @placeholder {
+    <section class="defer-section container">
+      <div class="defer-loader-card">Loading Certifications...</div>
+    </section>
+  }
+
+  @defer (on viewport) {
+    <app-contact></app-contact>
+  } @placeholder {
+    <section class="defer-section container">
+      <div class="defer-loader-card">Loading Contact Form...</div>
+    </section>
+  }
+</main>
+
+<!-- Application Footer Shell -->
+<app-footer></app-footer>
