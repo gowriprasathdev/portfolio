@@ -1,4 +1,4 @@
-import { Component, inject, computed } from '@angular/core';
+import { Component, inject, signal, computed, ElementRef, ViewChild } from '@angular/core';
 import { PortfolioStateService } from '../../core/services/portfolio-state.service';
 import { ProjectItem } from '../../core/models/portfolio-data.model';
 
@@ -11,41 +11,55 @@ import { ProjectItem } from '../../core/models/portfolio-data.model';
 export class ProjectsComponent {
   state = inject(PortfolioStateService);
 
-  // Compute a list of unique tags from projects for filtering
-  filterCategories = computed(() => {
-    const data = this.state.portfolioData();
-    if (!data) return ['All'];
-    
-    // Extract all tags, count occurrences to find top categories
-    const tagCounts: { [key: string]: number } = {};
-    data.projects.forEach(p => {
-      p.tags.forEach(t => {
-        tagCounts[t] = (tagCounts[t] || 0) + 1;
-      });
-    });
+  @ViewChild('carouselTrack') carouselTrack!: ElementRef<HTMLDivElement>;
 
-    // Sort by count and take top 4 tags
-    const topTags = Object.keys(tagCounts)
-      .sort((a, b) => tagCounts[b] - tagCounts[a])
-      .slice(0, 4);
+  currentIndex = signal<number>(0);
 
-    return ['All', ...topTags];
+  projects = computed<ProjectItem[]>(() => {
+    return this.state.portfolioData()?.projects || [];
   });
 
-  // Compute the list of projects matching the current filter category
-  filteredProjects = computed<ProjectItem[]>(() => {
-    const data = this.state.portfolioData();
-    if (!data) return [];
-    
-    const activeCategory = this.state.selectedProjectCategory();
-    if (activeCategory === 'All') {
-      return data.projects;
+  nextSlide() {
+    const max = this.projects().length - 1;
+    if (max <= 0) return;
+    const nextIdx = this.currentIndex() >= max ? 0 : this.currentIndex() + 1;
+    this.goToSlide(nextIdx);
+  }
+
+  prevSlide() {
+    const max = this.projects().length - 1;
+    if (max <= 0) return;
+    const prevIdx = this.currentIndex() <= 0 ? max : this.currentIndex() - 1;
+    this.goToSlide(prevIdx);
+  }
+
+  goToSlide(index: number) {
+    this.currentIndex.set(index);
+    this.scrollToCurrentIndex();
+  }
+
+  onTrackScroll() {
+    if (!this.carouselTrack) return;
+    const track = this.carouselTrack.nativeElement;
+    const firstCard = track.firstElementChild as HTMLElement;
+    if (!firstCard) return;
+
+    const cardWidth = firstCard.offsetWidth;
+    const gap = 28; // matching 1.75rem grid gap
+    const scrollPos = track.scrollLeft;
+    const calculatedIndex = Math.round(scrollPos / (cardWidth + gap));
+
+    if (calculatedIndex >= 0 && calculatedIndex < this.projects().length && calculatedIndex !== this.currentIndex()) {
+      this.currentIndex.set(calculatedIndex);
     }
-    
-    return data.projects.filter(p => p.tags.includes(activeCategory));
-  });
+  }
 
-  selectCategory(category: string) {
-    this.state.setProjectCategory(category);
+  private scrollToCurrentIndex() {
+    if (!this.carouselTrack) return;
+    const track = this.carouselTrack.nativeElement;
+    const targetCard = track.children[this.currentIndex()] as HTMLElement;
+    if (targetCard) {
+      targetCard.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+    }
   }
 }
