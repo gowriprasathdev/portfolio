@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://gowriprasath.dev/sitemap.xml
+Sitemap: https://gowriprasathdev.github.io/portfolio/sitemap.xml

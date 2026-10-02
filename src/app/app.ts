@@ -35,7 +35,7 @@ export class App implements OnInit, OnDestroy {
   state = inject(PortfolioStateService);
   private seo = inject(SEOService);
   private platformId = inject(PLATFORM_ID);
-  
+
   private observer?: IntersectionObserver;
 
   constructor() {
@@ -54,7 +54,7 @@ export class App implements OnInit, OnDestroy {
             'Full Stack Developer Portfolio'
           ],
           image: data.personal.avatar,
-          url: 'https://gowriprasath.dev'
+          url: 'https://gowriprasathdev.github.io/portfolio/'
         });
 
         this.seo.injectStructuredData({
