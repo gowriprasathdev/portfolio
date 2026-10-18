@@ -13,30 +13,18 @@
 
   <!-- Non-critical heavy views deferred until viewport entry for performance -->
   @if (state.showProjects()) {
-    @defer (on viewport) {
-      <app-projects></app-projects>
-    } @placeholder {
-      <section class="defer-section container">
-        <div class="defer-loader-card">Loading Projects...</div>
-      </section>
-    }
+  @defer (on viewport) {
+  <app-projects></app-projects>
+  } @placeholder {
+  <section class="defer-section container">
+    <div class="defer-loader-card">Loading Projects...</div>
+  </section>
+  }
   }
 
-  @defer (on viewport) {
-    <app-certifications></app-certifications>
-  } @placeholder {
-    <section class="defer-section container">
-      <div class="defer-loader-card">Loading Certifications...</div>
-    </section>
-  }
-
-  @defer (on viewport) {
-    <app-contact></app-contact>
-  } @placeholder {
-    <section class="defer-section container">
-      <div class="defer-loader-card">Loading Contact Form...</div>
-    </section>
-  }
+  <!-- Credentials & Contact sections rendered directly for reliable navigation & SEO -->
+  <app-certifications></app-certifications>
+  <app-contact></app-contact>
 </main>
 
 <!-- Application Footer Shell -->

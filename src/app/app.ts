@@ -36,7 +36,7 @@ export class App implements OnInit, OnDestroy {
   private seo = inject(SEOService);
   private platformId = inject(PLATFORM_ID);
 
-  private observer?: IntersectionObserver;
+  private scrollListener?: () => void;
 
   constructor() {
     // Dynamically update SEO and AEO schema tags when portfolio data is loaded
@@ -75,22 +75,7 @@ export class App implements OnInit, OnDestroy {
 
   private setupScrollSpy() {
     if (isPlatformBrowser(this.platformId)) {
-      const options = {
-        root: null,
-        rootMargin: '-30% 0px -50% 0px', // Trigger scroll action when section matches middle viewport
-        threshold: 0
-      };
-
-      this.observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            this.state.setActiveSection(entry.target.id);
-          }
-        });
-      }, options);
-
-      // Section elements to monitor (conditionally includes 'projects' based on showProjects)
-      const sections = [
+      const getSections = () => [
         'home',
         'about',
         'experience',
@@ -98,20 +83,65 @@ export class App implements OnInit, OnDestroy {
         'certifications',
         'contact'
       ];
-      setTimeout(() => {
-        sections.forEach(id => {
+
+      let ticking = false;
+
+      const updateActiveSection = () => {
+        const sections = getSections();
+        const scrollY = window.scrollY;
+        const windowHeight = window.innerHeight;
+        const docHeight = document.documentElement.scrollHeight;
+
+        // 1. Bottom-of-page check: If user scrolled near the bottom, activate the last section ('contact')
+        if (scrollY + windowHeight >= docHeight - 80) {
+          const lastSection = sections[sections.length - 1];
+          if (lastSection) {
+            this.state.setActiveSection(lastSection);
+            return;
+          }
+        }
+
+        // 2. Section offset check: Header height (80px) + 40px buffer
+        const headerOffset = 120;
+        let activeId = sections[0];
+
+        for (const id of sections) {
           const el = document.getElementById(id);
           if (el) {
-            this.observer?.observe(el);
+            const rect = el.getBoundingClientRect();
+            // If the section top has scrolled past or reached the header threshold
+            if (rect.top <= headerOffset) {
+              activeId = id;
+            }
           }
-        });
-      }, 500); // Give the DOM some time to render
+        }
+
+        if (activeId) {
+          this.state.setActiveSection(activeId);
+        }
+      };
+
+      const onScroll = () => {
+        if (!ticking) {
+          window.requestAnimationFrame(() => {
+            updateActiveSection();
+            ticking = false;
+          });
+          ticking = true;
+        }
+      };
+
+      window.addEventListener('scroll', onScroll, { passive: true });
+      this.scrollListener = onScroll;
+
+      // Run initial check once DOM is ready
+      setTimeout(updateActiveSection, 150);
     }
   }
 
   ngOnDestroy() {
-    if (this.observer) {
-      this.observer.disconnect();
+    if (this.scrollListener && isPlatformBrowser(this.platformId)) {
+      window.removeEventListener('scroll', this.scrollListener);
     }
   }
 }
