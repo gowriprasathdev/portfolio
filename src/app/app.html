@@ -12,12 +12,14 @@
   <app-experience></app-experience>
 
   <!-- Non-critical heavy views deferred until viewport entry for performance -->
-  @defer (on viewport) {
-    <app-projects></app-projects>
-  } @placeholder {
-    <section class="defer-section container">
-      <div class="defer-loader-card">Loading Projects...</div>
-    </section>
+  @if (state.showProjects()) {
+    @defer (on viewport) {
+      <app-projects></app-projects>
+    } @placeholder {
+      <section class="defer-section container">
+        <div class="defer-loader-card">Loading Projects...</div>
+      </section>
+    }
   }
 
   @defer (on viewport) {

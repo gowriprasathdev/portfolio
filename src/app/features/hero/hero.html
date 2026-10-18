@@ -11,9 +11,15 @@
         <p class="hero-description">{{ personal.subTitle }}</p>
         
         <div class="hero-actions">
-          <a href="#projects" class="btn btn-primary" (click)="scrollTo('projects', $event)">
-            View Work
-          </a>
+          @if (state.showProjects()) {
+            <a href="#projects" class="btn btn-primary" (click)="scrollTo('projects', $event)">
+              View Work
+            </a>
+          } @else {
+            <a href="#experience" class="btn btn-primary" (click)="scrollTo('experience', $event)">
+              View Experience
+            </a>
+          }
           <a href="#contact" class="btn btn-secondary" (click)="scrollTo('contact', $event)">
             Get in touch
           </a>

@@ -9,7 +9,7 @@
     <!-- Desktop Navigation -->
     <nav class="desktop-nav" aria-label="Main navigation" role="navigation">
       <ul class="nav-list" role="list">
-        @for (item of navItems; track item.id) {
+        @for (item of navItems(); track item.id) {
           <li role="listitem">
             <a 
               [href]="'#' + item.id"
@@ -49,7 +49,7 @@
     [attr.aria-hidden]="!isMobileMenuOpen()">
     <nav aria-label="Mobile navigation">
       <ul class="mobile-nav-list" role="list">
-        @for (item of navItems; track item.id) {
+        @for (item of navItems(); track item.id) {
           <li role="listitem">
             <a 
               [href]="'#' + item.id"
