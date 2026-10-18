@@ -1,4 +1,4 @@
-import { Component, inject, signal, HostListener, PLATFORM_ID } from '@angular/core';
+import { Component, inject, signal, computed, HostListener, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { PortfolioStateService } from '../../../core/services/portfolio-state.service';
 import { ThemeToggleComponent } from '../theme-toggle/theme-toggle';
@@ -17,14 +17,14 @@ export class HeaderComponent {
   isMobileMenuOpen = signal<boolean>(false);
   isScrolled = signal<boolean>(false);
 
-  navItems = [
+  navItems = computed(() => [
     { id: 'home', label: 'Home' },
     { id: 'about', label: 'About' },
     { id: 'experience', label: 'Experience' },
-    { id: 'projects', label: 'Projects' },
+    ...(this.state.showProjects() ? [{ id: 'projects', label: 'Projects' }] : []),
     { id: 'certifications', label: 'Credentials' },
     { id: 'contact', label: 'Contact' }
-  ];
+  ]);
 
   @HostListener('window:scroll', [])
   onWindowScroll() {

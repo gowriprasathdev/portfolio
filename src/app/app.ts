@@ -39,33 +39,32 @@ export class App implements OnInit, OnDestroy {
   private observer?: IntersectionObserver;
 
   constructor() {
-    // Dynamically update SEO tags when portfolio data is loaded
+    // Dynamically update SEO and AEO schema tags when portfolio data is loaded
     effect(() => {
       const data = this.state.portfolioData();
       if (data) {
+        const canonicalUrl = 'https://gowriprasathdev.github.io/portfolio/';
+
         this.seo.updateMetaTags({
           title: `${data.personal.name} | ${data.personal.title}`,
           description: data.personal.bio,
           keywords: [
             data.personal.name,
             data.personal.title,
-            'Developer Portfolio',
-            'Angular 21 Expert',
+            'Senior Software Developer',
+            'Golang Microservices',
+            'Angular Expert',
+            'Cloud Native Architecture',
             'Full Stack Developer Portfolio'
           ],
           image: data.personal.avatar,
-          url: 'https://gowriprasathdev.github.io/portfolio/'
+          url: canonicalUrl,
+          type: 'profile'
         });
 
-        this.seo.injectStructuredData({
-          name: data.personal.name,
-          title: data.personal.title,
-          bio: data.personal.bio,
-          avatar: data.personal.avatar,
-          email: data.personal.email,
-          location: data.personal.location,
-          socials: data.personal.socials
-        });
+        // Injects comprehensive ProfilePage + Person + CreativeWork/SoftwareSourceCode @graph
+        // Projects are omitted from Schema/AI bots when showProjects is false
+        this.seo.injectPortfolioGraphSchema(data, canonicalUrl, this.state.showProjects());
       }
     });
   }
@@ -90,8 +89,15 @@ export class App implements OnInit, OnDestroy {
         });
       }, options);
 
-      // Section elements to monitor
-      const sections = ['home', 'about', 'experience', 'projects', 'certifications', 'contact'];
+      // Section elements to monitor (conditionally includes 'projects' based on showProjects)
+      const sections = [
+        'home',
+        'about',
+        'experience',
+        ...(this.state.showProjects() ? ['projects'] : []),
+        'certifications',
+        'contact'
+      ];
       setTimeout(() => {
         sections.forEach(id => {
           const el = document.getElementById(id);

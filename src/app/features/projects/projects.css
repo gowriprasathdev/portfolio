@@ -35,6 +35,15 @@
   font-size: 1.75rem;
 }
 
+.section-lead-answer {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  max-width: 650px;
+  margin-top: 0.45rem;
+  margin-bottom: 0;
+  line-height: 1.5;
+}
+
 .carousel-controls {
   display: flex;
   align-items: center;

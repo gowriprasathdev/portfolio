@@ -1,4 +1,21 @@
 User-agent: *
 Allow: /
 
+# Explicit rules for AI Answer Engines and LLM Scrapers
+User-agent: GPTBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
 Sitemap: https://gowriprasathdev.github.io/portfolio/sitemap.xml
+
