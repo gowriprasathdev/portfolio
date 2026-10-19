@@ -44,12 +44,19 @@ export class App implements OnInit, OnDestroy {
       const data = this.state.portfolioData();
       if (data) {
         const canonicalUrl = 'https://gowriprasathdev.github.io/portfolio/';
+        const fullName = data.personal.fullName || 'Gowri Prasath Shanmugasundaram';
 
         this.seo.updateMetaTags({
-          title: `${data.personal.name} | ${data.personal.title}`,
+          title: `${fullName} | ${data.personal.title}`,
           description: data.personal.bio,
           keywords: [
+            fullName,
             data.personal.name,
+            'Gowri Prasath Shanmugasundaram',
+            'Gowri Prasath S',
+            'Shanmugasundaram Gowri Prasath',
+            'S Gowri Prasath',
+            'gowriprasathdev',
             data.personal.title,
             'Senior Software Developer',
             'Golang Microservices',
