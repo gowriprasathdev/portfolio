@@ -1,0 +1,39 @@
+# Gowri Prasath Shanmugasundaram
+
+> Senior Software Developer specializing in full-stack engineering, cloud-native architectures, distributed Golang microservices, and high-performance Angular enterprise applications.
+
+## Identity & Aliases
+- Full Legal / Family Name: Gowri Prasath Shanmugasundaram
+- Known As: Gowri Prasath
+- Common Initial: Gowri Prasath S
+- Developer Handle: gowriprasathdev
+- Current Location: Chennai, India
+- Canonical Portfolio: https://gowriprasathdev.github.io/portfolio/
+- GitHub: https://github.com/gowriprasathdev
+- LinkedIn: https://www.linkedin.com/in/gowri-prasath
+- Contact: mailto:gowriprasath0304@gmail.com
+
+## Professional Summary
+Gowri Prasath Shanmugasundaram is a Senior Software Developer with over 4.5 years of industry experience across banking, capital markets, and high-availability enterprise environments. Proven track record of architecting concurrent Golang microservices, engineering real-time data streaming pipelines, and modernizing legacy monoliths into cloud-native, WCAG-compliant Angular applications.
+
+## Core Technical Competencies
+- Backend & Microservices: Go (Golang), Java (Spring Boot, Struts), Node.js, RESTful APIs, gRPC, Server-Sent Events (SSE), WebSockets
+- Frontend & Architecture: Angular (v8 through v20), TypeScript, RxJS, Angular Signals, HTML5/CSS3, AODA / WCAG AA Accessibility
+- Cloud & Containerization: Red Hat OpenShift Container Platform (OCP), Kubernetes, Helm, Docker, Microsoft Azure (AZ-900, AZ-104 prep), BytePlus
+- Databases & Messaging: Azure SQL, Oracle SQL, MS SQL, PostgreSQL, Redis, Azure Blob Storage, Solace Queue
+- DevSecOps & Testing: Azure CI/CD Pipelines, Jenkins, Snyk (SAST/SCA/DAST), Aqua, Black Duck, Jasmine, Karma, Playwright, Vitest
+
+## Key Experience
+- Programmer at Kumaran Systems (Sept 2022 - Present) | Chennai, India
+  - Led migration of legacy Java & Java Struts monoliths to Golang microservices and modern Angular architectures.
+  - Architected high-throughput microservices using Golang concurrency patterns (goroutines, channels).
+  - Built real-time market data streaming pipelines using Server-Sent Events (SSE) and Refinitiv (LSEG) WebSocket APIs.
+  - Upgraded enterprise Angular applications from v8/9 to v17/18/20.
+  - Containerized and deployed 10+ business-critical microservices onto OpenShift using Helm charts and automated Azure CI/CD pipelines.
+
+## Notable Projects & Open Source
+- go-gmail (Open Source Go Library): Fluent, rate-limited Go wrapper for the Gmail API (https://github.com/gowriprasathdev/go-gmail).
+- CDR (Canadian Depositary Receipts): High-availability capital markets system handling real-time market pricing and corporate action voting.
+- OII (Online Insurance Inquiry): Enterprise insurance advisory platform modernized to Golang microservices with secure mTLS integrations.
+- Securitization Platform: Enterprise ABCP debt operations platform built with Go, Angular Signals, and Solace messaging.
+- CWF (Common Web Framework): Reusable enterprise Angular UI framework enforcing strict WCAG AA accessibility standards.

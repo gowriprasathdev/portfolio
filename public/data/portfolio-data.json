@@ -1,6 +1,10 @@
 {
   "personal": {
     "name": "Gowri Prasath",
+    "fullName": "Gowri Prasath Shanmugasundaram",
+    "firstName": "Gowri",
+    "middleName": "Prasath",
+    "lastName": "Shanmugasundaram",
     "title": "Senior Software Developer",
     "subTitle": "Specializing in full-stack engineering, cloud-native architectures, and application modernization for high-availability enterprise environments.",
     "bio": "Passionate Software Developer with 4.5 years of experience specializing in full-stack development, distributed architectures, and legacy-to-cloud modernization within large-scale banking and capital markets. Proven track record of architecting concurrent Golang microservices and building highly responsive, WCAG-compliant Angular applications for enterprise systems. I thrive on clean architecture principles, robust DevSecOps practices, and delivering scalable, secure digital solutions.",

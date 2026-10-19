@@ -6,6 +6,10 @@ export interface Social {
 
 export interface PersonalInfo {
   name: string;
+  fullName?: string;
+  firstName?: string;
+  middleName?: string;
+  lastName?: string;
   title: string;
   subTitle: string;
   bio: string;

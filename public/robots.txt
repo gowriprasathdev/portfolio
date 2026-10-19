@@ -1,7 +1,7 @@
 User-agent: *
 Allow: /
 
-# Explicit rules for AI Answer Engines and LLM Scrapers
+# Explicit rules for AI Answer Engines and LLM Scrapers (AEO & GEO)
 User-agent: GPTBot
 Allow: /
 
@@ -17,5 +17,9 @@ Allow: /
 User-agent: Applebot-Extended
 Allow: /
 
+User-agent: Cohere-ai
+Allow: /
+
 Sitemap: https://gowriprasathdev.github.io/portfolio/sitemap.xml
+# LLMs: https://gowriprasathdev.github.io/portfolio/llms.txt
 

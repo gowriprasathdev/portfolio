@@ -75,11 +75,27 @@ export class SEOService {
     // Current employer if available
     const currentExperience = experience?.find(e => e.isCurrent);
 
+    const fullName = personal.fullName || 'Gowri Prasath Shanmugasundaram';
+    const givenName = personal.firstName || 'Gowri';
+    const additionalName = personal.middleName || 'Prasath';
+    const familyName = personal.lastName || 'Shanmugasundaram';
+
     // 1. Person entity
     const personEntity: Record<string, any> = {
       '@type': 'Person',
       '@id': `${canonicalUrl}#person`,
-      'name': personal.name,
+      'name': fullName,
+      'givenName': givenName,
+      'additionalName': additionalName,
+      'familyName': familyName,
+      'alternateName': [
+        'Gowri Prasath',
+        'Gowri Prasath S',
+        'Gowri Prasath Shanmugasundaram',
+        'Shanmugasundaram Gowri Prasath',
+        'S Gowri Prasath',
+        'gowriprasathdev'
+      ],
       'jobTitle': personal.title,
       'description': personal.bio,
       'image': personal.avatar,
@@ -145,7 +161,7 @@ export class SEOService {
       '@type': 'ProfilePage',
       '@id': `${canonicalUrl}#webpage`,
       'url': canonicalUrl,
-      'name': `${personal.name} | ${personal.title}`,
+      'name': `${fullName} | ${personal.title}`,
       'description': personal.bio,
       'mainEntity': {
         '@id': `${canonicalUrl}#person`
@@ -173,6 +189,10 @@ export class SEOService {
    */
   injectStructuredData(personalInfo: {
     name: string;
+    fullName?: string;
+    firstName?: string;
+    middleName?: string;
+    lastName?: string;
     title: string;
     bio: string;
     avatar: string;
@@ -183,7 +203,18 @@ export class SEOService {
     const schema = {
       '@context': 'https://schema.org',
       '@type': 'Person',
-      'name': personalInfo.name,
+      'name': personalInfo.fullName || personalInfo.name,
+      'givenName': personalInfo.firstName || 'Gowri',
+      'additionalName': personalInfo.middleName || 'Prasath',
+      'familyName': personalInfo.lastName || 'Shanmugasundaram',
+      'alternateName': [
+        'Gowri Prasath',
+        'Gowri Prasath S',
+        'Gowri Prasath Shanmugasundaram',
+        'Shanmugasundaram Gowri Prasath',
+        'S Gowri Prasath',
+        'gowriprasathdev'
+      ],
       'jobTitle': personalInfo.title,
       'description': personalInfo.bio,
       'image': personalInfo.avatar,
