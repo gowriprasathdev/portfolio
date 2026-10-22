@@ -30,11 +30,11 @@
       "category": "Frontend & Accessibility",
       "items": [
         "Angular v8 - v20",
-        "TypeScript",
-        "RxJS / Signals",
-        "HTML5 & CSS3",
-        "AODA / WCAG Compliance",
-        "Responsive Designs"
+        "JavaScript/TypeScript",
+        "RxJS / Signals/ SSE",
+        "AODA / WCAG 2.0 Level AA",
+        "Responsive Designs",
+        "SEO"
       ]
     },
     {
@@ -50,7 +50,7 @@
     {
       "category": "Cloud & DevOps",
       "items": [
-        "Azure (AZ-900, AZ-104 prep)",
+        "Azure (AZ-900, AZ-104)",
         "BytePlus",
         "OpenShift Container Platform (OCP)",
         "Kubernetes & Helm",
@@ -64,7 +64,7 @@
         "Azure SQL / Oracle SQL / MS SQL / PostgreSQL",
         "Redis",
         "Blob Storage",
-        "Snyk (SAST/SCA/DAST) / Aqua / Blackduck"
+        "SAST/SCA/DAST-Snyk,Aqua"
       ]
     }
   ],
@@ -77,12 +77,13 @@
       "duration": "Sept 2022 - Present",
       "isCurrent": true,
       "description": [
-        "Led migration of legacy applications from Java & Java Struts to Golang & Angular, improving system performance, scalability, and maintainability while quickly adapting to new technologies.",
         "Designed and developed scalable microservices using Golang, leveraging concurrency patterns (goroutines, channels) to handle high-throughput workloads.",
         "Built and integrated RESTful APIs and third-party market data services, enabling real-time data streaming using Server-Sent Events (SSE), marking a key initiative for the team.",
         "Developed and enhanced Angular applications, including major upgrades from v8/9 to v17/18, improving performance, maintainability, SEO, and ensuring long-term framework support.",
-        "Implemented frontend features such as web crawling support, cookie consent, and cross-platform optimizations to enhance user experience and compliance.",
-        "Designed and implemented CI/CD pipelines using Azure DevOps/Jenkins for microservices, enabling automated build, test, and deployment workflows.",
+        "Led migration of legacy applications from Java & Java Struts to Golang & Angular, improving system performance, scalability, and maintainability while quickly adapting to new technologies.",
+        "Enhanced web applications to achieve full compliance with AODA and WCAG 2.0 Level AA accessibility standards.",
+        "Developed secure applications adhering to enterprise standards, ensuring zero critical vulnerabilities across SAST, SCA, DAST, and API security audits.",
+        "Designed and implemented CI/CD pipelines using Azure DevOps for microservices, enabling automated build, test, deployment and release workflows.",
         "Standardized and enhanced Helm-based deployment strategies for OpenShift, improving release consistency and operational efficiency.",
         "Containerized and deployed applications on OpenShift, leveraging Kubernetes concepts such as orchestration, scaling, and resource management.",
         "Owning and managing 10+ business-critical microservices (frontend and backend), handling end-to-end lifecycle including development, deployment, monitoring, and production support.",
@@ -97,7 +98,7 @@
         "Helm",
         "CI/CD",
         "SAST, SCA, DAST",
-        "AODA(WCAG AA)",
+        "AODA(WCAG 2.0 Level AA)",
         "MS SQL",
         "Redis",
         "Blob Storage",
