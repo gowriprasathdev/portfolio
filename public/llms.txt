@@ -27,13 +27,9 @@ Gowri Prasath Shanmugasundaram is a Senior Software Developer with over 4.5 year
 - Programmer at Kumaran Systems (Sept 2022 - Present) | Chennai, India
   - Led migration of legacy Java & Java Struts monoliths to Golang microservices and modern Angular architectures.
   - Architected high-throughput microservices using Golang concurrency patterns (goroutines, channels).
-  - Built real-time market data streaming pipelines using Server-Sent Events (SSE) and Refinitiv (LSEG) WebSocket APIs.
+  - Built real-time market data streaming pipelines using Server-Sent Events (SSE) and WebSocket APIs.
   - Upgraded enterprise Angular applications from v8/9 to v17/18/20.
   - Containerized and deployed 10+ business-critical microservices onto OpenShift using Helm charts and automated Azure CI/CD pipelines.
 
 ## Notable Projects & Open Source
 - go-gmail (Open Source Go Library): Fluent, rate-limited Go wrapper for the Gmail API (https://github.com/gowriprasathdev/go-gmail).
-- CDR (Canadian Depositary Receipts): High-availability capital markets system handling real-time market pricing and corporate action voting.
-- OII (Online Insurance Inquiry): Enterprise insurance advisory platform modernized to Golang microservices with secure mTLS integrations.
-- Securitization Platform: Enterprise ABCP debt operations platform built with Go, Angular Signals, and Solace messaging.
-- CWF (Common Web Framework): Reusable enterprise Angular UI framework enforcing strict WCAG AA accessibility standards.
