@@ -93,7 +93,7 @@ export const WHATSAPP_SALES_CASE_STUDY: CaseStudyData = {
   id: 'whatsapp-sales',
   title: 'Conversational WhatsApp AI Sales Platform',
   subtitle: 'Event-Driven Microservices Architecture — Conversational Commerce & Lead Intelligence',
-  badge: 'Production Distributed Architecture',
+  badge: 'Distributed Architecture',
   overview:
     'An enterprise automotive sales platform engineered in Go (Gin, GORM, Asynq, Redis, PostgreSQL). Decouples aggressive 5-second Meta Cloud API timeouts into sub-50ms queue ingresses, drives multi-turn agentic tool calling with multilingual and vernacular dialect adaptation, manages interactive test-drive appointment bookings/reschedules via WhatsApp Flows v3 with distributed mutex locking, and runs asynchronous debounced lead scoring and forensic payment receipt verification.',
   metrics: [
