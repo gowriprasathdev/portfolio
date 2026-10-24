@@ -33,4 +33,5 @@ Gowri Prasath Shanmugasundaram is a Senior Software Developer with over 4.5 year
   - Containerized and deployed 10+ business-critical microservices onto OpenShift using Helm charts and automated Azure CI/CD pipelines.
 
 ## Notable Projects & Open Source
+- AI Social Marketing & Omnichannel Syndication Engine: Enterprise marketing automation pipeline in Go. Generates platform-tailored promotional copy (character-constrained for X at 280 chars, professional for LinkedIn, engaging for Instagram/Facebook) via Gemini, synthesizes generative AI posters (Imagen 3 / Seedream), and publishes multi-format media across Meta, LinkedIn, and X using OAuth 2.0 PKCE / OAuth 1.0a.
 - go-gmail (Open Source Go Library): Fluent, rate-limited Go wrapper for the Gmail API (https://github.com/gowriprasathdev/go-gmail).

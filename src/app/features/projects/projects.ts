@@ -1,10 +1,14 @@
 import { Component, inject, signal, computed, ElementRef, ViewChild } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { PortfolioStateService } from '../../core/services/portfolio-state.service';
 import { ProjectItem } from '../../core/models/portfolio-data.model';
+import { ArchitectureModalComponent } from './architecture-modal/architecture-modal';
+import { WHATSAPP_SALES_CASE_STUDY, CaseStudyData } from './architecture-modal/architecture-data';
 
 @Component({
   selector: 'app-projects',
   standalone: true,
+  imports: [CommonModule, ArchitectureModalComponent],
   templateUrl: './projects.html',
   styleUrl: './projects.css'
 })
@@ -14,10 +18,21 @@ export class ProjectsComponent {
   @ViewChild('carouselTrack') carouselTrack!: ElementRef<HTMLDivElement>;
 
   currentIndex = signal<number>(0);
+  selectedCaseStudy = signal<CaseStudyData | null>(null);
 
   projects = computed<ProjectItem[]>(() => {
     return this.state.portfolioData()?.projects || [];
   });
+
+  openArchitecture(project: ProjectItem) {
+    if (project.architectureId === 'whatsapp-sales') {
+      this.selectedCaseStudy.set(WHATSAPP_SALES_CASE_STUDY);
+    }
+  }
+
+  closeArchitecture() {
+    this.selectedCaseStudy.set(null);
+  }
 
   nextSlide() {
     const max = this.projects().length - 1;

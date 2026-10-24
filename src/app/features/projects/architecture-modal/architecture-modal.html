@@ -1,0 +1,394 @@
+<div class="modal-backdrop" (click)="closeModal.emit()" role="dialog" aria-modal="true" [attr.aria-label]="data().title + ' Architecture Blueprint'">
+  <div class="modal-container glow-card" (click)="$event.stopPropagation()">
+    
+    <!-- Modal Header -->
+    <header class="modal-header">
+      <div class="header-titles">
+        <div class="header-badge-row">
+          <span class="arch-badge">🏛️ {{ data().badge }}</span>
+          <span class="tech-pill">Go 1.22+</span>
+          <span class="tech-pill">Redis (Asynq)</span>
+          <span class="tech-pill">Gemini 2.5</span>
+        </div>
+        <h2 class="modal-title">{{ data().title }}</h2>
+        <p class="modal-subtitle">{{ data().subtitle }}</p>
+      </div>
+
+      <button class="close-btn" (click)="closeModal.emit()" aria-label="Close architecture modal" type="button">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="6"></line>
+        </svg>
+      </button>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="modal-tabs" role="tablist" aria-label="Architecture tabs">
+      <button 
+        class="tab-btn" 
+        [class.active]="activeTab() === 'simulator'"
+        (click)="setTab('simulator')"
+        role="tab"
+        [attr.aria-selected]="activeTab() === 'simulator'"
+        type="button">
+        <span>📱 WhatsApp Live Simulator</span>
+      </button>
+
+      <button 
+        class="tab-btn" 
+        [class.active]="activeTab() === 'architecture'"
+        (click)="setTab('architecture')"
+        role="tab"
+        [attr.aria-selected]="activeTab() === 'architecture'"
+        type="button">
+        <span>🏛️ System Topology & Flow</span>
+      </button>
+
+      <button 
+        class="tab-btn" 
+        [class.active]="activeTab() === 'challenges'"
+        (click)="setTab('challenges')"
+        role="tab"
+        [attr.aria-selected]="activeTab() === 'challenges'"
+        type="button">
+        <span>⚡ Engineering Challenges</span>
+      </button>
+
+      <button 
+        class="tab-btn" 
+        [class.active]="activeTab() === 'metrics'"
+        (click)="setTab('metrics')"
+        role="tab"
+        [attr.aria-selected]="activeTab() === 'metrics'"
+        type="button">
+        <span>📊 SLAs & KPIs</span>
+      </button>
+    </nav>
+
+    <!-- Modal Content Body -->
+    <div class="modal-body">
+
+      <!-- TAB 1: WHATSAPP LIVE SIMULATOR -->
+      @if (activeTab() === 'simulator') {
+        <div class="simulator-layout">
+          
+          <!-- Left: Scenarios Selector & Overview -->
+          <div class="simulator-sidebar">
+            <h3 class="sidebar-heading">Interactive Scenarios</h3>
+            <p class="sidebar-desc">Select a customer journey to simulate live conversational tool calling, speech-to-text, and forensic OCR:</p>
+
+            <div class="scenario-list">
+              @for (sc of data().scenarios; track sc.id) {
+                <button 
+                  class="scenario-card"
+                  [class.active]="activeScenarioId() === sc.id"
+                  (click)="selectScenario(sc.id)"
+                  type="button">
+                  <div class="scenario-icon">{{ sc.icon }}</div>
+                  <div class="scenario-info">
+                    <span class="scenario-label">{{ sc.label }}</span>
+                    <span class="scenario-summary">{{ sc.description }}</span>
+                  </div>
+                </button>
+              }
+            </div>
+
+            <!-- Behind The Scenes Callout -->
+            <div class="trace-box glow-card">
+              <div class="trace-header">
+                <span class="live-dot"></span>
+                <span class="trace-title">Under The Hood (Go Engine)</span>
+              </div>
+              <p class="trace-overview">
+                Every simulated message triggers real Go microservice execution paths: sub-50ms Meta webhook ACK, Redis Asynq task queuing, and dynamic OpenAPI schema translations.
+              </p>
+            </div>
+          </div>
+
+          <!-- Right: WhatsApp Phone Frame -->
+          <div class="phone-wrapper">
+            <div class="whatsapp-phone glow-card">
+              
+              <!-- Phone Status Bar -->
+              <div class="phone-status-bar">
+                <span>10:14</span>
+                <div class="status-icons">
+                  <span>5G</span>
+                  <span>100%</span>
+                </div>
+              </div>
+
+              <!-- WhatsApp App Header -->
+              <div class="wa-header">
+                <div class="wa-user-info">
+                  <div class="wa-avatar">🤖</div>
+                  <div>
+                    <div class="wa-name">Recon AI Sales Assistant <span class="verified-check">✓</span></div>
+                    <div class="wa-status">online</div>
+                  </div>
+                </div>
+                <div class="wa-actions">
+                  <span class="wa-icon">📞</span>
+                  <span class="wa-icon">⋮</span>
+                </div>
+              </div>
+
+              <!-- WhatsApp Chat Area -->
+              <div class="wa-chat-area">
+                <div class="encryption-notice">
+                  🔒 Messages are end-to-end encrypted with Meta WhatsApp Business Cloud API.
+                </div>
+
+                @for (msg of activeScenario().messages.slice(0, visibleMessagesCount()); track msg.id) {
+                  @if (msg.sender === 'system') {
+                    <div class="system-bubble">
+                      {{ msg.text }}
+                    </div>
+                  } @else {
+                    <div class="chat-row" [class.user-row]="msg.sender === 'user'" [class.agent-row]="msg.sender === 'agent'">
+                      <div class="chat-bubble" [class.user-bubble]="msg.sender === 'user'" [class.agent-bubble]="msg.sender === 'agent'">
+                        
+                        <!-- Voice Memo Rendering -->
+                        @if (msg.audioDuration) {
+                          <div class="audio-memo">
+                            <span class="play-btn">▶</span>
+                            <div class="audio-waveform">
+                              <span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span>
+                              <span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span>
+                            </div>
+                            <span class="audio-time">{{ msg.audioDuration }}</span>
+                          </div>
+                        }
+
+                        <!-- Text Rendering -->
+                        @if (msg.text) {
+                          <div class="bubble-text">{{ msg.text }}</div>
+                        }
+
+                        <!-- Bank Receipt Slip Preview -->
+                        @if (msg.receipt; as r) {
+                          <div class="receipt-slip">
+                            <div class="receipt-header">
+                              <span class="receipt-title">BANK TRANSFER RECEIPT</span>
+                              <span class="verified-tag">AI VERIFIED 96%</span>
+                            </div>
+                            <div class="receipt-row"><span>Bank:</span> <strong>{{ r.bank }}</strong></div>
+                            <div class="receipt-row"><span>Amount:</span> <strong>{{ r.amount }}</strong></div>
+                            <div class="receipt-row"><span>Account:</span> <strong>****{{ r.accountLast4 }}</strong></div>
+                            <div class="receipt-row"><span>Ref:</span> <strong>{{ r.reference }}</strong></div>
+                          </div>
+                        }
+
+                        <!-- Interactive Radio / Vehicle List -->
+                        @if (msg.interactiveList; as list) {
+                          <div class="interactive-list-box">
+                            <div class="list-header">{{ list.header }}</div>
+                            <div class="list-rows">
+                              @for (row of list.rows; track row.id) {
+                                <div class="list-row-item">
+                                  <div class="row-text">
+                                    <span class="row-title">{{ row.title }}</span>
+                                    <span class="row-desc">{{ row.desc }}</span>
+                                  </div>
+                                  @if (row.badge) {
+                                    <span class="row-badge">{{ row.badge }}</span>
+                                  }
+                                </div>
+                              }
+                            </div>
+                            <div class="list-btn">{{ list.buttonText }}</div>
+                          </div>
+                        }
+
+                        <div class="bubble-meta">
+                          <span class="bubble-time">{{ msg.time }}</span>
+                          @if (msg.sender === 'user') {
+                            <span class="double-tick">✓✓</span>
+                          }
+                        </div>
+                      </div>
+
+                      <!-- Behind-the-Scenes Engineering Callout -->
+                      @if (msg.backendTrace; as trace) {
+                        <div class="backend-tracer-card glow-card">
+                          <div class="tracer-top">
+                            <span class="tracer-tag" [class]="trace.badgeColor || 'accent'">⚡ {{ trace.component }}</span>
+                            <span class="tracer-latency">{{ trace.latency }}</span>
+                          </div>
+                          <div class="tracer-action"><code>{{ trace.action }}</code></div>
+                          <div class="tracer-desc">{{ trace.details }}</div>
+                        </div>
+                      }
+                    </div>
+                  }
+                }
+
+                @if (isTyping()) {
+                  <div class="typing-indicator-row">
+                    <div class="typing-bubble">
+                      <span class="typing-dot"></span>
+                      <span class="typing-dot"></span>
+                      <span class="typing-dot"></span>
+                    </div>
+                    <span class="typing-label">Recon AI is evaluating tools...</span>
+                  </div>
+                }
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      }
+
+      <!-- TAB 2: SYSTEM TOPOLOGY & FLOW -->
+      @if (activeTab() === 'architecture') {
+        <div class="architecture-layout">
+          <div class="arch-top-overview">
+            <h3 class="section-heading">Decoupled Microservices Topology</h3>
+            <p class="section-subtext">Click on any subsystem node below to inspect its SLA, fault isolation, and technology stack:</p>
+          </div>
+
+          <div class="nodes-grid">
+            @for (node of data().nodes; track node.id) {
+              <div 
+                class="node-card glow-card"
+                [class.active]="activeNodeId() === node.id"
+                (click)="selectNode(node.id)">
+                <div class="node-header">
+                  <span class="node-cat-pill">{{ node.category }}</span>
+                  <span class="node-sla">{{ node.sla }}</span>
+                </div>
+                <h4 class="node-title">{{ node.title }}</h4>
+                <p class="node-desc">{{ node.description }}</p>
+                <div class="node-tech"><code>{{ node.tech }}</code></div>
+              </div>
+            }
+          </div>
+
+          <!-- Flow Summary Diagram Card -->
+          <div class="flow-summary-box glow-card">
+            <h4 class="flow-box-title">Event-Driven Ingress & Inference Pipeline</h4>
+            <div class="flow-steps-horizontal">
+              <div class="flow-step">
+                <span class="step-num">1</span>
+                <strong>Meta Ingress</strong>
+                <span>HMAC signature check + idempotency lock on wa_message_id</span>
+              </div>
+              <div class="flow-arrow">➔</div>
+              <div class="flow-step">
+                <span class="step-num">2</span>
+                <strong>Redis Asynq</strong>
+                <span>Sub-50ms 200 OK ACK; buffers job in Redis 7</span>
+              </div>
+              <div class="flow-arrow">➔</div>
+              <div class="flow-step">
+                <span class="step-num">3</span>
+                <strong>Memory Synthesis</strong>
+                <span>Last 10 msgs + rolling AISummary injected into system prompt</span>
+              </div>
+              <div class="flow-arrow">➔</div>
+              <div class="flow-step">
+                <span class="step-num">4</span>
+                <strong>Agentic Tool Loop</strong>
+                <span>Gemini queries Postgres DB via native functions</span>
+              </div>
+              <div class="flow-arrow">➔</div>
+              <div class="flow-step">
+                <span class="step-num">5</span>
+                <strong>Debounced Lead CRM</strong>
+                <span>60s deduplicated Asynq worker scores lead</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- TAB 3: ENGINEERING CHALLENGES -->
+      @if (activeTab() === 'challenges') {
+        <div class="challenges-layout">
+          <div class="challenges-grid">
+            @for (c of data().challenges; track c.title) {
+              <div class="challenge-card glow-card">
+                <div class="challenge-top">
+                  <span class="challenge-tag">{{ c.tag }}</span>
+                  <h3 class="challenge-title">{{ c.title }}</h3>
+                </div>
+
+                <div class="challenge-block problem-block">
+                  <div class="block-label">❌ The Real-World Problem</div>
+                  <p>{{ c.problem }}</p>
+                </div>
+
+                <div class="challenge-block tradeoff-block">
+                  <div class="block-label">⚖️ Architectural Trade-off</div>
+                  <p>{{ c.tradeOff }}</p>
+                </div>
+
+                <div class="challenge-block solution-block">
+                  <div class="block-label">✅ Go Engineering Solution</div>
+                  <p>{{ c.solution }}</p>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- TAB 4: METRICS & KPIS -->
+      @if (activeTab() === 'metrics') {
+        <div class="metrics-layout">
+          <div class="metrics-grid">
+            @for (m of data().metrics; track m.label) {
+              <div class="metric-card glow-card">
+                <div class="metric-stat">{{ m.stat }}</div>
+                <div class="metric-label">{{ m.label }}</div>
+                <div class="metric-subtext">{{ m.subtext }}</div>
+              </div>
+            }
+          </div>
+
+          <div class="tech-spec-table-box glow-card">
+            <h3 class="table-heading">System Stack & Reliability Specifications</h3>
+            <div class="specs-table">
+              <div class="spec-row">
+                <span class="spec-key">Core Language</span>
+                <span class="spec-val">Go (Golang 1.22+ with goroutine worker pools & channels)</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-key">HTTP Framework</span>
+                <span class="spec-val">Gin Web Framework (Sub-millisecond route handling)</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-key">Queue Architecture</span>
+                <span class="spec-val">Redis 7 + hibiken/asynq (Task deduplication & delayed debouncing)</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-key">Database & ORM</span>
+                <span class="spec-val">PostgreSQL 16 with GORM ORM & Connection Pooling</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-key">Primary AI Provider</span>
+                <span class="spec-val">Google Gemini 2.5 Flash / BytePlus Doubao Lite with native function calling</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-key">Speech Recognition (ASR)</span>
+                <span class="spec-val">BytePlus Seed Speech BigModel ASR (Doubao 2.0) with polling handler</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-key">Computer Vision (OCR)</span>
+                <span class="spec-val">BytePlus Seed 2.0 Mini Vision Model for forensic slip verification</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-key">Cloud Media Storage</span>
+                <span class="spec-val">BytePlus Torch Object Storage (TOS) / AWS S3 API</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+
+    </div>
+
+  </div>
+</div>

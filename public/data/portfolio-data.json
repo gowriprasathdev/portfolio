@@ -169,7 +169,9 @@
         "Vision AI",
         "Lead Scoring"
       ],
-      "featured": true
+      "featured": true,
+      "hasArchitecture": true,
+      "architectureId": "whatsapp-sales"
     },
     {
       "title": "LLM-Powered Inventory ETL Pipeline",
@@ -183,6 +185,22 @@
         "Concurrency",
         "PostgreSQL",
         "Data Normalization"
+      ],
+      "featured": true
+    },
+    {
+      "title": "AI Social Marketing & Omnichannel Syndication Engine",
+      "subtitle": "Automated Creative Synthesis & Multi-Platform Publishing Engine",
+      "description": "An enterprise marketing automation pipeline integrated into the dealership web portal. Enables sales teams to select inventory vehicles and dynamically generate platform-optimized promotional copy (character-constrained for X/Twitter at 280 chars, professional for LinkedIn, conversational with hashtags for Instagram/Facebook) via Gemini. Orchestrates generative AI poster and brochure rendering (Google Imagen 3 / BytePlus Seedream) and broadcasts multi-format media simultaneously across Meta (Instagram & Facebook), LinkedIn, and X (Twitter) using OAuth 2.0 PKCE and OAuth 1.0a protocols with media domain whitelisting.",
+      "tags": [
+        "Go",
+        "Generative AI",
+        "OAuth 2.0 PKCE",
+        "Meta Graph API",
+        "LinkedIn API",
+        "X API v2",
+        "Imagen 3",
+        "Distributed Systems"
       ],
       "featured": true
     },
