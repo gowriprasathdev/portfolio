@@ -26,7 +26,7 @@ export class PortfolioStateService {
   selectedProjectCategory = signal<string>('All');
 
   // Feature toggle: Controls visibility of projects in UI and exposure to AI Bots
-  showProjects = signal<boolean>(false);
+  showProjects = signal<boolean>(true);
 
   constructor() {
     this.loadPortfolioData();

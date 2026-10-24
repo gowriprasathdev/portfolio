@@ -6,8 +6,8 @@
     "middleName": "Prasath",
     "lastName": "Shanmugasundaram",
     "title": "Senior Software Developer",
-    "subTitle": "Specializing in full-stack engineering, cloud-native architectures, and application modernization for high-availability enterprise environments.",
-    "bio": "Passionate Software Developer with 4.5 years of experience specializing in full-stack development, distributed architectures, and legacy-to-cloud modernization within large-scale banking and capital markets. Proven track record of architecting concurrent Golang microservices and building highly responsive, WCAG-compliant Angular applications for enterprise systems. I thrive on clean architecture principles, robust DevSecOps practices, and delivering scalable, secure digital solutions.",
+    "subTitle": "Specializing in full-stack engineering, cloud-native architectures, distributed Golang microservices, and production Agentic AI systems for high-availability enterprise environments.",
+    "bio": "Passionate Software Developer with 4.5+ years of experience specializing in full-stack development, distributed architectures, and legacy-to-cloud modernization within large-scale enterprise environments and capital markets. Proven track record of architecting concurrent Golang microservices, building production Agentic AI & multimodal LLM systems, and delivering highly responsive, WCAG-compliant Angular applications. I thrive on clean architecture principles, robust DevSecOps practices, and delivering scalable, secure digital solutions.",
     "avatar": "images/profile.jpg",
     "resumeUrl": "#",
     "email": "gowriprasath0304@gmail.com",
@@ -45,6 +45,18 @@
         "Node.js",
         "RESTful APIs",
         "gRPC"
+      ]
+    },
+    {
+      "category": "AI & Agentic Systems",
+      "items": [
+        "Agentic AI & Function Calling",
+        "Multimodal Vision AI & Document OCR",
+        "Provider Abstractions (Gemini, BytePlus, Ollama)",
+        "Prompt Engineering & Hallucination Guardrails",
+        "Automatic Speech Recognition (ASR)",
+        "Hierarchical Conversation Memory & Summaries",
+        "LLM Concurrency, Chunking & Rate Limiting (RPM/TPM)"
       ]
     },
     {
@@ -127,6 +139,53 @@
     }
   ],
   "projects": [
+    {
+      "title": "Universal Go AI & Agentic Engine",
+      "subtitle": "Domain-Agnostic Core Library — Provider Abstraction, Tool Calling & Multimodal Vision",
+      "description": "An enterprise-grade, provider-agnostic Go library abstracting Cloud and Local AI inference (Google Gemini, BytePlus Doubao, Ollama, LM Studio). Engineered an autonomous agentic loop with dynamic function calling and schema translation, deep-reasoning mode control, multimodal vision processing for document OCR and vehicle aesthetic scoring, generative multi-page brochure rendering (Imagen 3 / Seedream), and asynchronous speech-to-text (ASR) transcription.",
+      "tags": [
+        "Go",
+        "Agentic AI",
+        "Function Calling",
+        "Gemini API",
+        "BytePlus ARK",
+        "Ollama",
+        "Computer Vision",
+        "ASR"
+      ],
+      "featured": true
+    },
+    {
+      "title": "Conversational WhatsApp AI Sales Platform",
+      "subtitle": "Commercial Automotive Platform — Event-Driven Microservices & Intent Intelligence",
+      "description": "An event-driven Go/Gin microservice automating customer acquisition on WhatsApp with sub-50ms webhook response handling. Features an autonomous conversational agent with native tool calling (inventory search, interactive lists, image dispatch), dialect localization (including Malaysian Manglish), hierarchical memory (sliding-window + rolling summarization), Asynq/Redis-debounced lead scoring, voice-note ASR transcription, and automated bank transfer receipt verification.",
+      "tags": [
+        "Go",
+        "WhatsApp Cloud API",
+        "Redis (asynq)",
+        "PostgreSQL",
+        "Agentic AI",
+        "Multilingual NLP",
+        "Vision AI",
+        "Lead Scoring"
+      ],
+      "featured": true
+    },
+    {
+      "title": "LLM-Powered Inventory ETL Pipeline",
+      "subtitle": "High-Throughput Batch Processing — Unstructured Data Ingestion & Normalization",
+      "description": "An asynchronous batch-processing pipeline designed to ingest noisy, unstructured automotive auction spreadsheets into normalized relational records. Employs prompt engineering with negative constraint mapping to eliminate price and variant hallucination, context-sticky date header propagation, and a concurrent goroutine chunking architecture (AI_CHUNK_SIZE, AI_CHUNK_CONCURRENCY_LIMIT) to process massive catalogs within LLM token and rate limits.",
+      "tags": [
+        "Go",
+        "LLM ETL",
+        "Prompt Engineering",
+        "Batch Processing",
+        "Concurrency",
+        "PostgreSQL",
+        "Data Normalization"
+      ],
+      "featured": true
+    },
     {
       "title": "CDR (Canadian Depositary Receipts)",
       "subtitle": "Capital Markets - Asset Pricing & Shareholder Voting",

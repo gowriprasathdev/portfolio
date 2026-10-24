@@ -1,6 +1,6 @@
 # Gowri Prasath Shanmugasundaram
 
-> Senior Software Developer specializing in full-stack engineering, cloud-native architectures, distributed Golang microservices, and high-performance Angular enterprise applications.
+> Senior Software Developer specializing in full-stack engineering, cloud-native architectures, distributed Golang microservices, production Agentic AI systems, and high-performance Angular enterprise applications.
 
 ## Identity & Aliases
 - Full Legal / Family Name: Gowri Prasath Shanmugasundaram
@@ -17,6 +17,7 @@
 Gowri Prasath Shanmugasundaram is a Senior Software Developer with over 4.5 years of industry experience across banking, capital markets, and high-availability enterprise environments. Proven track record of architecting concurrent Golang microservices, engineering real-time data streaming pipelines, and modernizing legacy monoliths into cloud-native, WCAG-compliant Angular applications.
 
 ## Core Technical Competencies
+- AI & Agentic Systems: Autonomous Function Calling & Agentic Loops, Multimodal Vision AI & Document OCR, Provider Abstraction (Google Gemini, BytePlus Doubao, Ollama, LM Studio), Automatic Speech Recognition (ASR), Prompt Engineering & Anti-Hallucination Guardrails, Hierarchical Conversation Memory, High-Throughput LLM Concurrency & Rate Limiting
 - Backend & Microservices: Go (Golang), Java (Spring Boot, Struts), Node.js, RESTful APIs, gRPC, Server-Sent Events (SSE), WebSockets
 - Frontend & Architecture: Angular (v8 through v20), TypeScript, RxJS, Angular Signals, HTML5/CSS3, AODA / WCAG AA Accessibility
 - Cloud & Containerization: Red Hat OpenShift Container Platform (OCP), Kubernetes, Helm, Docker, Microsoft Azure (AZ-900, AZ-104 prep), BytePlus
