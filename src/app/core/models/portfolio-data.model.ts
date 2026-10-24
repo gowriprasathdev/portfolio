@@ -45,6 +45,8 @@ export interface ProjectItem {
   githubUrl?: string;
   liveUrl?: string;
   featured: boolean;
+  hasArchitecture?: boolean;
+  architectureId?: string;
 }
 
 export interface CertificationItem {

@@ -1,4 +1,5 @@
 import { Component, inject, signal, computed, HostListener, PLATFORM_ID } from '@angular/core';
+import { Router } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
 import { PortfolioStateService } from '../../../core/services/portfolio-state.service';
 import { ThemeToggleComponent } from '../theme-toggle/theme-toggle';
@@ -13,6 +14,7 @@ import { ThemeToggleComponent } from '../theme-toggle/theme-toggle';
 export class HeaderComponent {
   state = inject(PortfolioStateService);
   private platformId = inject(PLATFORM_ID);
+  private router = inject(Router);
 
   isMobileMenuOpen = signal<boolean>(false);
   isScrolled = signal<boolean>(false);

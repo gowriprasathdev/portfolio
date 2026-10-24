@@ -1,0 +1,21 @@
+<main id="main-content">
+  <!-- Critical Above-the-fold content rendered instantly -->
+  <app-hero></app-hero>
+  <app-about></app-about>
+  <app-experience></app-experience>
+
+  <!-- Non-critical heavy views deferred until viewport entry for performance -->
+  @if (state.showProjects()) {
+    @defer (on viewport) {
+      <app-projects></app-projects>
+    } @placeholder {
+      <section class="defer-section container">
+        <div class="defer-loader-card">Loading Projects...</div>
+      </section>
+    }
+  }
+
+  <!-- Credentials & Contact sections rendered directly for reliable navigation & SEO -->
+  <app-certifications></app-certifications>
+  <app-contact></app-contact>
+</main>
