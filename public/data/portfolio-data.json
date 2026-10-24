@@ -169,7 +169,9 @@
         "Vision AI",
         "Lead Scoring"
       ],
-      "featured": true
+      "featured": true,
+      "hasArchitecture": true,
+      "architectureId": "whatsapp-ai-sales"
     },
     {
       "title": "LLM-Powered Inventory ETL Pipeline",

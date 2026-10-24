@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy, inject, PLATFORM_ID, effect } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
+import { RouterOutlet } from '@angular/router';
 import { PortfolioStateService } from './core/services/portfolio-state.service';
 import { SEOService } from './core/services/seo.service';
 
@@ -7,26 +8,13 @@ import { SEOService } from './core/services/seo.service';
 import { HeaderComponent } from './shared/components/header/header';
 import { FooterComponent } from './shared/components/footer/footer';
 
-// Import feature sections
-import { HeroComponent } from './features/hero/hero';
-import { AboutComponent } from './features/about/about';
-import { ExperienceComponent } from './features/experience/experience';
-import { ProjectsComponent } from './features/projects/projects';
-import { CertificationsComponent } from './features/certifications/certifications';
-import { ContactComponent } from './features/contact/contact';
-
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [
+    RouterOutlet,
     HeaderComponent,
-    FooterComponent,
-    HeroComponent,
-    AboutComponent,
-    ExperienceComponent,
-    ProjectsComponent,
-    CertificationsComponent,
-    ContactComponent
+    FooterComponent
   ],
   templateUrl: './app.html',
   styleUrl: './app.css'
@@ -105,7 +93,6 @@ export class App implements OnInit, OnDestroy {
         const windowHeight = window.innerHeight;
         const docHeight = document.documentElement.scrollHeight;
 
-        // 1. Bottom-of-page check: If user scrolled near the bottom, activate the last section ('contact')
         if (scrollY + windowHeight >= docHeight - 80) {
           const lastSection = sections[sections.length - 1];
           if (lastSection) {
@@ -114,7 +101,6 @@ export class App implements OnInit, OnDestroy {
           }
         }
 
-        // 2. Section offset check: Header height (80px) + 40px buffer
         const headerOffset = 120;
         let activeId = sections[0];
 
@@ -122,7 +108,6 @@ export class App implements OnInit, OnDestroy {
           const el = document.getElementById(id);
           if (el) {
             const rect = el.getBoundingClientRect();
-            // If the section top has scrolled past or reached the header threshold
             if (rect.top <= headerOffset) {
               activeId = id;
             }
@@ -147,7 +132,6 @@ export class App implements OnInit, OnDestroy {
       window.addEventListener('scroll', onScroll, { passive: true });
       this.scrollListener = onScroll;
 
-      // Run initial check once DOM is ready
       setTimeout(updateActiveSection, 150);
     }
   }

@@ -1,15 +1,19 @@
 import { Component, inject, signal, computed, ElementRef, ViewChild } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Router, RouterLink } from '@angular/router';
 import { PortfolioStateService } from '../../core/services/portfolio-state.service';
 import { ProjectItem } from '../../core/models/portfolio-data.model';
 
 @Component({
   selector: 'app-projects',
   standalone: true,
+  imports: [CommonModule, RouterLink],
   templateUrl: './projects.html',
   styleUrl: './projects.css'
 })
 export class ProjectsComponent {
   state = inject(PortfolioStateService);
+  private router = inject(Router);
 
   @ViewChild('carouselTrack') carouselTrack!: ElementRef<HTMLDivElement>;
 
@@ -18,6 +22,15 @@ export class ProjectsComponent {
   projects = computed<ProjectItem[]>(() => {
     return this.state.portfolioData()?.projects || [];
   });
+
+  openArchitecture(architectureId?: string, event?: Event) {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    const target = architectureId === 'whatsapp-sales' ? 'whatsapp-ai-sales' : (architectureId || 'whatsapp-ai-sales');
+    this.router.navigate(['/projects', target]);
+  }
 
   nextSlide() {
     const max = this.projects().length - 1;
@@ -45,7 +58,7 @@ export class ProjectsComponent {
     if (!firstCard) return;
 
     const cardWidth = firstCard.offsetWidth;
-    const gap = 28; // matching 1.75rem grid gap
+    const gap = 28;
     const scrollPos = track.scrollLeft;
     const calculatedIndex = Math.round(scrollPos / (cardWidth + gap));
 
