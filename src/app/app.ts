@@ -62,7 +62,13 @@ export class App implements OnInit, OnDestroy {
             'Golang Microservices',
             'Angular Expert',
             'Cloud Native Architecture',
-            'Full Stack Developer Portfolio'
+            'Full Stack Developer Portfolio',
+            'Agentic AI Systems',
+            'Generative AI',
+            'Golang AI Engine',
+            'Multimodal Vision AI',
+            'Autonomous Tool Calling',
+            'LLM Microservices'
           ],
           image: data.personal.avatar,
           url: canonicalUrl,
