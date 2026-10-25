@@ -2,6 +2,7 @@ import {
   Component,
   signal,
   computed,
+  effect,
   HostListener,
   OnInit,
   ChangeDetectionStrategy,
@@ -11,12 +12,15 @@ import {
 import { isPlatformBrowser } from '@angular/common';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { ThemeService } from '../../../core/services/theme.service';
 import {
   WHATSAPP_SALES_CASE_STUDY,
   ArchitectureNode,
-  SimulationScenario,
+  ArchitectureFlow,
   ProductionScreenshot,
-  CaseStudyData
+  CaseStudyData,
+  getMermaidArchitectureCode
 } from './case-study-data';
 
 @Component({
@@ -30,10 +34,34 @@ import {
 export class CaseStudyComponent implements OnInit {
   private router = inject(Router);
   private platformId = inject(PLATFORM_ID);
+  private sanitizer = inject(DomSanitizer);
+  themeService = inject(ThemeService);
 
   data: CaseStudyData = WHATSAPP_SALES_CASE_STUDY;
+  Math = Math;
 
-  activeTab = signal<'gallery' | 'architecture' | 'simulator' | 'challenges'>('gallery');
+  // Dynamically themed Mermaid syntax
+  mermaidCode = computed(() => getMermaidArchitectureCode(this.themeService.theme()));
+
+  private lastRenderedTheme: 'light' | 'dark' | null = null;
+
+  constructor() {
+    effect(() => {
+      // Track theme signal
+      const currentTheme = this.themeService.theme();
+      if (
+        isPlatformBrowser(this.platformId) &&
+        this.activeTab() === 'architecture' &&
+        this.archViewMode() === 'mermaid' &&
+        this.lastRenderedTheme !== currentTheme
+      ) {
+        this.renderMermaid();
+      }
+    });
+  }
+
+  // Active Main Navigation Tab (Simulator & Old Topology removed)
+  activeTab = signal<'gallery' | 'architecture' | 'challenges'>('gallery');
 
   // Gallery State
   activeScreenshotId = signal<string>('general-inquiry');
@@ -41,13 +69,14 @@ export class CaseStudyComponent implements OnInit {
   activeCategory = signal<string>('all');
   lightboxImage = signal<{ src: string; title: string; badge: string; desc: string } | null>(null);
 
-  // Architecture State
-  activeNodeId = signal<string>('messaging-ingress-service');
-
-  // Simulator State
-  activeScenarioId = signal<string>('appointment-flow');
-  visibleMessagesCount = signal<number>(1);
-  isTyping = signal<boolean>(false);
+  // Architecture Diagram State
+  archViewMode = signal<'diagram' | 'mermaid'>('diagram');
+  selectedFlowId = signal<string>('all');
+  activeNodeId = signal<string>('ingress-gateway');
+  zoomLevel = signal<number>(1);
+  copiedMermaid = signal<boolean>(false);
+  mermaidSvg = signal<SafeHtml | null>(null);
+  isMermaidRendering = signal<boolean>(false);
 
   // Challenges State
   activeChallengeIndex = signal<number>(0);
@@ -112,14 +141,44 @@ export class CaseStudyComponent implements OnInit {
     return cur.description;
   });
 
-  activeScenario = computed<SimulationScenario>(() => {
-    const list = this.data.scenarios || [];
-    return list.find(s => s.id === this.activeScenarioId()) || list[0];
+  // Architecture Computeds
+  activeFlow = computed<ArchitectureFlow>(() => {
+    const flows = this.data.flows || [];
+    return flows.find(f => f.id === this.selectedFlowId()) || flows[0];
   });
 
-  activeNode = computed<ArchitectureNode | undefined>(() => {
+  activeFlowNodesSet = computed<Set<string>>(() => {
+    return new Set(this.activeFlow().activeNodeIds || []);
+  });
+
+  activeNode = computed<ArchitectureNode>(() => {
     const list = this.data.nodes || [];
-    return list.find(n => n.id === this.activeNodeId()) || list[0];
+    return list.find(n => n.id === this.activeNodeId()) || list[1]; // default to ingress-gateway
+  });
+
+  // Nodes grouped by Architectural Tier
+  tier1Nodes = computed<ArchitectureNode[]>(() => {
+    return this.data.nodes.filter(n => n.layer === 'Ingress & Decoupling' && n.category === 'Edge');
+  });
+
+  tier2Nodes = computed<ArchitectureNode[]>(() => {
+    return this.data.nodes.filter(n => n.layer === 'Ingress & Decoupling' && n.category !== 'Edge');
+  });
+
+  tier3Nodes = computed<ArchitectureNode[]>(() => {
+    return this.data.nodes.filter(n => n.layer === 'Processing & Orchestration');
+  });
+
+  tier4Nodes = computed<ArchitectureNode[]>(() => {
+    return this.data.nodes.filter(n => n.layer === 'Cognitive & AI Tier');
+  });
+
+  tier5Nodes = computed<ArchitectureNode[]>(() => {
+    return this.data.nodes.filter(n => n.layer === 'Data & Persistence');
+  });
+
+  tier6Nodes = computed<ArchitectureNode[]>(() => {
+    return this.data.nodes.filter(n => n.layer === 'Outbound & Client Egress');
   });
 
   @HostListener('window:keydown', ['$event'])
@@ -139,13 +198,18 @@ export class CaseStudyComponent implements OnInit {
     if (isPlatformBrowser(this.platformId)) {
       window.scrollTo({ top: 0, behavior: 'instant' });
     }
-    this.runScenarioAnimation();
   }
 
-  setTab(tab: 'gallery' | 'architecture' | 'simulator' | 'challenges') {
+  setTab(tab: 'gallery' | 'architecture' | 'challenges') {
     this.activeTab.set(tab);
+    if (tab === 'architecture' && this.archViewMode() === 'mermaid') {
+      if (!this.mermaidSvg() || this.lastRenderedTheme !== this.themeService.theme()) {
+        this.renderMermaid();
+      }
+    }
   }
 
+  // Gallery methods
   selectScreenshot(id: string) {
     this.activeScreenshotId.set(id);
     this.activeSubImageIndex.set(0);
@@ -218,30 +282,99 @@ export class CaseStudyComponent implements OnInit {
     this.lightboxImage.set(null);
   }
 
+  // Architecture Diagram Methods
+  setArchViewMode(mode: 'diagram' | 'mermaid') {
+    this.archViewMode.set(mode);
+    if (mode === 'mermaid') {
+      if (!this.mermaidSvg() || this.lastRenderedTheme !== this.themeService.theme()) {
+        this.renderMermaid();
+      }
+    }
+  }
+
+  selectFlow(flowId: string) {
+    this.selectedFlowId.set(flowId);
+    // If current selected node is not in this flow, select the first active node
+    const flow = this.data.flows.find(f => f.id === flowId);
+    if (flow && flow.activeNodeIds.length > 0 && !flow.activeNodeIds.includes(this.activeNodeId())) {
+      this.activeNodeId.set(flow.activeNodeIds[0]);
+    }
+  }
+
   selectNode(id: string) {
     this.activeNodeId.set(id);
   }
 
-  selectScenario(id: string) {
-    if (this.activeScenarioId() === id) return;
-    this.activeScenarioId.set(id);
-    this.runScenarioAnimation();
+  isNodeActiveInFlow(nodeId: string): boolean {
+    if (this.selectedFlowId() === 'all') return true;
+    return this.activeFlowNodesSet().has(nodeId);
   }
 
-  runScenarioAnimation() {
-    this.visibleMessagesCount.set(1);
-    this.isTyping.set(true);
+  zoomIn() {
+    this.zoomLevel.update(z => Math.min(1.4, Number((z + 0.1).toFixed(2))));
+  }
 
-    const total = this.activeScenario()?.messages?.length || 1;
-    if (total <= 1) {
-      this.isTyping.set(false);
-      return;
+  zoomOut() {
+    this.zoomLevel.update(z => Math.max(0.7, Number((z - 0.1).toFixed(2))));
+  }
+
+  resetZoom() {
+    this.zoomLevel.set(1);
+  }
+
+  copyMermaidCode() {
+    if (isPlatformBrowser(this.platformId) && navigator?.clipboard) {
+      navigator.clipboard.writeText(this.mermaidCode()).then(() => {
+        this.copiedMermaid.set(true);
+        setTimeout(() => this.copiedMermaid.set(false), 2500);
+      });
     }
+  }
 
-    setTimeout(() => {
-      this.isTyping.set(false);
-      this.visibleMessagesCount.set(total);
-    }, 600);
+  async renderMermaid() {
+    if (!isPlatformBrowser(this.platformId)) return;
+    this.isMermaidRendering.set(true);
+    try {
+      const isLight = this.themeService.theme() === 'light';
+      const mermaid = (await import('mermaid')).default;
+      mermaid.initialize({
+        startOnLoad: false,
+        theme: isLight ? 'default' : 'dark',
+        securityLevel: 'loose',
+        fontFamily: "'Plus Jakarta Sans', sans-serif",
+        themeVariables: isLight
+          ? {
+              darkMode: false,
+              background: '#ffffff',
+              mainBkg: '#ffffff',
+              nodeBorder: '#0d9488',
+              clusterBkg: '#f8fafc',
+              clusterBorder: 'rgba(13, 148, 136, 0.25)',
+              titleColor: '#0f172a',
+              textColor: '#0f172a',
+              lineColor: '#0d9488'
+            }
+          : {
+              darkMode: true,
+              background: '#0a0e17',
+              mainBkg: '#121824',
+              nodeBorder: '#41d1c2',
+              clusterBkg: '#0d131f',
+              clusterBorder: 'rgba(65, 209, 194, 0.25)',
+              titleColor: '#f1f5f9',
+              textColor: '#f1f5f9',
+              lineColor: '#41d1c2'
+            }
+      });
+      const id = 'mermaid-render-' + Date.now();
+      const { svg } = await mermaid.render(id, this.mermaidCode());
+      this.mermaidSvg.set(this.sanitizer.bypassSecurityTrustHtml(svg));
+      this.lastRenderedTheme = isLight ? 'light' : 'dark';
+    } catch (err) {
+      console.error('Error rendering Mermaid diagram:', err);
+    } finally {
+      this.isMermaidRendering.set(false);
+    }
   }
 
   selectChallenge(idx: number) {
