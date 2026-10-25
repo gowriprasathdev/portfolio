@@ -1,10 +1,11 @@
 <main id="main-content" class="case-study-page">
   <div class="case-study-wrapper container">
-    
+
     <!-- Top Breadcrumb & Navigation Bar -->
     <nav class="breadcrumb-bar" aria-label="Breadcrumb navigation">
       <button (click)="goBackToProjects()" class="back-link-btn" aria-label="Return to portfolio projects">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2">
           <line x1="19" y1="12" x2="5" y2="12"></line>
           <polyline points="12 19 5 12 12 5"></polyline>
         </svg>
@@ -36,11 +37,11 @@
       <!-- Key Performance Metrics Ribbon -->
       <section class="metrics-grid" aria-label="Key Performance Metrics">
         @for (m of data.metrics; track m.label) {
-          <div class="metric-card">
-            <span class="metric-value">{{ m.stat }}</span>
-            <span class="metric-label">{{ m.label }}</span>
-            <span class="metric-helper">{{ m.subtext }}</span>
-          </div>
+        <div class="metric-card">
+          <span class="metric-value">{{ m.stat }}</span>
+          <span class="metric-label">{{ m.label }}</span>
+          <span class="metric-helper">{{ m.subtext }}</span>
+        </div>
         }
       </section>
     </header>
@@ -48,19 +49,19 @@
     <!-- Navigation Tabs -->
     <nav class="study-nav-tabs" aria-label="Case Study Views">
       <button class="nav-tab-btn" [class.active]="activeTab() === 'gallery'" (click)="setTab('gallery')">
-        <span class="tab-icon">📸</span>
-        <span>Production WhatsApp Traces ({{ data.gallery.length }})</span>
+        <span class="tab-icon" style="padding-bottom: 5px;">📸</span>
+        <span>WhatsApp Traces ({{ data.gallery.length }})</span>
       </button>
       <button class="nav-tab-btn" [class.active]="activeTab() === 'architecture'" (click)="setTab('architecture')">
-        <span class="tab-icon">🏛️</span>
+        <span class="tab-icon" style="padding-bottom: 5px;">🏛️</span>
         <span>System Topology & Flows</span>
       </button>
       <button class="nav-tab-btn" [class.active]="activeTab() === 'simulator'" (click)="setTab('simulator')">
-        <span class="tab-icon">⚡</span>
+        <span class="tab-icon" style="padding-bottom: 5px;">⚡</span>
         <span>Interactive Simulator</span>
       </button>
       <button class="nav-tab-btn" [class.active]="activeTab() === 'challenges'" (click)="setTab('challenges')">
-        <span class="tab-icon">🛡️</span>
+        <span class="tab-icon" style="padding-bottom: 5px;">🛡️</span>
         <span>Engineering Challenges ({{ data.challenges.length }})</span>
       </button>
     </nav>
@@ -69,430 +70,528 @@
     <div class="study-content-container">
 
       <!-- ============================================== -->
-      <!-- TAB 1: PRODUCTION WHATSAPP GALLERY             -->
+      <!-- TAB 1: WHATSAPP GALLERY             -->
       <!-- ============================================== -->
       @if (activeTab() === 'gallery') {
-        <section class="gallery-view">
-          
-          <!-- Category Filter Bar -->
-          <div class="gallery-filter-bar">
-            <span class="filter-heading">Filter Production Traces:</span>
-            <div class="filter-pills">
-              <button class="filter-pill" [class.active]="activeCategory() === 'all'" (click)="filterCategory('all')">All Traces ({{ data.gallery.length }})</button>
-              <button class="filter-pill" [class.active]="activeCategory() === 'appointment'" (click)="filterCategory('appointment')">Showroom Appointments</button>
-              <button class="filter-pill" [class.active]="activeCategory() === 'payment'" (click)="filterCategory('payment')">Deposit Slip OCR</button>
-              <button class="filter-pill" [class.active]="activeCategory() === 'voice'" (click)="filterCategory('voice')">Voice & Audio Notes</button>
-              <button class="filter-pill" [class.active]="activeCategory() === 'vernacular'" (click)="filterCategory('vernacular')">Vernacular / Dialects</button>
-              <button class="filter-pill" [class.active]="activeCategory() === 'polyglot'" (click)="filterCategory('polyglot')">Polyglot Routing</button>
-              <button class="filter-pill" [class.active]="activeCategory() === 'inventory'" (click)="filterCategory('inventory')">Inventory Media</button>
-            </div>
+      <section class="gallery-view">
+
+        <!-- Category Filter Bar (5 Flows in User-Specified Order) -->
+        <div class="gallery-filter-bar">
+          <span class="filter-heading">Filter Traces:</span>
+          <div class="filter-pills">
+            <button class="filter-pill" [class.active]="activeCategory() === 'all'" (click)="filterCategory('all')">
+              All Flows ({{ data.gallery.length }})
+            </button>
+            <button class="filter-pill" [class.active]="activeCategory() === 'inquiry'"
+              (click)="filterCategory('inquiry')">
+              1. General Vehicle Inquiry
+            </button>
+            <button class="filter-pill" [class.active]="activeCategory() === 'appointment'"
+              (click)="filterCategory('appointment')">
+              2. Appointment Booking & Rescheduling
+            </button>
+            <button class="filter-pill" [class.active]="activeCategory() === 'voice'" (click)="filterCategory('voice')">
+              3. Voice & Multilingual Vernacular
+            </button>
+            <button class="filter-pill" [class.active]="activeCategory() === 'deposit'"
+              (click)="filterCategory('deposit')">
+              4. Payment Receipt OCR
+            </button>
+            <button class="filter-pill" [class.active]="activeCategory() === 'broadcast'"
+              (click)="filterCategory('broadcast')">
+              5. Broadcast Messaging (24h Bypass)
+            </button>
           </div>
+        </div>
 
-          <!-- 3-Column Studio Layout -->
-          <div class="gallery-studio-grid">
-            
-            <!-- Left: Thumbnails Column -->
-            <div class="thumb-list-col">
-              @for (item of filteredScreenshots(); track item.id) {
-                <div class="thumb-card" [class.active]="item.id === activeScreenshotId()" (click)="selectScreenshot(item.id)">
-                  <div class="thumb-img-wrapper">
-                    <img [src]="item.imageSrc" [alt]="item.title" class="thumb-img" loading="lazy" />
-                  </div>
-                  <div class="thumb-content">
-                    <div class="thumb-meta-line">
-                      <span class="thumb-cat">{{ item.category }}</span>
-                      <span class="thumb-badge">{{ item.badge }}</span>
-                    </div>
-                    <h3 class="thumb-title">{{ item.title }}</h3>
-                    <p class="thumb-sla">⏱️ {{ item.backendTrace.latency }}</p>
-                  </div>
+        <!-- Studio Layout: Left Thumbnails + Right Pane (Row 1: Phone Mockup, Row 2: Horizontal Trace Details) -->
+        <div class="gallery-studio-layout">
+
+          <!-- Column 1: Thumbnails Column -->
+          <aside class="thumb-list-col" aria-label="Available traces">
+            @for (item of filteredScreenshots(); track item.id; let idx = $index) {
+            <div class="thumb-card" [class.active]="item.id === activeScreenshotId()"
+              (click)="selectScreenshot(item.id)">
+              <div class="thumb-img-wrapper">
+                <img [src]="item.imageSrc" [alt]="item.title" class="thumb-img" loading="lazy" />
+                @if (item.galleryImages && item.galleryImages.length > 1) {
+                <span class="multi-card-indicator" title="Multiple Screenshots" aria-label="Multiple Screenshots">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
+                    <path
+                      d="M16.5 4H4.5A2.5 2.5 0 0 0 2 6.5v11A2.5 2.5 0 0 0 4.5 20h12a2.5 2.5 0 0 0 2.5-2.5v-11A2.5 2.5 0 0 0 16.5 4zm1 13.5a1 1 0 0 1-1 1h-12a1 1 0 0 1-1-1v-11a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v11z" />
+                    <path
+                      d="M21 7.5a.75.75 0 0 0-.75.75v10.5a1.5 1.5 0 0 1-1.5 1.5H6.75a.75.75 0 0 0 0 1.5h12a3 3 0 0 0 3-3V8.25A.75.75 0 0 0 21 7.5z" />
+                  </svg>
+                </span>
+                }
+              </div>
+              <div class="thumb-content">
+                <div class="thumb-meta-line">
+                  <span class="thumb-cat">{{ item.category }}</span>
+                  <span class="thumb-badge">{{ item.badge }}</span>
                 </div>
-              }
+                <h3 class="thumb-title">{{ item.title }}</h3>
+                <p class="thumb-sla">⏱️ {{ item.backendTrace.latency }}</p>
+              </div>
             </div>
+            }
+          </aside>
 
-            <!-- Center: Phone Mockup Preview -->
-            @if (activeScreenshot(); as cur) {
-              <div class="phone-mockup-col">
-                <div class="phone-chassis">
-                  <div class="phone-earpiece"></div>
-                  <div class="phone-viewport">
-                    <div class="phone-wa-bar">
-                      <div class="wa-left">
-                        <span class="wa-avatar">🚗</span>
-                        <div class="wa-info">
-                          <span class="wa-name">Automotive AI Concierge</span>
-                          <span class="wa-status">Official Business Account &bull; Online</span>
-                        </div>
+          <!-- Column 2 & 3 as Horizontal Rows -->
+          @if (activeScreenshot(); as cur) {
+          <div class="studio-main-rows">
+
+            <!-- Row 1: Phone Mockup Preview -->
+            <section class="phone-mockup-row" aria-label="Interactive Phone Preview">
+              <div class="phone-chassis">
+                <div class="phone-earpiece"></div>
+                <div class="phone-viewport">
+
+                  <!-- WhatsApp Header Bar -->
+                  <div class="phone-wa-bar">
+                    <div class="wa-left">
+                      <span class="wa-avatar">🚗</span>
+                      <div class="wa-info">
+                        <span class="wa-name">Automotive AI Concierge</span>
+                        <span class="wa-status">Official Business Account &bull; Online</span>
                       </div>
-                      <button class="zoom-btn" (click)="openLightbox(cur.imageSrc, cur.title, cur.badge, cur.description)" title="View Fullscreen">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                          <polyline points="15 3 21 3 21 9"></polyline>
-                          <polyline points="9 21 3 21 3 15"></polyline>
-                          <line x1="21" y1="3" x2="14" y2="10"></line>
-                          <line x1="3" y1="21" x2="10" y2="14"></line>
-                        </svg>
-                        <span>Full Size</span>
-                      </button>
                     </div>
-
-                    <div class="phone-image-frame" (click)="openLightbox(cur.imageSrc, cur.title, cur.badge, cur.description)">
-                      <img [src]="cur.imageSrc" [alt]="cur.title" class="phone-screen-img" />
-                      <div class="tap-hint">🔍 Tap to inspect high-resolution screenshot</div>
-                    </div>
+                    <button class="zoom-btn"
+                      (click)="openLightbox(currentImageSrc(), cur.title, cur.badge, currentImageCaption())"
+                      title="View Fullscreen">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <polyline points="15 3 21 3 21 9"></polyline>
+                        <polyline points="9 21 3 21 3 15"></polyline>
+                        <line x1="21" y1="3" x2="14" y2="10"></line>
+                        <line x1="3" y1="21" x2="10" y2="14"></line>
+                      </svg>
+                      <span>Full Size</span>
+                    </button>
                   </div>
+
+                  <!-- Step Selector Buttons for Multi-Picture Flows -->
+                  @if (cur.galleryImages && cur.galleryImages.length > 1) {
+                  <div class="phone-step-bar" role="tablist" aria-label="Flow steps">
+                    @for (step of cur.galleryImages; track step.src; let sIdx = $index) {
+                    <button class="step-pill" [class.active]="sIdx === activeSubImageIndex()"
+                      (click)="selectSubImage(sIdx); $event.stopPropagation()"
+                      [attr.aria-label]="'View step ' + (sIdx + 1)">
+                      <span class="step-dot"></span>
+                      <span>{{ step.stepTitle || ('Step ' + (sIdx + 1)) }}</span>
+                    </button>
+                    }
+                  </div>
+                  }
+
+                  <!-- Phone Screen Image Frame -->
+                  <div class="phone-image-frame"
+                    (click)="openLightbox(currentImageSrc(), cur.title, cur.badge, currentImageCaption())">
+                    <img [src]="currentImageSrc()" [alt]="cur.title" class="phone-screen-img" />
+
+                    <!-- Navigation Arrows for Multi-Picture Flows -->
+                    @if (cur.galleryImages && cur.galleryImages.length > 1) {
+                    <button class="flow-nav-arrow left" (click)="prevSubImage(); $event.stopPropagation()"
+                      aria-label="Previous screenshot">
+                      ‹
+                    </button>
+                    <button class="flow-nav-arrow right" (click)="nextSubImage(); $event.stopPropagation()"
+                      aria-label="Next screenshot">
+                      ›
+                    </button>
+                    }
+
+                    <div class="tap-hint">🔍 Tap to inspect high-resolution screenshot</div>
+                  </div>
+
+                  <!-- Step Caption Bar -->
+                  @if (currentImageCaption()) {
+                  <div class="phone-caption-bar">
+                    <span class="caption-icon">💡</span>
+                    <p class="caption-text">{{ currentImageCaption() }}</p>
+                  </div>
+                  }
+
                 </div>
               </div>
+            </section>
 
-              <!-- Right: Deep-Dive Trace Card -->
-              <div class="trace-details-col">
-                <div class="trace-card">
-                  <div class="trace-header">
+            <!-- Row 2: Deep-Dive Trace Card (Horizontal Layout) -->
+            <section class="trace-details-row" aria-label="Trace details">
+              <div class="trace-card horizontal-trace">
+
+                <div class="trace-card-top-header">
+                  <div class="trace-header-left">
                     <span class="trace-cat-badge">{{ cur.category }}</span>
                     <span class="trace-latency-badge">{{ cur.backendTrace.latency }}</span>
                   </div>
-
                   <h2 class="trace-heading">{{ cur.title }}</h2>
                   <p class="trace-summary">{{ cur.description }}</p>
+                </div>
 
-                  <div class="trace-component-box">
-                    <div class="trace-meta-row">
-                      <span class="trace-meta-key">Component:</span>
-                      <span class="trace-meta-val mono">{{ cur.backendTrace.component }}</span>
+                <div class="trace-horizontal-grid">
+
+                  <!-- Left block: Component & Action / Tool Box + Telemetry -->
+                  <div class="trace-col-left">
+                    <div class="trace-component-box">
+                      <div class="trace-meta-row">
+                        <span class="trace-meta-key">Component:</span>
+                        <span class="trace-meta-val mono">{{ cur.backendTrace.component }}</span>
+                      </div>
+                      <div class="trace-meta-row">
+                        <span class="trace-meta-key">Action / Tool:</span>
+                        <span class="trace-meta-val mono">{{ cur.backendTrace.action }}</span>
+                      </div>
                     </div>
-                    <div class="trace-meta-row">
-                      <span class="trace-meta-key">Action / Tool:</span>
-                      <span class="trace-meta-val mono">{{ cur.backendTrace.action }}</span>
+
+                    <div class="trace-telemetry-block">
+                      <h3 class="block-title">Telemetry & Protocol Execution</h3>
+                      <p class="telemetry-body">{{ cur.backendTrace.details }}</p>
                     </div>
                   </div>
 
-                  <div class="trace-highlights-block">
-                    <h3 class="block-title">Key Architectural Highlights</h3>
-                    <ul class="highlights-list">
-                      @for (hl of cur.highlights; track hl) {
+                  <!-- Right block: Key Architectural Highlights -->
+                  <div class="trace-col-right">
+                    <div class="trace-highlights-block">
+                      <h3 class="block-title">Key Architectural Highlights</h3>
+                      <ul class="highlights-list">
+                        @for (hl of cur.highlights; track hl) {
                         <li>
-                          <svg class="check-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                          <svg class="check-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                             <polyline points="20 6 9 17 4 12"></polyline>
                           </svg>
                           <span>{{ hl }}</span>
                         </li>
-                      }
-                    </ul>
+                        }
+                      </ul>
+                    </div>
                   </div>
 
-                  <div class="trace-telemetry-block">
-                    <h3 class="block-title">Telemetry & Protocol Execution</h3>
-                    <p class="telemetry-text">{{ cur.backendTrace.details }}</p>
-                  </div>
                 </div>
+
               </div>
-            }
+            </section>
+
           </div>
-        </section>
+          }
+
+        </div>
+      </section>
       }
 
       <!-- ============================================== -->
-      <!-- TAB 2: SYSTEM TOPOLOGY & STATE MACHINE         -->
+      <!-- TAB 2: SYSTEM TOPOLOGY & FLOWS                 -->
       <!-- ============================================== -->
       @if (activeTab() === 'architecture') {
-        <section class="topology-view">
-          
-          <div class="section-intro">
-            <h2 class="sec-heading">Event-Driven Microservices Architecture</h2>
-            <p class="sec-desc">Click any architectural node to inspect its internal concurrency model, protocols, and SLA metrics.</p>
-          </div>
+      <section class="topology-view">
+        <div class="topology-header">
+          <h2 class="topology-title">Event-Driven Microservices Architecture</h2>
+          <p class="topology-subtitle">
+            High-throughput decoupled architecture designed around asynchronous Redis message passing, ACID PostgreSQL
+            transactions, and sub-second agentic AI execution.
+          </p>
+        </div>
 
-          <!-- Microservice Nodes Grid -->
-          <div class="nodes-grid">
+        <div class="topology-grid">
+          <div class="nodes-list-col">
+            <span class="nodes-list-heading">System Components & Microservices:</span>
             @for (node of data.nodes; track node.id) {
-              <div class="node-card" [class.selected]="node.id === activeNodeId()" (click)="selectNode(node.id)">
-                <div class="node-top-bar">
-                  <span class="node-cat-pill cat-{{ node.category.toLowerCase().replace(' ', '-') }}">{{ node.category }}</span>
-                  <span class="node-sla-label">{{ node.sla }}</span>
-                </div>
-                <h3 class="node-title">{{ node.title }}</h3>
-                <div class="node-tech-row">{{ node.tech }}</div>
+            <div class="arch-node-card" [class.active]="node.id === activeNodeId()" (click)="selectNode(node.id)">
+              <div class="node-card-top">
+                <span class="node-cat-tag {{ node.category.toLowerCase() }}">{{ node.category }}</span>
+                <span class="node-sla">{{ node.sla }}</span>
               </div>
+              <h3 class="node-title">{{ node.title }}</h3>
+              <p class="node-tech">{{ node.tech }}</p>
+            </div>
             }
           </div>
 
-          <!-- Active Node Inspector Details -->
           @if (activeNode(); as node) {
-            <div class="node-detail-panel">
-              <div class="panel-header">
-                <div>
-                  <span class="node-cat-pill cat-{{ node.category.toLowerCase().replace(' ', '-') }}">{{ node.category }}</span>
-                  <h3 class="panel-title">{{ node.title }}</h3>
-                </div>
-                <div class="panel-tech-badge">
-                  <span>{{ node.tech }} &bull; {{ node.sla }}</span>
-                </div>
-              </div>
-              <p class="panel-desc">{{ node.description }}</p>
-            </div>
-          }
-
-          <!-- Showroom Appointment Finite State Machine (FSM) -->
-          <div class="fsm-container">
-            <div class="fsm-header">
-              <h2 class="sec-heading">Showroom Appointment Finite State Machine (FSM)</h2>
-              <p class="sec-desc">How WhatsApp Flows, Redis Mutex, and PostgreSQL manage the appointment lifecycle without race conditions.</p>
-            </div>
-
-            <div class="fsm-stepper">
-              <div class="fsm-step-node">
-                <div class="fsm-circle c-init">1</div>
-                <div class="fsm-step-info">
-                  <span class="fsm-state-name">INQUIRY</span>
-                  <span class="fsm-state-desc">Customer asks about test drive</span>
-                </div>
+          <div class="node-inspector-col">
+            <div class="node-inspector-card">
+              <div class="inspector-badge-row">
+                <span class="node-cat-tag {{ node.category.toLowerCase() }}">{{ node.category }}</span>
+                <span class="node-sla-badge">SLA: {{ node.sla }}</span>
               </div>
 
-              <div class="fsm-divider">➔</div>
-
-              <div class="fsm-step-node">
-                <div class="fsm-circle c-pending">2</div>
-                <div class="fsm-step-info">
-                  <span class="fsm-state-name">FLOWS_PICKER</span>
-                  <span class="fsm-state-desc">WhatsApp Flows dispatches date & time</span>
-                </div>
+              <h3 class="inspector-title">{{ node.title }}</h3>
+              <div class="tech-spec-row">
+                <span class="spec-label">Technology Stack:</span>
+                <span class="spec-value mono">{{ node.tech }}</span>
               </div>
 
-              <div class="fsm-divider">➔</div>
+              <p class="inspector-desc">{{ node.description }}</p>
 
-              <div class="fsm-step-node">
-                <div class="fsm-circle c-locked">3</div>
-                <div class="fsm-step-info">
-                  <span class="fsm-state-name">SLOT_LOCKED</span>
-                  <span class="fsm-state-desc">Redis Redlock 120s provisional hold</span>
-                </div>
-              </div>
-
-              <div class="fsm-divider">➔</div>
-
-              <div class="fsm-step-node">
-                <div class="fsm-circle c-confirmed">4</div>
-                <div class="fsm-step-info">
-                  <span class="fsm-state-name">BOOKED / CONFIRMED</span>
-                  <span class="fsm-state-desc">PostgreSQL commit & sales lead notify</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Branching cards -->
-            <div class="fsm-branches-row">
-              <div class="branch-box reschedule">
-                <div class="branch-icon">🔄</div>
-                <div>
-                  <h3 class="branch-title">Reschedule Branch</h3>
-                  <p class="branch-desc">Customer clicks "Reschedule" &rarr; Original slot unlocked in Redis/Postgres &rarr; New WhatsApp Flows picker dispatched &rarr; Updated confirmation card generated.</p>
-                </div>
-              </div>
-              <div class="branch-box cancel">
-                <div class="branch-icon">❌</div>
-                <div>
-                  <h3 class="branch-title">Cancellation Branch</h3>
-                  <p class="branch-desc">Customer clicks "Cancel" &rarr; Status updated to CANCELLED &rarr; Slot immediately returned to inventory pool &rarr; Cancellation feedback logged in CRM.</p>
+              <div class="data-flow-box">
+                <h4 class="flow-heading">Pipeline Flow Context</h4>
+                <div class="flow-steps-diagram">
+                  <div class="flow-step">1. Meta Webhook Ingress</div>
+                  <div class="flow-arrow">➔</div>
+                  <div class="flow-step active-flow">2. Redis Asynq Buffer</div>
+                  <div class="flow-arrow">➔</div>
+                  <div class="flow-step">3. Agentic AI & Tools</div>
+                  <div class="flow-arrow">➔</div>
+                  <div class="flow-step">4. Storage & Outbound ACK</div>
                 </div>
               </div>
             </div>
           </div>
-        </section>
+          }
+        </div>
+      </section>
       }
 
       <!-- ============================================== -->
       <!-- TAB 3: INTERACTIVE SIMULATOR                   -->
       <!-- ============================================== -->
       @if (activeTab() === 'simulator') {
-        <section class="simulator-view">
-          
-          <div class="scenario-buttons-row">
-            @for (sc of data.scenarios; track sc.id) {
-              <button class="sc-tab-btn" [class.active]="sc.id === activeScenarioId()" (click)="selectScenario(sc.id)">
-                <span class="sc-tab-icon">{{ sc.icon }}</span>
-                <span class="sc-tab-title">{{ sc.label }}</span>
+      <section class="simulator-view">
+
+        <div class="scenario-buttons-row">
+          @for (sc of data.scenarios; track sc.id) {
+          <button class="sc-tab-btn" [class.active]="sc.id === activeScenarioId()" (click)="selectScenario(sc.id)">
+            <span class="sc-tab-icon">{{ sc.icon }}</span>
+            <span class="sc-tab-title">{{ sc.label }}</span>
+          </button>
+          }
+        </div>
+
+        @if (activeScenario(); as sc) {
+        <div class="simulator-split-layout">
+
+          <!-- Left: Scenario Details -->
+          <div class="sim-left-pane">
+            <div class="sim-card-intro">
+              <h2 class="sim-title">{{ sc.label }}</h2>
+              <p class="sim-desc">{{ sc.description }}</p>
+            </div>
+
+            <div class="sim-prompt-box">
+              <span class="prompt-badge">Inbound Customer Query</span>
+              <p class="prompt-quote">"{{ sc.userPrompt }}"</p>
+
+              <button class="replay-btn" (click)="runScenarioAnimation()">
+                <span>▶️ Replay Execution Flow</span>
               </button>
-            }
-          </div>
+            </div>
 
-          @if (activeScenario(); as sc) {
-            <div class="simulator-split-layout">
-              
-              <!-- Left: Scenario Details -->
-              <div class="sim-left-pane">
-                <div class="sim-card-intro">
-                  <h2 class="sim-title">{{ sc.label }}</h2>
-                  <p class="sim-desc">{{ sc.description }}</p>
+            <div class="sim-specs-card">
+              <h3 class="specs-title">Microservice Execution Guarantees</h3>
+              <div class="specs-grid">
+                <div class="spec-item">
+                  <span class="spec-k">Webhook Response</span>
+                  <span class="spec-v">
+                    < 50ms async ACK</span>
                 </div>
-
-                <div class="sim-prompt-box">
-                  <span class="prompt-badge">Inbound Customer Query</span>
-                  <p class="prompt-quote">"{{ sc.userPrompt }}"</p>
-
-                  <button class="replay-btn" (click)="runScenarioAnimation()">
-                    <span>▶️ Replay Execution Flow</span>
-                  </button>
+                <div class="spec-item">
+                  <span class="spec-k">Orchestrator</span>
+                  <span class="spec-v">Go 1.22 + Gin</span>
                 </div>
-
-                <div class="sim-specs-card">
-                  <h3 class="specs-title">Microservice Execution Guarantees</h3>
-                  <div class="specs-grid">
-                    <div class="spec-item">
-                      <span class="spec-k">Webhook Response</span>
-                      <span class="spec-v">< 50ms async ACK</span>
-                    </div>
-                    <div class="spec-item">
-                      <span class="spec-k">Orchestrator</span>
-                      <span class="spec-v">Go 1.22 + Gin</span>
-                    </div>
-                    <div class="spec-item">
-                      <span class="spec-k">Session Memory</span>
-                      <span class="spec-v">Redis Cluster 7.0</span>
-                    </div>
-                    <div class="spec-item">
-                      <span class="spec-k">Queue Mechanism</span>
-                      <span class="spec-v">hibiken/asynq</span>
-                    </div>
-                  </div>
+                <div class="spec-item">
+                  <span class="spec-k">Session Memory</span>
+                  <span class="spec-v">Redis Cluster 7.0</span>
                 </div>
-              </div>
-
-              <!-- Right: Simulated Chat Viewport -->
-              <div class="sim-right-pane">
-                <div class="sim-phone-frame">
-                  <div class="sim-wa-header">
-                    <div class="sim-avatar">🤖</div>
-                    <div class="sim-contact">
-                      <span class="sim-name">Automotive AI Concierge</span>
-                      <span class="sim-status">Live Telemetry Simulation</span>
-                    </div>
-                  </div>
-
-                  <div class="sim-messages-scroll">
-                    @for (msg of sc.messages.slice(0, visibleMessagesCount()); track msg.id) {
-                      <div class="chat-row" [class.user]="msg.sender === 'user'" [class.agent]="msg.sender === 'agent'" [class.system]="msg.sender === 'system'">
-                        <div class="chat-msg-bubble">
-                          
-                          @if (msg.audioDuration) {
-                            <div class="voice-bubble">
-                              <span class="voice-icon">▶️</span>
-                              <div class="voice-wave"></div>
-                              <span class="voice-len">{{ msg.audioDuration }}</span>
-                            </div>
-                          }
-
-                          @if (msg.text) {
-                            <div class="msg-text-content">{{ msg.text }}</div>
-                          }
-
-                          @if (msg.interactiveList; as list) {
-                            <div class="flows-interactive-box">
-                              <div class="flows-head">{{ list.header }}</div>
-                              <div class="flows-options">
-                                @for (row of list.rows; track row.id) {
-                                  <div class="flows-option-item">
-                                    <strong>{{ row.title }}</strong>: {{ row.desc }}
-                                  </div>
-                                }
-                              </div>
-                            </div>
-                          }
-
-                          @if (msg.receipt; as rec) {
-                            <div class="receipt-verified-box">
-                              <div class="rec-status-line">🧾 Bank Transfer Receipt Verified</div>
-                              <div class="rec-grid">
-                                <div><strong>Bank:</strong> {{ rec.bank }}</div>
-                                <div><strong>Amount:</strong> {{ rec.amount }}</div>
-                                <div><strong>Account:</strong> ****{{ rec.accountLast4 }}</div>
-                                <div><strong>Reference:</strong> {{ rec.reference }}</div>
-                                <div><strong>Confidence:</strong> {{ rec.confidence * 100 }}%</div>
-                              </div>
-                            </div>
-                          }
-
-                          @if (msg.backendTrace; as trace) {
-                            <div class="trace-pill-tag">
-                              <span>⚡ {{ trace.component }} &bull; {{ trace.action }} ({{ trace.latency }})</span>
-                            </div>
-                          }
-
-                          <span class="msg-timestamp">{{ msg.time }}</span>
-                        </div>
-                      </div>
-                    }
-
-                    @if (isTyping()) {
-                      <div class="typing-pill">
-                        <span>Agent is orchestrating tool calls...</span>
-                      </div>
-                    }
-                  </div>
+                <div class="spec-item">
+                  <span class="spec-k">Queue Mechanism</span>
+                  <span class="spec-v">hibiken/asynq</span>
                 </div>
               </div>
             </div>
-          }
-        </section>
+          </div>
+
+          <!-- Right: Simulated Chat Viewport -->
+          <div class="sim-right-pane">
+            <div class="sim-phone-frame">
+              <div class="sim-wa-header">
+                <div class="sim-avatar">🤖</div>
+                <div class="sim-contact">
+                  <span class="sim-name">Automotive AI Concierge</span>
+                  <span class="sim-status">Live Telemetry Simulation</span>
+                </div>
+              </div>
+
+              <div class="sim-messages-scroll">
+                @for (msg of sc.messages.slice(0, visibleMessagesCount()); track msg.id) {
+                <div class="chat-row" [class.user]="msg.sender === 'user'" [class.agent]="msg.sender === 'agent'"
+                  [class.system]="msg.sender === 'system'">
+                  @if (msg.sender === 'system') {
+                  <div class="system-event-bubble">
+                    <span class="sys-icon">⚡</span>
+                    <span class="sys-text">{{ msg.text }}</span>
+                  </div>
+                  } @else {
+                  <div class="msg-bubble">
+                    @if (msg.audioDuration) {
+                    <div class="audio-note-bubble">
+                      <span class="audio-play-icon">▶</span>
+                      <div class="audio-waveform-bar"></div>
+                      <span class="audio-time">{{ msg.audioDuration }}</span>
+                    </div>
+                    }
+
+                    @if (msg.text) {
+                    <p class="bubble-text">{{ msg.text }}</p>
+                    }
+
+                    @if (msg.interactiveList; as list) {
+                    <div class="interactive-list-card">
+                      <div class="list-head">{{ list.header }}</div>
+                      <div class="list-rows">
+                        @for (row of list.rows; track row.id) {
+                        <div class="list-row-item">
+                          <div class="row-text">
+                            <div class="row-title">{{ row.title }}</div>
+                            <div class="row-desc">{{ row.desc }}</div>
+                          </div>
+                          @if (row.badge) {
+                          <span class="row-badge">{{ row.badge }}</span>
+                          }
+                        </div>
+                        }
+                      </div>
+                      <button class="list-action-btn">{{ list.buttonText }}</button>
+                    </div>
+                    }
+
+                    @if (msg.receipt; as rec) {
+                    <div class="receipt-verify-card">
+                      <div class="receipt-title-line">
+                        <span>🧾 {{ rec.bank }}</span>
+                        <span class="verified-tag">✓ Confirmed</span>
+                      </div>
+                      <div class="receipt-amount-line">{{ rec.amount }}</div>
+                      <div class="receipt-details-list">
+                        <div>Ref: {{ rec.reference }}</div>
+                        <div>Account Ending: {{ rec.accountLast4 }}</div>
+                        <div>Confidence: {{ rec.confidence * 100 }}%</div>
+                      </div>
+                    </div>
+                    }
+
+                    <span class="bubble-time">{{ msg.time }}</span>
+                  </div>
+                  }
+                </div>
+                }
+
+                @if (isTyping()) {
+                <div class="typing-indicator-row">
+                  <div class="typing-bubble">
+                    <span class="typing-dot"></span>
+                    <span class="typing-dot"></span>
+                    <span class="typing-dot"></span>
+                  </div>
+                </div>
+                }
+              </div>
+            </div>
+          </div>
+
+        </div>
+        }
+      </section>
       }
 
       <!-- ============================================== -->
       <!-- TAB 4: ENGINEERING CHALLENGES                  -->
       <!-- ============================================== -->
       @if (activeTab() === 'challenges') {
-        <section class="challenges-view">
-          
-          <div class="section-intro">
-            <h2 class="sec-heading">Distributed Systems & Concurrency Challenges Solved</h2>
-            <p class="sec-subtitle">Battle-tested solutions to real-world edge cases encountered while operating high-throughput WhatsApp AI sales agents.</p>
-          </div>
+      <section class="challenges-view">
+        <div class="challenges-layout">
 
-          <div class="challenges-grid">
-            @for (item of data.challenges; track item.title; let idx = $index) {
-              <div class="challenge-card" [class.selected]="idx === activeChallengeIndex()" (click)="selectChallenge(idx)">
-                <div class="card-head">
-                  <span class="card-icon">🛡️</span>
-                  <h3 class="card-title">{{ item.title }}</h3>
-                </div>
-
-                <div class="tag-pill">{{ item.tag }}</div>
-
-                <div class="content-block">
-                  <span class="label-heading text-red">The Hard Problem:</span>
-                  <p class="block-p">{{ item.problem }}</p>
-                </div>
-
-                <div class="content-block">
-                  <span class="label-heading text-amber">Trade-Off Analysis:</span>
-                  <p class="block-p">{{ item.tradeOff }}</p>
-                </div>
-
-                <div class="content-block">
-                  <span class="label-heading text-green">Architectural Solution:</span>
-                  <p class="block-p">{{ item.solution }}</p>
-                </div>
-              </div>
+          <div class="challenge-tabs-col">
+            <span class="challenges-heading">Core Distributed Systems Challenges:</span>
+            @for (ch of data.challenges; track ch.title; let idx = $index) {
+            <button class="challenge-tab-btn" [class.active]="idx === activeChallengeIndex()"
+              (click)="selectChallenge(idx)">
+              <span class="challenge-tag-pill">{{ ch.tag }}</span>
+              <span class="challenge-title-text">{{ ch.title }}</span>
+            </button>
             }
           </div>
-        </section>
+
+          @if (data.challenges[activeChallengeIndex()]; as curCh) {
+          <div class="challenge-detail-col">
+            <div class="challenge-main-card">
+              <div class="challenge-header-line">
+                <span class="active-tag-pill">{{ curCh.tag }}</span>
+                <span class="challenge-index-tag">Challenge #{{ activeChallengeIndex() + 1 }}</span>
+              </div>
+
+              <h2 class="challenge-heading">{{ curCh.title }}</h2>
+
+              <div class="challenge-section-block problem-block">
+                <h3 class="section-title">
+                  <span class="icon">⚠️</span> The Technical Hurdle
+                </h3>
+                <p class="section-body">{{ curCh.problem }}</p>
+              </div>
+
+              <div class="challenge-section-block tradeoff-block">
+                <h3 class="section-title">
+                  <span class="icon">⚖️</span> Architectural Trade-Off
+                </h3>
+                <p class="section-body">{{ curCh.tradeOff }}</p>
+              </div>
+
+              <div class="challenge-section-block solution-block">
+                <h3 class="section-title">
+                  <span class="icon">💡</span> Solution
+                </h3>
+                <p class="section-body">{{ curCh.solution }}</p>
+              </div>
+            </div>
+          </div>
+          }
+
+        </div>
+      </section>
       }
 
     </div>
-  </div>
-</main>
 
-<!-- Lightbox Zoom Modal -->
-@if (lightboxImage(); as lb) {
-  <div class="lightbox-overlay" (click)="closeLightbox()">
-    <div class="lightbox-dialog" (click)="$event.stopPropagation()">
-      <div class="lightbox-head">
-        <div>
-          <span class="lightbox-cat">{{ lb.badge }}</span>
-          <h3 class="lightbox-title">{{ lb.title }}</h3>
+    <!-- Lightbox Modal for Screenshots -->
+    @if (lightboxImage(); as lb) {
+    <div class="lightbox-overlay" (click)="closeLightbox()">
+      <div class="lightbox-dialog" (click)="$event.stopPropagation()">
+        <div class="lightbox-head">
+          <div class="lightbox-head-info">
+            <span class="lightbox-cat">{{ lb.badge }}</span>
+            <h3 class="lightbox-title">{{ lb.title }}</h3>
+          </div>
+
+          <div class="lightbox-head-actions">
+            @if (activeScreenshot()?.galleryImages && (activeScreenshot()?.galleryImages?.length || 0) > 1) {
+            <span class="lightbox-step-indicator">
+              Step {{ activeSubImageIndex() + 1 }} of {{ activeScreenshot()?.galleryImages?.length }}
+            </span>
+            }
+            <button class="lightbox-close" (click)="closeLightbox()" aria-label="Close fullscreen modal">✕</button>
+          </div>
         </div>
-        <button class="lightbox-close" (click)="closeLightbox()" aria-label="Close zoomed view">✕</button>
-      </div>
-      <div class="lightbox-body">
-        <img [src]="lb.src" [alt]="lb.title" class="lightbox-full-img" />
+
+        <div class="lightbox-body">
+          @if (activeScreenshot()?.galleryImages && (activeScreenshot()?.galleryImages?.length || 0) > 1) {
+          <button class="lightbox-nav-arrow left" (click)="prevLightboxImage(); $event.stopPropagation()"
+            aria-label="Previous screenshot">
+            ‹
+          </button>
+          }
+
+          <img [src]="lb.src" [alt]="lb.title" class="lightbox-full-img" />
+
+          @if (activeScreenshot()?.galleryImages && (activeScreenshot()?.galleryImages?.length || 0) > 1) {
+          <button class="lightbox-nav-arrow right" (click)="nextLightboxImage(); $event.stopPropagation()"
+            aria-label="Next screenshot">
+            ›
+          </button>
+          }
+        </div>
       </div>
     </div>
+    }
+
   </div>
-}
+</main>
