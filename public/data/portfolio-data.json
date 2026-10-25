@@ -6,8 +6,8 @@
     "middleName": "Prasath",
     "lastName": "Shanmugasundaram",
     "title": "Senior Software Developer",
-    "subTitle": "Specializing in full-stack engineering, cloud-native architectures, distributed Golang microservices, and production Agentic AI systems for high-availability enterprise environments.",
-    "bio": "Passionate Software Developer with 4.5+ years of experience specializing in full-stack development, distributed architectures, and legacy-to-cloud modernization within large-scale enterprise environments and capital markets. Proven track record of architecting concurrent Golang microservices, building production Agentic AI & multimodal LLM systems, and delivering highly responsive, WCAG-compliant Angular applications. I thrive on clean architecture principles, robust DevSecOps practices, and delivering scalable, secure digital solutions.",
+    "subTitle": "Specializing in full-stack engineering, cloud-native architectures, distributed Golang microservices, and Agentic AI systems for high-availability enterprise environments.",
+    "bio": "Passionate Software Developer with 4.5+ years of experience specializing in full-stack development, distributed architectures, and legacy-to-cloud modernization within large-scale enterprise environments and capital markets. Proven track record of architecting concurrent Golang microservices, building Agentic AI & multimodal LLM systems, and delivering highly responsive, WCAG-compliant Angular applications. I thrive on clean architecture principles, robust DevSecOps practices, and delivering scalable, secure digital solutions.",
     "avatar": "images/profile.jpg",
     "resumeUrl": "#",
     "email": "gowriprasath0304@gmail.com",
@@ -140,22 +140,6 @@
   ],
   "projects": [
     {
-      "title": "Universal Go AI & Agentic Engine",
-      "subtitle": "Domain-Agnostic Core Library — Provider Abstraction, Tool Calling & Multimodal Vision",
-      "description": "An enterprise-grade, provider-agnostic Go library abstracting Cloud and Local AI inference (Google Gemini, BytePlus Doubao, Ollama, LM Studio). Engineered an autonomous agentic loop with dynamic function calling and schema translation, deep-reasoning mode control, multimodal vision processing for document OCR and vehicle aesthetic scoring, generative multi-page brochure rendering (Imagen 3 / Seedream), and asynchronous speech-to-text (ASR) transcription.",
-      "tags": [
-        "Go",
-        "Agentic AI",
-        "Function Calling",
-        "Gemini API",
-        "BytePlus ARK",
-        "Ollama",
-        "Computer Vision",
-        "ASR"
-      ],
-      "featured": true
-    },
-    {
       "title": "Conversational WhatsApp AI Sales Platform",
       "subtitle": "Commercial Automotive Platform — Event-Driven Microservices & Intent Intelligence",
       "description": "An event-driven Go/Gin microservice automating customer acquisition on WhatsApp with sub-50ms webhook response handling. Features an autonomous conversational agent with native tool calling (inventory search, interactive lists, image dispatch), dialect localization (including Malaysian Manglish), hierarchical memory (sliding-window + rolling summarization), Asynq/Redis-debounced lead scoring, voice-note ASR transcription, and automated bank transfer receipt verification.",
@@ -172,6 +156,22 @@
       "featured": true,
       "hasArchitecture": true,
       "architectureId": "whatsapp-ai-sales"
+    },
+    {
+      "title": "Universal Go AI & Agentic Engine",
+      "subtitle": "Domain-Agnostic Core Library — Provider Abstraction, Tool Calling & Multimodal Vision",
+      "description": "An enterprise-grade, provider-agnostic Go library abstracting Cloud and Local AI inference (Google Gemini, BytePlus Doubao, Ollama, LM Studio). Engineered an autonomous agentic loop with dynamic function calling and schema translation, deep-reasoning mode control, multimodal vision processing for document OCR and vehicle aesthetic scoring, generative multi-page brochure rendering (Imagen 3 / Seedream), and asynchronous speech-to-text (ASR) transcription.",
+      "tags": [
+        "Go",
+        "Agentic AI",
+        "Function Calling",
+        "Gemini API",
+        "BytePlus ARK",
+        "Ollama",
+        "Computer Vision",
+        "ASR"
+      ],
+      "featured": true
     },
     {
       "title": "LLM-Powered Inventory ETL Pipeline",
@@ -204,6 +204,49 @@
       "featured": true
     },
     {
+      "title": "go-gmail",
+      "subtitle": "Open Source Go Library",
+      "description": "A fluent, rate-limited Go wrapper for the official Gmail API. Enables building complex MIME emails with a clean, chainable API while automatically protecting your Google account from API quota blocks using intelligent rate limiting.",
+      "tags": [
+        "Go",
+        "Gmail API",
+        "Rate Limiting",
+        "Open Source"
+      ],
+      "githubUrl": "https://github.com/gowriprasathdev/go-gmail",
+      "liveUrl": "https://pkg.go.dev/github.com/gowriprasathdev/go-gmail",
+      "featured": true
+    }
+  ],
+  "certifications": [
+    {
+      "name": "Microsoft Certified: Azure Fundamentals",
+      "issuer": "Microsoft",
+      "date": "Jan 2023"
+    },
+    {
+      "name": "Azure Administrator Associate AZ-104",
+      "issuer": "Microsoft (Udemy Prep)",
+      "date": "2026"
+    },
+    {
+      "name": "Bits and Bytes of Computer Networking",
+      "issuer": "Google",
+      "date": "Dec 2020"
+    },
+    {
+      "name": "Social Media Advertising",
+      "issuer": "University of Colorado Boulder",
+      "date": "Nov 2020"
+    },
+    {
+      "name": "Machine Learning",
+      "issuer": "Stanford University",
+      "date": "Aug 2020"
+    }
+  ],
+  "_commentedProjects": [
+    {
       "title": "OII (Online Insurance Inquiry)",
       "subtitle": "Cards Technology - Legacy Modernization & ETL",
       "description": "A highly regulated system allowing insurance advisors to verify travel medical coverage. Orchestrated the transition from a Java Struts monolith to Golang microservices, executed secure Oracle-to-Azure SQL data migration of sensitive user profiles via Go-ORM, and integrated mTLS claim retrievals.",
@@ -227,20 +270,6 @@
         "Redis",
         "Azure Blob Storage"
       ],
-      "featured": true
-    },
-    {
-      "title": "go-gmail",
-      "subtitle": "Open Source Go Library",
-      "description": "A fluent, rate-limited Go wrapper for the official Gmail API. Enables building complex MIME emails with a clean, chainable API while automatically protecting your Google account from API quota blocks using intelligent rate limiting.",
-      "tags": [
-        "Go",
-        "Gmail API",
-        "Rate Limiting",
-        "Open Source"
-      ],
-      "githubUrl": "https://github.com/gowriprasathdev/go-gmail",
-      "liveUrl": "https://pkg.go.dev/github.com/gowriprasathdev/go-gmail",
       "featured": true
     },
     {
@@ -275,33 +304,6 @@
         "Angular"
       ],
       "featured": false
-    }
-  ],
-  "certifications": [
-    {
-      "name": "Microsoft Certified: Azure Fundamentals",
-      "issuer": "Microsoft",
-      "date": "Jan 2023"
-    },
-    {
-      "name": "Azure Administrator Associate AZ-104",
-      "issuer": "Microsoft (Udemy Prep)",
-      "date": "2026"
-    },
-    {
-      "name": "Bits and Bytes of Computer Networking",
-      "issuer": "Google",
-      "date": "Dec 2020"
-    },
-    {
-      "name": "Social Media Advertising",
-      "issuer": "University of Colorado Boulder",
-      "date": "Nov 2020"
-    },
-    {
-      "name": "Machine Learning",
-      "issuer": "Stanford University",
-      "date": "Aug 2020"
     }
   ]
 }

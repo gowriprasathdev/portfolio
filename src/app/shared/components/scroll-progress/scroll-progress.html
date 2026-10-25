@@ -1,0 +1,43 @@
+<button 
+  type="button"
+  class="scroll-progress-indicator" 
+  [class.visible]="isVisible()" 
+  (click)="scrollToTop()" 
+  (mouseenter)="isHovered.set(true)"
+  (mouseleave)="isHovered.set(false)"
+  [attr.aria-label]="'Page scroll progress: ' + scrollPercentage() + '%. Click to scroll to top.'"
+  [title]="'Page scroll progress: ' + scrollPercentage() + '%. Click to scroll to top'">
+  
+  <svg class="progress-ring" width="48" height="48" viewBox="0 0 48 48" aria-hidden="true">
+    <!-- Background track ring -->
+    <circle 
+      class="progress-ring-bg" 
+      cx="24" 
+      cy="24" 
+      [attr.r]="radius" 
+      stroke-width="3" 
+      fill="transparent">
+    </circle>
+    
+    <!-- Dynamic progress stroke ring -->
+    <circle 
+      class="progress-ring-circle" 
+      cx="24" 
+      cy="24" 
+      [attr.r]="radius" 
+      stroke-width="3" 
+      fill="transparent"
+      [attr.stroke-dasharray]="circumference"
+      [attr.stroke-dashoffset]="dashOffset()">
+    </circle>
+  </svg>
+
+  <div class="indicator-inner">
+    @if (isHovered()) {
+      <span class="arrow-up" aria-hidden="true">↑</span>
+    } @else {
+      <span class="percent-num">{{ scrollPercentage() }}</span>
+      <span class="percent-sym">%</span>
+    }
+  </div>
+</button>

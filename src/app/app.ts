@@ -7,6 +7,7 @@ import { SEOService } from './core/services/seo.service';
 // Import shell UI components
 import { HeaderComponent } from './shared/components/header/header';
 import { FooterComponent } from './shared/components/footer/footer';
+import { ScrollProgressComponent } from './shared/components/scroll-progress/scroll-progress';
 
 @Component({
   selector: 'app-root',
@@ -14,7 +15,8 @@ import { FooterComponent } from './shared/components/footer/footer';
   imports: [
     RouterOutlet,
     HeaderComponent,
-    FooterComponent
+    FooterComponent,
+    ScrollProgressComponent
   ],
   templateUrl: './app.html',
   styleUrl: './app.css'

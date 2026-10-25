@@ -1,6 +1,6 @@
 # Gowri Prasath Shanmugasundaram
 
-> Senior Software Developer specializing in full-stack engineering, cloud-native architectures, distributed Golang microservices, production Agentic AI systems, and high-performance Angular enterprise applications.
+> Senior Software Developer specializing in full-stack engineering, cloud-native architectures, distributed Golang microservices, Agentic AI systems, and high-performance Angular enterprise applications.
 
 ## Identity & Aliases
 - Full Legal / Family Name: Gowri Prasath Shanmugasundaram

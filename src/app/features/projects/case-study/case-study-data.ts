@@ -1,9 +1,16 @@
+export interface GallerySubImage {
+  src: string;
+  caption: string;
+  stepTitle?: string;
+}
+
 export interface ProductionScreenshot {
   id: string;
   title: string;
   category: string;
   badge: string;
   imageSrc: string;
+  galleryImages?: GallerySubImage[];
   description: string;
   highlights: string[];
   backendTrace: {
@@ -95,7 +102,7 @@ export const WHATSAPP_SALES_CASE_STUDY: CaseStudyData = {
   subtitle: 'Event-Driven Microservices Architecture — Conversational Commerce & Lead Intelligence',
   badge: 'Distributed Architecture',
   overview:
-    'An enterprise automotive sales platform engineered in Go (Gin, GORM, Asynq, Redis, PostgreSQL). Decouples aggressive 5-second Meta Cloud API timeouts into sub-50ms queue ingresses, drives multi-turn agentic tool calling with multilingual and vernacular dialect adaptation, manages interactive test-drive appointment bookings/reschedules via WhatsApp Flows v3 with distributed mutex locking, and runs asynchronous debounced lead scoring and forensic payment receipt verification.',
+    'An enterprise automotive sales platform engineered in Go (Gin, GORM, Asynq, Redis, PostgreSQL). Decouples aggressive 5-second Meta Cloud API timeouts into sub-50ms queue ingresses, drives multi-turn agentic tool calling with multilingual and vernacular dialect adaptation, manages interactive test-drive appointment bookings/reschedules via WhatsApp Flows v3 with distributed mutex locking, and runs asynchronous debounced lead scoring, forensic payment receipt verification, and pre-approved HSM broadcast fan-outs.',
   metrics: [
     {
       stat: '< 45ms',
@@ -120,129 +127,168 @@ export const WHATSAPP_SALES_CASE_STUDY: CaseStudyData = {
   ],
   gallery: [
     {
-      id: 'appointment-booking',
-      title: 'WhatsApp Flows Test-Drive Booking',
-      category: 'Showroom Appointments',
-      badge: 'WhatsApp Flows v3',
-      imageSrc: '/images/whatsapp_sales/01-appointment-booking-flow.png',
+      id: 'general-inquiry',
+      title: 'General Vehicle Inquiry & Inventory Media Dispatch',
+      category: 'General Vehicle Inquiry',
+      badge: 'Catalog NLU & Media Ingestion',
+      imageSrc: 'images/whatsapp_sales/01-general-inquiry-chat.png',
+      galleryImages: [
+        {
+          src: 'images/whatsapp_sales/01-general-inquiry-chat.png',
+          stepTitle: 'Step 1: Budget & Model Inquiry',
+          caption: 'Customer queries Suzuki Swift within MYR 110k budget; AI formats interactive specs card and checks live inventory.'
+        },
+        {
+          src: 'images/whatsapp_sales/04-vehicle-photo-dispatch.png',
+          stepTitle: 'Step 2: Vehicle Gallery Stream',
+          caption: 'Customer asks for photos; AI invokes send_vehicle_image tool and streams high-resolution photo gallery from BytePlus TOS.'
+        }
+      ],
       description:
-        'Customer initiates a test-drive inquiry. The system renders a native WhatsApp Flows interactive date & time selector directly inside WhatsApp (Thu, May 07, 5:00 PM - 7:00 PM). The backend acquires a distributed Redis Redlock mutex to reserve the slot, commits the appointment in PostgreSQL, and generates an official confirmed booking card.',
+        'End-to-end vehicle discovery: customer inquires about models and budget thresholds (e.g., Suzuki Swift under MYR 110k) -> NLU engine parses constraints, queries PostgreSQL inventory, and returns rich interactive specs. On customer request, agent invokes native tool send_vehicle_image to stream high-resolution exterior and interior photos directly from BytePlus Torch Object Storage (TOS).',
       highlights: [
-        'Native WhatsApp UI component rendering (no external webview redirects)',
-        'Zero-contention slot reservation using Redis Redlock distributed mutex',
-        'Automatic salesperson lead assignment with WhatsApp notification alert',
-        'Generates clickable Google Calendar / iCal confirmation payload'
+        'Multi-turn parameter extraction (make, model, year, mileage, auction grade, budget caps)',
+        'Anti-affirmation guardrails: never promises vehicle availability before DB confirmation',
+        'Direct pre-signed CDN media streaming from BytePlus TOS S3-compatible storage',
+        'WhatsApp interactive list limits enforced (<=24 char titles, <=72 char descriptions)'
       ],
       backendTrace: {
-        component: 'messaging-ingress-service ➔ pkg/flows/crypto.go',
-        action: 'FlowsDataExchange -> schedule_appointment_slot',
-        latency: '165ms round-trip',
-        details: 'Decrypted AES-GCM flow token, queried PostgreSQL slot pool, acquired Redis Redlock mutex, and returned dynamic Screen JSON in 165ms.'
+        component: 'recon-social-service ➔ recon-ai-lib ➔ inventory_service.go',
+        action: 'search_vehicles(budget=110000, make="Suzuki") + send_vehicle_image',
+        latency: '310ms',
+        details: 'Parsed natural language budget query into SQL GORM filter; generated compliant WhatsApp interactive card and dispatched primary hero image from BytePlus TOS.'
       }
     },
     {
-      id: 'reschedule-cancellation-voice',
-      title: 'Rescheduling, Cancellation & Voice Processing',
-      category: 'Voice & State Machine',
-      badge: 'State Machine + ASR',
-      imageSrc: '/images/whatsapp_sales/02-reschedule-cancellation-voice.png',
+      id: 'appointment-management',
+      title: 'Showroom Visit Booking, Rescheduling & Slot Lifecycle',
+      category: 'Appointment Booking',
+      badge: 'WhatsApp Flows v3 & Distributed Mutex',
+      imageSrc: 'images/whatsapp_sales/01-appointment-booking-flow.png',
+      galleryImages: [
+        {
+          src: 'images/whatsapp_sales/01-appointment-booking-flow.png',
+          stepTitle: 'Step 1: WhatsApp Flows Picker',
+          caption: 'Native WhatsApp Flows v3 date & time slot selection menu directly inside WhatsApp client.'
+        },
+        {
+          src: 'images/whatsapp_sales/02-appointment-reschedule-picker.png',
+          stepTitle: 'Step 2: Reschedule & Rebook',
+          caption: 'Interactive reschedule proposal card; customer declines old slot, selects new date/time, and receives confirmed booking.'
+        },
+        {
+          src: 'images/whatsapp_sales/02-reschedule-cancellation-voice.png',
+          stepTitle: 'Step 3: Instant Cancellation',
+          caption: 'Customer cancels appointment; backend frees reserved time slot and recycles availability back into PostgreSQL pool.'
+        }
+      ],
       description:
-        'End-to-end appointment lifecycle management: interactive reschedule proposal cards, instant slot cancellation with slot release back to the inventory pool, and customer voice note ingestion (.ogg -> ffmpeg in-memory PCM -> Whisper STT) to query Jimny inventory.',
+        'Unified appointment lifecycle management: (1) WhatsApp Flows v3 native interactive calendar & slot selector. (2) Interactive reschedule proposal handling with customer decline/rebook options. (3) Instant appointment cancellation releasing reserved time slots back to PostgreSQL slot pool. Uses Redis Redlock distributed mutex to prevent double-booking collisions across sales advisors.',
       highlights: [
-        'WhatsApp audio notes (.ogg Opus) downloaded and converted to 16kHz WAV in-memory',
-        'Whisper STT transcription with automotive domain vocabulary boosting',
-        'Dynamic state machine transitions: BOOKED -> RESCHEDULE_OFFERED -> CANCELLED',
-        'Automatic slot recycling in PostgreSQL ensuring zero ghost bookings'
+        'Native WhatsApp Flows v3 with RSA + AES-GCM payload encryption',
+        'Interactive reschedule state machine: proposal card ➔ decline ➔ pick new slot ➔ confirmed',
+        'Redis Redlock distributed mutex prevents concurrent double-booking of same vehicle/slot',
+        'Instant slot recycling in PostgreSQL on cancellation ensures zero ghost reservations'
       ],
       backendTrace: {
-        component: 'messaging-ingress-service ➔ conversation_service.go',
-        action: 'cancel_appointment + audio_transcribe_intent',
-        latency: '340ms (voice pipeline)',
-        details: 'Audio stream piped in-memory through ffmpeg into Whisper STT. State machine cleanly transitioned appointment to CANCELLED and recycled slot.'
+        component: 'recon-social-service ➔ pkg/flows/crypto.go + conversation_service.go',
+        action: 'action_requests.Create(type="MEETING_REQUEST") + Redlock Mutex',
+        latency: '165ms (Flows) / 88ms (Commit)',
+        details: 'Decrypted AES-GCM flow token, acquired Redis Redlock mutex, committed appointment row in PostgreSQL, and triggered CRM sales advisor push notification.'
+      }
+    },
+    {
+      id: 'voice-multilingual',
+      title: 'Voice Note Ingestion, Tanglish Vernacular & Polyglot Routing',
+      category: 'Voice & Multilingual',
+      badge: 'Doubao ASR & Polyglot NLU',
+      imageSrc: 'images/whatsapp_sales/05-tamil-test-drive-booking.png',
+      galleryImages: [
+        {
+          src: 'images/whatsapp_sales/05-tamil-test-drive-booking.png',
+          stepTitle: 'Step 1: Tanglish & Tamil',
+          caption: 'Romanized Tanglish query ("Enna varusam model?") auto-detected and replied with native Tamil confirmation slip.'
+        },
+        {
+          src: 'images/whatsapp_sales/06-multilingual-polyglot-chat.png',
+          stepTitle: 'Step 2: Polyglot Switching',
+          caption: 'Consecutive code-switching across English, Bahasa Melayu, Mandarin, and Tamil in a single conversation thread.'
+        },
+        {
+          src: 'images/whatsapp_sales/02-reschedule-cancellation-voice.png',
+          stepTitle: 'Step 3: Voice Note Ingestion',
+          caption: 'Inbound customer voice note (.ogg Opus) transcoded in-memory via ffmpeg into Whisper STT to query Jimny stock.'
+        }
+      ],
+      description:
+        'Unified multimodal and polyglot conversational intelligence: (1) Audio voice memo ingestion (.ogg Opus piped through in-memory ffmpeg to 16kHz WAV without disk I/O -> Whisper/Doubao ASR). (2) Vernacular Romanized dialect adaptation ("Tanglish", Manglish, Bahasa Melayu) seamlessly translated and answered in native script. (3) Zero-latency code-switching across English, Malay, Mandarin, and Tamil in consecutive turns without conversational context decay.',
+      highlights: [
+        'Zero-disk in-memory audio transcoding via io.Pipe + ffmpeg to Whisper STT',
+        'Automatic romanized dialect detection: Latin Tanglish ➔ Native Tamil script response',
+        'Zero context degradation during rapid multi-turn 4-language code switching',
+        'Cultural nuance and local idiom preservation while enforcing strict pricing guardrails'
+      ],
+      backendTrace: {
+        component: 'recon-ai-lib ➔ BytePlus Seed Speech ASR + Gemini 2.5 Flash',
+        action: 'ASR.TranscribeAudio(raw_ogg) + dynamicPrompt.InjectLanguageContext',
+        latency: '1.2s (voice pipeline) / 240ms (polyglot turn)',
+        details: 'Downloaded audio before Meta 5-min link expiration, streamed PCM in-memory, identified user language intent, and injected localized vocabulary catalog.'
       }
     },
     {
       id: 'deposit-verification',
-      title: 'Deposit Slip Forensic OCR Verification',
-      category: 'Financial Verification',
+      title: 'Deposit Slip Forensic Vision OCR & Anti-Fraud Verification',
+      category: 'Payment Receipt OCR',
       badge: 'Vision OCR & Anti-Fraud',
-      imageSrc: '/images/whatsapp_sales/03-deposit-receipt-verification.png',
+      imageSrc: 'images/whatsapp_sales/03-deposit-receipt-verification.png',
+      galleryImages: [
+        {
+          src: 'images/whatsapp_sales/03-deposit-receipt-verification.png',
+          stepTitle: 'Forensic OCR Verification',
+          caption: 'Vision AI extracts transaction amount, reference, beneficiary bank, and last-4 digits; locks car to RESERVED.'
+        }
+      ],
       description:
-        'Customer requests vehicle booking details -> bot outputs official corporate banking details -> customer uploads mobile banking transfer receipt (SGD 5,000) -> Vision LLM extracts transaction reference, bank name, amount, and verifies matching dealership account.',
+        'Forensic advance payment verification: customer requests vehicle reservation -> AI generates official dealership banking details (beneficiary, account last-4, booking ref) -> customer uploads mobile banking transfer receipt (SGD 5,000) -> Vision LLM extracts timestamp, amount, bank name, and account last-4 -> automated validation with 1% allowable tolerance -> auto-locks vehicle to RESERVED in vehicle-inventory-service.',
       highlights: [
-        'Extracts bank name, transaction timestamp, reference number, and account last-4',
-        'Validates amount matches or exceeds vehicle deposit threshold (SGD 5,000)',
-        'Prevents double-spend fraud by hashing receipt image perceptual hash into Postgres',
-        'Auto-tags vehicle status to RESERVED in vehicle-inventory-service'
+        'Forensic criteria: is_payment_receipt == true (confidence score >= 0.70 threshold)',
+        'Numerical amount validation with 1% allowable fee tolerance',
+        'Perceptual hash (pHash) deduplication against historical index prevents duplicate slip reuse',
+        'Auto-transitions vehicle inventory status to RESERVED and alerts CRM sales manager'
       ],
       backendTrace: {
-        component: 'messaging-ingress-service ➔ payment_verification_service.go',
-        action: 'verify_deposit_receipt(image_url, expected_amount)',
-        latency: '3.1s end-to-end',
-        details: 'Receipt image streamed to BytePlus Torch Object Storage (TOS). Multi-modal vision extracted metadata with 98% confidence score.'
+        component: 'recon-social-service ➔ payment_verification_service.go',
+        action: 'validateReceipt(extracted, booking, branchBank)',
+        latency: '740ms (Vision OCR)',
+        details: 'Extracted Amount: SGD 5,000; Bank: Maybank; Last4: 1111. Created ADVANCE_PAYMENT_VERIFICATION action request with WebSocket alert to CRM sales manager.'
       }
     },
     {
-      id: 'vehicle-photo-dispatch',
-      title: 'Real-Time Vehicle Gallery & Specs Dispatch',
-      category: 'Inventory Media',
-      badge: 'BytePlus TOS + CDN',
-      imageSrc: '/images/whatsapp_sales/04-vehicle-photo-dispatch.png',
+      id: 'broadcast-messaging',
+      title: 'Broadcast Messaging & Meta 24-Hour Re-Engagement Architecture',
+      category: 'Broadcast Messaging',
+      badge: 'Meta HSM Templates & Fan-Out',
+      imageSrc: 'images/whatsapp_sales/05-broadcast-marketing-lexus.png',
+      galleryImages: [
+        {
+          src: 'images/whatsapp_sales/05-broadcast-marketing-lexus.png',
+          stepTitle: 'Meta Pre-Approved HSM Card',
+          caption: 'New arrival broadcast message (Lexus RX350) sent outside 24h window with interactive CTA and opt-out support.'
+        }
+      ],
       description:
-        'Customer asks for details on a 2024 Toyota Harrier 2.0 Z Luxury -> AI streams complete specifications (mileage, grade, color, features) and dispatches high-resolution exterior and interior photos directly into WhatsApp chat.',
+        'Compliant outbound re-engagement bypassing Meta\'s 24-hour customer care window: under Meta Cloud API policies, once 24 hours have elapsed without a customer message, standard session messages are blocked. To re-engage dormant leads or broadcast new inventory, marketing teams initiate broadcast campaigns using pre-approved Meta HSM (Highly Structured Message) templates.',
       highlights: [
-        'Direct streaming from BytePlus Torch Object Storage (TOS) via signed CDN links',
-        'Rich media template cards rendered natively in WhatsApp chat',
-        'Dynamic pricing calculation factoring road tax, COE, and down payment scenarios',
-        'Automatic tracking of customer vehicle affinity profile in PostgreSQL'
+        'Meta 24-Hour Policy Compliance: Bypasses 24h session block using pre-approved Meta HSM templates',
+        'End-to-End Orchestration: UI CRM Trigger ➔ recon-api-service ➔ recon-social-service ➔ Redis Asynq',
+        'Inventory Guardrail: Automatically verifies vehicle status before broadcast (aborts if Reserved/Sold)',
+        'Asynchronous Fan-Out: Redis Asynq workers handle rate limiting, delivery receipts, and STOP opt-outs'
       ],
       backendTrace: {
-        component: 'messaging-ingress-service ➔ Meta Graph API / TOS',
-        action: 'get_vehicle_details + send_vehicle_media',
-        latency: '210ms',
-        details: 'Fetched vehicle specifications and signed TOS media links, dispatching high-resolution photo template to customer WhatsApp chat.'
-      }
-    },
-    {
-      id: 'tamil-test-drive-booking',
-      title: 'Tamil & Tanglish Localized Sales Flow',
-      category: 'Vernacular AI',
-      badge: 'Tanglish / Tamil AI',
-      imageSrc: '/images/whatsapp_sales/05-tamil-test-drive-booking.png',
-      description:
-        'Customer sends Tamil-English code-mixed queries ("Enna varusam model?"). AI responds in clear Tamil with 2025 specs, guides the customer step-by-step through test-drive scheduling in Tamil, and outputs a localized Tamil confirmation slip.',
-      highlights: [
-        'Robust comprehension of romanized vernacular ("Tanglish") and formal script',
-        'Automotive terminology adaptation (e.g., மைலேஜ், டெஸ்ட் டிரைவ், முன்பதிவு)',
-        'Full localized booking workflow with Tamil date/time confirmation card',
-        'Maintains context continuity even if the user switches languages mid-conversation'
-      ],
-      backendTrace: {
-        component: 'agentic-ai-engine ➔ chat.Client (Gemini 2.5 Flash)',
-        action: 'polyglot_nlp_router(lang="ta")',
-        latency: '240ms',
-        details: 'Identified Tamil intent from romanized input, preserved booking parameters, and rendered localized Tamil confirmation slip.'
-      }
-    },
-    {
-      id: 'multilingual-polyglot-chat',
-      title: 'Zero-Latency Polyglot Language Switching',
-      category: 'Polyglot Routing',
-      badge: 'EN / MS / ZH / TA',
-      imageSrc: '/images/whatsapp_sales/06-multilingual-polyglot-chat.png',
-      description:
-        'Customer switches languages in four consecutive turns: English ("Can I check stock for Honda Vezel?") -> Bahasa Melayu ("Boleh saya tahu ada warna apa?") -> Mandarin ("请问这辆车可以做多少百分比的贷款？") -> Tamil ("நேரில் வந்து பார்க்க எப்போது வரலாம்?"). The AI responds in kind each turn without latency degradation.',
-      highlights: [
-        'Turn-by-turn language detection with confidence threshold gating',
-        'Domain-specific vocabulary in Malay (pinjaman, warna), Mandarin (首付, 贷款), and Tamil (நேரில் வருகை)',
-        'Unified conversational context retained in Redis across all language shifts',
-        'Strict guardrails preventing hallucinated pricing or terms across all dialects'
-      ],
-      backendTrace: {
-        component: 'messaging-ingress-service ➔ conversation_service.go',
-        action: 'dynamic_language_switch_hook',
-        latency: '190ms - 250ms per turn',
-        details: 'Dynamic language detection heuristic triggered. Prompt templates and terminology catalogs adapted on the fly while retaining memory slots.'
+        component: 'recon-api-service ➔ recon-social-service ➔ pkg/workers/broadcast_processor.go',
+        action: 'TriggerBroadcast(templateID, groupID, vehicleID) ➔ QueueOutgoing',
+        latency: '45ms enqueue / 100 msg/sec fan-out',
+        details: 'Validated Meta template approval status, verified vehicle availability in inventory service, created BroadcastRun in PostgreSQL, and enqueued BroadcastMasterPayload to Asynq.'
       }
     }
   ],
@@ -471,6 +517,16 @@ export const WHATSAPP_SALES_CASE_STUDY: CaseStudyData = {
         'Optimistic database locking risks high retry aborts; pessimistic table locks degrade throughput across other dealership operations.',
       solution:
         'Implemented distributed mutex locking via Redis Redlock with unique composite keys (vehicle_id:slot_timestamp) and a 120-second lease time. If a customer is in the middle of a WhatsApp Flows screen, the slot is provisionally locked. Once confirmed, a PostgreSQL ACID transaction commits the booking and notifies the team.'
+    },
+    {
+      title: 'Meta 24-Hour Messaging Window & High-Throughput HSM Broadcast Fan-Out',
+      tag: 'Meta Policy & Distributed Fan-Out',
+      problem:
+        'Meta Cloud API strictly terminates free-form conversation sessions 24 hours after the last customer message. Outbound session messages fail with error 131047. Dealership marketing teams needed to announce new car arrivals and promotions without getting banned or dropping messages.',
+      tradeOff:
+        'Standard session messages are free; Meta charges per delivered marketing template conversation. Broadcasts require pre-approval and rigid schema parameters.',
+      solution:
+        'Built a dual-path messaging router: (1) Inside 24h window: dynamic conversational LLM responses. (2) Outside 24h window: UI triggers broadcast campaigns via recon-api-service to recon-social-service. Verifies template approval and vehicle stock availability, creates a PostgreSQL BroadcastRun, and enqueues a BroadcastMasterPayload into Redis Asynq (QueueOutgoing). Dedicated goroutine workers fan out personalized template messages with rate-limiting compliant with Meta Cloud API tier quotas (1,000 to 10,000/day).'
     },
     {
       title: 'In-Memory Voice Audio Transcoding & Async Transcription',
