@@ -21,47 +21,6 @@ export interface ProductionScreenshot {
   };
 }
 
-export interface ChatMessage {
-  id: string;
-  sender: 'user' | 'agent' | 'system';
-  time: string;
-  text?: string;
-  audioDuration?: string;
-  receipt?: {
-    bank: string;
-    amount: string;
-    accountLast4: string;
-    reference: string;
-    verified: boolean;
-    confidence: number;
-  };
-  interactiveList?: {
-    header: string;
-    buttonText: string;
-    rows: {
-      id: string;
-      title: string;
-      desc: string;
-      badge?: string;
-    }[];
-  };
-  backendTrace?: {
-    component: string;
-    action: string;
-    latency: string;
-    details: string;
-  };
-}
-
-export interface SimulationScenario {
-  id: string;
-  label: string;
-  icon: string;
-  description: string;
-  userPrompt: string;
-  messages: ChatMessage[];
-}
-
 export interface EngineeringChallenge {
   title: string;
   tag: string;
@@ -73,10 +32,24 @@ export interface EngineeringChallenge {
 export interface ArchitectureNode {
   id: string;
   title: string;
-  category: 'Ingress' | 'Queue' | 'Core AI' | 'Storage' | 'External';
-  description: string;
+  layer: 'Ingress & Decoupling' | 'Processing & Orchestration' | 'Cognitive & AI Tier' | 'Data & Persistence' | 'Outbound & Client Egress';
+  category: 'Edge' | 'Ingress' | 'Queue' | 'Core AI' | 'Storage' | 'Egress';
   tech: string;
   sla: string;
+  protocol: string;
+  description: string;
+  responsibilities: string[];
+  flows: string[];
+  upstream: string[];
+  downstream: string[];
+}
+
+export interface ArchitectureFlow {
+  id: string;
+  name: string;
+  badge: string;
+  description: string;
+  activeNodeIds: string[];
 }
 
 export interface CaseStudyData {
@@ -86,15 +59,470 @@ export interface CaseStudyData {
   badge: string;
   overview: string;
   gallery: ProductionScreenshot[];
-  scenarios: SimulationScenario[];
   challenges: EngineeringChallenge[];
   nodes: ArchitectureNode[];
+  flows: ArchitectureFlow[];
+  mermaidCode: string;
   metrics: {
     stat: string;
     label: string;
     subtext: string;
   }[];
 }
+
+export function getMermaidArchitectureCode(theme: 'light' | 'dark' = 'dark'): string {
+  const isLight = theme === 'light';
+  const edgeClass = isLight
+    ? 'fill:#ffffff,stroke:#0d9488,stroke-width:1.5px,color:#0f172a'
+    : 'fill:#0d1522,stroke:#41d1c2,stroke-width:1.5px,color:#f1f5f9';
+  const ingressClass = isLight
+    ? 'fill:#f0fdfa,stroke:#0284c7,stroke-width:1.5px,color:#0f172a'
+    : 'fill:#121e33,stroke:#38bdf8,stroke-width:1.5px,color:#f1f5f9';
+  const queueClass = isLight
+    ? 'fill:#faf5ff,stroke:#7e22ce,stroke-width:1.5px,color:#0f172a'
+    : 'fill:#181829,stroke:#a855f7,stroke-width:1.5px,color:#f1f5f9';
+  const coreClass = isLight
+    ? 'fill:#f0fdf4,stroke:#0d9488,stroke-width:2px,color:#0f172a'
+    : 'fill:#0d2328,stroke:#41d1c2,stroke-width:2px,color:#f1f5f9';
+  const aiClass = isLight
+    ? 'fill:#fdf2f8,stroke:#be185d,stroke-width:1.5px,color:#0f172a'
+    : 'fill:#1f132b,stroke:#ec4899,stroke-width:1.5px,color:#f1f5f9';
+  const storageClass = isLight
+    ? 'fill:#f0fdf4,stroke:#059669,stroke-width:1.5px,color:#0f172a'
+    : 'fill:#1b2318,stroke:#10b981,stroke-width:1.5px,color:#f1f5f9';
+  const egressClass = isLight
+    ? 'fill:#fffbeb,stroke:#d97706,stroke-width:1.5px,color:#0f172a'
+    : 'fill:#261e12,stroke:#f59e0b,stroke-width:1.5px,color:#f1f5f9';
+
+  return `flowchart TD
+  %% Theme Styles (${isLight ? 'Light Theme' : 'Dark Theme'})
+  classDef edgeClass ${edgeClass}
+  classDef ingressClass ${ingressClass}
+  classDef queueClass ${queueClass}
+  classDef coreClass ${coreClass}
+  classDef aiClass ${aiClass}
+  classDef storageClass ${storageClass}
+  classDef egressClass ${egressClass}
+
+  subgraph Clients ["Clients & External Edge"]
+    Customer["📱 Customer WhatsApp Client"]:::edgeClass
+    CRMAdmin["💻 Dealership CRM Admin"]:::edgeClass
+    MetaCloud["☁️ Meta WhatsApp Cloud Platform"]:::edgeClass
+  end
+
+  subgraph IngressTier ["Ingress & Decoupling Layer (SLA < 45ms)"]
+    IngressGW["⚡ API Ingress Gateway\\n(Go 1.22 + Gin · HMAC-SHA256)"]:::ingressClass
+    RedisQueue[("📬 Redis Asynq FIFO Queue\\n(Buffer & Rate-Limiting)")]:::queueClass
+  end
+
+  subgraph OrchestrationCore ["Asynchronous Processing Core"]
+    WorkerPool["⚙️ Asynq Message Consumer Pool\\n(Goroutine Worker Pool)"]:::queueClass
+    BroadcastPool["📢 Outbound HSM Broadcast Worker\\n(Meta Tier Rate Limiter)"]:::queueClass
+    AIOrchestrator["🧠 Agentic AI Orchestrator\\n(Function Calling & Guardrails)"]:::coreClass
+  end
+
+  subgraph SpecializedAI ["Cognitive & Multimodal AI Engines"]
+    LLMEngine["💬 Conversational LLM\\n(Gemini 2.5 Flash)"]:::aiClass
+    ASREngine["🎙️ In-Memory Audio Transcoder\\n(io.Pipe ffmpeg + Doubao ASR)"]:::aiClass
+    VisionOCR["🧾 Forensic Vision OCR\\n(Deposit Slip Verifier & pHash)"]:::aiClass
+  end
+
+  subgraph DataPersistence ["State & Persistence Tier"]
+    PostgreSQL[("🗄️ PostgreSQL 16 Relational Store\\n(Inventory, Appointments, Leads)")]:::storageClass
+    RedisState[("⚡ Redis Session & Mutex Store\\n(Context Window & Redlock Mutex)")]:::storageClass
+    ObjectStore[("📦 Cloud Object Storage\\n(BytePlus TOS / S3 Gallery & Audio)")]:::storageClass
+  end
+
+  subgraph OutboundTier ["Outbound Dispatch & Egress"]
+    OutboundDispatcher["🚀 Outbound Message Dispatcher\\n(Flows v3 Crypto & HSM Templates)"]:::egressClass
+    CRMPush["🔔 Realtime CRM WebSocket Gateway\\n(Advisor Push Notifications)"]:::egressClass
+  end
+
+  %% Flow Connections
+  Customer -->|Inbound Message / Audio / Slip| MetaCloud
+  MetaCloud -->|HTTP POST Webhook| IngressGW
+  CRMAdmin -->|Trigger Broadcast / CRM Action| IngressGW
+  IngressGW -->|Instant 200 OK ACK < 45ms| MetaCloud
+  IngressGW -->|Enqueue Conversation Job| RedisQueue
+  IngressGW -->|Enqueue HSM Fan-Out| BroadcastPool
+
+  RedisQueue -->|Consume FIFO Task| WorkerPool
+  WorkerPool -->|Restore Context Window| RedisState
+  WorkerPool -->|Dispatch Conversation Turn| AIOrchestrator
+
+  AIOrchestrator <-->|Reasoning & Tool Schema| LLMEngine
+  AIOrchestrator <-->|Transcode OGG & Transcribe| ASREngine
+  AIOrchestrator <-->|Forensic Slip Validation| VisionOCR
+
+  AIOrchestrator -->|Acquire Booking Lock| RedisState
+  AIOrchestrator -->|Query / Reserve Inventory| PostgreSQL
+  AIOrchestrator -->|Stream Photo Gallery / Media| ObjectStore
+  VisionOCR -->|Deduplicate pHash & Record Payment| PostgreSQL
+
+  BroadcastPool -->|Verify Active Inventory| PostgreSQL
+  BroadcastPool -->|Outbound HSM Enqueue| OutboundDispatcher
+  WorkerPool -->|Enqueue Outbound Response| OutboundDispatcher
+  AIOrchestrator -->|Push Lead / Booking Alert| CRMPush
+  CRMPush -->|Realtime Alert| CRMAdmin
+
+  OutboundDispatcher -->|Meta Graph API HTTPS| MetaCloud
+  MetaCloud -->|Deliver to WhatsApp| Customer`;
+}
+
+export const MERMAID_ARCHITECTURE_CODE = getMermaidArchitectureCode('dark');
+
+export const ARCHITECTURE_FLOWS: ArchitectureFlow[] = [
+  {
+    id: 'all',
+    name: 'Complete System Architecture',
+    badge: '14 Services',
+    description: 'Full end-to-end view of all microservices, queues, AI engines, persistence stores, and egress gateways.',
+    activeNodeIds: [
+      'meta-cloud-api',
+      'ingress-gateway',
+      'redis-asynq-queue',
+      'asynq-worker-pool',
+      'agentic-ai-orchestrator',
+      'gemini-llm',
+      'audio-asr-transcoder',
+      'vision-ocr-engine',
+      'postgres-db',
+      'redis-state-store',
+      'object-storage',
+      'outbound-dispatcher',
+      'broadcast-worker-pool',
+      'crm-push-gateway'
+    ]
+  },
+  {
+    id: 'ingress',
+    name: 'Webhook Ingress & Buffer (<45ms SLA)',
+    badge: '< 45ms ACK',
+    description: 'High-throughput ingress validating HMAC-SHA256 signatures and buffering to Redis Asynq to prevent Meta 5s timeout drops.',
+    activeNodeIds: [
+      'meta-cloud-api',
+      'ingress-gateway',
+      'redis-asynq-queue',
+      'asynq-worker-pool'
+    ]
+  },
+  {
+    id: 'booking',
+    name: 'WhatsApp Flows v3 & Distributed Redlock',
+    badge: 'Zero Double-Booking',
+    description: 'Native slot picker with RSA + AES-GCM payload encryption, Redis Redlock distributed mutex locking, and ACID booking commit in PostgreSQL.',
+    activeNodeIds: [
+      'meta-cloud-api',
+      'ingress-gateway',
+      'asynq-worker-pool',
+      'agentic-ai-orchestrator',
+      'redis-state-store',
+      'postgres-db',
+      'outbound-dispatcher',
+      'crm-push-gateway'
+    ]
+  },
+  {
+    id: 'voice',
+    name: 'In-Memory Voice Note Transcoder & ASR',
+    badge: 'Zero-Disk I/O',
+    description: 'WhatsApp .ogg Opus audio memo streamed through in-memory io.Pipe + ffmpeg into 16kHz WAV and transcribed via Seed Speech ASR.',
+    activeNodeIds: [
+      'meta-cloud-api',
+      'ingress-gateway',
+      'asynq-worker-pool',
+      'agentic-ai-orchestrator',
+      'audio-asr-transcoder',
+      'gemini-llm',
+      'object-storage',
+      'outbound-dispatcher'
+    ]
+  },
+  {
+    id: 'ocr',
+    name: 'Deposit Slip Forensic Vision OCR',
+    badge: '98% Confidence',
+    description: 'Customer mobile banking receipt evaluated by Multimodal Vision AI with perceptual hash deduplication, auto-locking vehicle to RESERVED.',
+    activeNodeIds: [
+      'meta-cloud-api',
+      'ingress-gateway',
+      'asynq-worker-pool',
+      'agentic-ai-orchestrator',
+      'vision-ocr-engine',
+      'postgres-db',
+      'crm-push-gateway',
+      'outbound-dispatcher'
+    ]
+  },
+  {
+    id: 'broadcast',
+    name: 'Outbound HSM Broadcast Fan-Out',
+    badge: 'Meta 24h Policy',
+    description: 'CRM campaign trigger verifying stock availability, creating PostgreSQL runs, and fanning out pre-approved Meta HSM marketing templates.',
+    activeNodeIds: [
+      'ingress-gateway',
+      'broadcast-worker-pool',
+      'postgres-db',
+      'outbound-dispatcher',
+      'meta-cloud-api'
+    ]
+  }
+];
+
+export const ARCHITECTURE_NODES: ArchitectureNode[] = [
+  {
+    id: 'meta-cloud-api',
+    title: 'Meta WhatsApp Cloud API',
+    layer: 'Ingress & Decoupling',
+    category: 'Edge',
+    tech: 'WhatsApp Business Platform v25.0',
+    sla: '5,000ms Hard Timeout SLA',
+    protocol: 'HTTPS / Webhook Event Emitter',
+    description: 'Official WhatsApp gateway delivering inbound user messages, raw audio notes, interactive button selections, and encrypted Flows payloads.',
+    responsibilities: [
+      'Delivers incoming webhook events (messages, media, statuses) to server',
+      'Enforces strict 5-second HTTP 200 acknowledgment window',
+      'Executes TLS 1.3 handshake and generates payload HMAC-SHA256 signature headers'
+    ],
+    flows: ['all', 'ingress', 'booking', 'voice', 'ocr', 'broadcast'],
+    upstream: ['Customer WhatsApp Client'],
+    downstream: ['ingress-gateway']
+  },
+  {
+    id: 'ingress-gateway',
+    title: 'API Ingress Gateway',
+    layer: 'Ingress & Decoupling',
+    category: 'Ingress',
+    tech: 'Go 1.22 · Gin Web Framework',
+    sla: '< 45ms Response Latency',
+    protocol: 'HTTPS REST / JSON / HMAC-SHA256',
+    description: 'High-throughput edge receiver that validates Meta signature headers, handles deduplication checks, and offloads work to Redis queues in under 45ms.',
+    responsibilities: [
+      'Validates X-Hub-Signature-256 using SHA256 HMAC against app secret',
+      'Issues instantaneous HTTP 200 OK ACK to eliminate Meta timeout retry storms',
+      'Deserializes raw webhook envelopes and routes into Redis Asynq task queues'
+    ],
+    flows: ['all', 'ingress', 'booking', 'voice', 'ocr', 'broadcast'],
+    upstream: ['meta-cloud-api', 'CRM Admin Dashboard'],
+    downstream: ['redis-asynq-queue', 'broadcast-worker-pool']
+  },
+  {
+    id: 'redis-asynq-queue',
+    title: 'Redis Task Queue (Asynq)',
+    layer: 'Ingress & Decoupling',
+    category: 'Queue',
+    tech: 'Redis 7 Cluster · hibiken/asynq',
+    sla: 'Zero Message Drop Guarantee',
+    protocol: 'Redis RESP3 Protocol',
+    description: 'Durable FIFO message queue buffering conversation jobs, orchestrating task scheduling, exponential-backoff retries, and rate limiting.',
+    responsibilities: [
+      'Buffers inbound conversational events away from HTTP ingress',
+      'Guarantees at-least-once message delivery with dead-letter queue (DLQ) support',
+      'Provides per-phone-number concurrency debouncing and rate throttling'
+    ],
+    flows: ['all', 'ingress', 'booking', 'voice', 'ocr'],
+    upstream: ['ingress-gateway'],
+    downstream: ['asynq-worker-pool']
+  },
+  {
+    id: 'asynq-worker-pool',
+    title: 'Asynq Consumer Worker Pool',
+    layer: 'Processing & Orchestration',
+    category: 'Queue',
+    tech: 'Go Goroutine Pool · Exponential Backoff',
+    sla: 'Concurrent Non-Blocking Execution',
+    protocol: 'In-Process Go Channel Dispatch',
+    description: 'Scalable worker pool consuming queued conversation tasks, maintaining Redis conversation context windows, and dispatching agentic AI pipelines.',
+    responsibilities: [
+      'Dequeues conversation tasks and manages worker goroutine lifecycle',
+      'Loads conversation history from Redis 10-message sliding window',
+      'Dispatches agentic tool calling loop and handles error backoff retries'
+    ],
+    flows: ['all', 'ingress', 'booking', 'voice', 'ocr'],
+    upstream: ['redis-asynq-queue'],
+    downstream: ['agentic-ai-orchestrator', 'redis-state-store', 'outbound-dispatcher']
+  },
+  {
+    id: 'agentic-ai-orchestrator',
+    title: 'Agentic AI Orchestrator',
+    layer: 'Processing & Orchestration',
+    category: 'Core AI',
+    tech: 'Go Engine · Dynamic Function Calling',
+    sla: 'Sub-Second Agentic Turn',
+    protocol: 'Provider-Agnostic LLM Client',
+    description: 'Autonomous reasoning engine that executes multi-turn tool loops, dynamic schema translation, anti-affirmation guardrails, and catalog search.',
+    responsibilities: [
+      'Orchestrates autonomous tool-calling loops with strict schema validation',
+      'Enforces anti-affirmation directives (never promises vehicle price without DB query)',
+      'Manages multilingual & dialect context (Tanglish, Manglish, Bahasa Melayu, Tamil)'
+    ],
+    flows: ['all', 'booking', 'voice', 'ocr'],
+    upstream: ['asynq-worker-pool'],
+    downstream: ['gemini-llm', 'audio-asr-transcoder', 'vision-ocr-engine', 'postgres-db', 'redis-state-store', 'object-storage']
+  },
+  {
+    id: 'gemini-llm',
+    title: 'Conversational LLM (Gemini 2.5 Flash)',
+    layer: 'Cognitive & AI Tier',
+    category: 'Core AI',
+    tech: 'Google GenAI SDK · Temperature 0.2',
+    sla: 'Sub-Second Response Stream',
+    protocol: 'HTTPS REST / JSON Streaming',
+    description: 'Primary conversational model handling natural language understanding, polyglot vernacular translation, tool selection, and automotive dialogue.',
+    responsibilities: [
+      'Extracts vehicle criteria: make, model, year, mileage, and budget caps',
+      'Translates romanized vernacular dialects and returns localized response copy',
+      'Formats compliant WhatsApp interactive list cards (titles <= 24 chars)'
+    ],
+    flows: ['all', 'voice', 'booking', 'ocr'],
+    upstream: ['agentic-ai-orchestrator'],
+    downstream: ['agentic-ai-orchestrator']
+  },
+  {
+    id: 'audio-asr-transcoder',
+    title: 'In-Memory Audio Transcoder & ASR',
+    layer: 'Cognitive & AI Tier',
+    category: 'Core AI',
+    tech: 'io.Pipe + ffmpeg · Doubao Seed Speech ASR',
+    sla: '1.2s Voice Note Turnaround',
+    protocol: 'In-Memory PCM Stream / HTTPS',
+    description: 'Streams customer WhatsApp .ogg Opus voice notes through an in-memory ffmpeg pipe to 16kHz WAV without disk I/O, then transcribes via ASR.',
+    responsibilities: [
+      'Zero-disk in-memory audio transcoding via io.Pipe to prevent container disk exhaustion',
+      'Transcribes customer audio voice notes into clean text with confidence scoring',
+      'Handles background noise filtering and local vernacular accents'
+    ],
+    flows: ['all', 'voice'],
+    upstream: ['agentic-ai-orchestrator'],
+    downstream: ['agentic-ai-orchestrator']
+  },
+  {
+    id: 'vision-ocr-engine',
+    title: 'Forensic Vision OCR Engine',
+    layer: 'Cognitive & AI Tier',
+    category: 'Core AI',
+    tech: 'Multimodal Vision AI · pHash Deduplication',
+    sla: '740ms Forensic Extraction',
+    protocol: 'Binary Stream / S3 Pre-signed URL',
+    description: 'Forensic validation engine analyzing uploaded bank transfer slips, verifying transaction timestamp, amount, beneficiary, and preventing slip reuse.',
+    responsibilities: [
+      'Computes image perceptual hash (pHash) against historical index to block duplicate slips',
+      'Extracts transaction timestamp, amount, bank reference, and last-4 account digits',
+      'Enforces 1% allowable fee tolerance and triggers CRM salesperson notification'
+    ],
+    flows: ['all', 'ocr'],
+    upstream: ['agentic-ai-orchestrator'],
+    downstream: ['postgres-db', 'crm-push-gateway']
+  },
+  {
+    id: 'redis-state-store',
+    title: 'Redis Session & Mutex Store',
+    layer: 'Data & Persistence',
+    category: 'Storage',
+    tech: 'Redis 7 Cluster · Redlock Mutex',
+    sla: '< 2ms In-Memory Latency',
+    protocol: 'Redis RESP3 Protocol',
+    description: 'High-speed cache maintaining 10-turn sliding conversation windows, debounced lead scoring timers, and Redlock distributed mutex locks.',
+    responsibilities: [
+      'Maintains rolling 10-message sliding window plus hierarchical conversation summary',
+      'Acquires Redis Redlock distributed mutex to prevent test-drive double-booking collisions',
+      'Deduplicates incoming webhooks using Meta message_id idempotency keys'
+    ],
+    flows: ['all', 'ingress', 'booking', 'broadcast'],
+    upstream: ['asynq-worker-pool', 'agentic-ai-orchestrator'],
+    downstream: []
+  },
+  {
+    id: 'postgres-db',
+    title: 'PostgreSQL Relational Store',
+    layer: 'Data & Persistence',
+    category: 'Storage',
+    tech: 'PostgreSQL 16 · GORM ORM',
+    sla: 'ACID Transaction Guarantees',
+    protocol: 'SQL (PostgreSQL Wire Protocol)',
+    description: 'Primary transactional system of record holding vehicle inventory specifications, confirmed test-drive appointments, CRM leads, and payment records.',
+    responsibilities: [
+      'Stores verified automotive catalog: live pricing, mileage, auction grades, and status',
+      'Executes ACID transactions for test-drive booking and cancellation slot recycling',
+      'Persists lead scoring telemetry and verified payment deposit audit records'
+    ],
+    flows: ['all', 'booking', 'ocr', 'broadcast'],
+    upstream: ['agentic-ai-orchestrator', 'vision-ocr-engine', 'broadcast-worker-pool'],
+    downstream: []
+  },
+  {
+    id: 'object-storage',
+    title: 'Cloud Object Storage (TOS / S3)',
+    layer: 'Data & Persistence',
+    category: 'Storage',
+    tech: 'S3-Compatible Torch Object Storage',
+    sla: '99.999999% Durability',
+    protocol: 'HTTPS / Pre-signed URLs',
+    description: 'Cloud object store holding high-resolution vehicle photo galleries, customer audio notes, and forensic deposit slip images.',
+    responsibilities: [
+      'Stores exterior and interior multi-angle photo catalogs for live vehicle models',
+      'Generates time-limited pre-signed CDN download URLs for WhatsApp media dispatch',
+      'Archives customer voice notes and deposit verification images for compliance'
+    ],
+    flows: ['all', 'voice', 'ocr'],
+    upstream: ['agentic-ai-orchestrator', 'audio-asr-transcoder'],
+    downstream: ['Customer WhatsApp Client']
+  },
+  {
+    id: 'outbound-dispatcher',
+    title: 'Outbound Message Dispatcher',
+    layer: 'Outbound & Client Egress',
+    category: 'Egress',
+    tech: 'Meta Graph API · Flows v3 Crypto Engine',
+    sla: '100 msg/sec Rate-Limited Egress',
+    protocol: 'HTTPS REST / AES-GCM Encryption',
+    description: 'Outbound engine encrypting Flows v3 payloads (RSA + AES-GCM), managing outbound rate limits, and transmitting messages via Meta Graph API.',
+    responsibilities: [
+      'Encrypts and signs native WhatsApp Flows v3 date/time picker screen payloads',
+      'Formats interactive lists, quick-reply buttons, and media attachment messages',
+      'Enforces Meta Cloud API tier rate limits to prevent outbound delivery throttling'
+    ],
+    flows: ['all', 'ingress', 'booking', 'voice', 'ocr', 'broadcast'],
+    upstream: ['asynq-worker-pool', 'broadcast-worker-pool'],
+    downstream: ['meta-cloud-api']
+  },
+  {
+    id: 'broadcast-worker-pool',
+    title: 'Outbound HSM Broadcast Worker',
+    layer: 'Processing & Orchestration',
+    category: 'Queue',
+    tech: 'Goroutine Fan-Out · Tier Quota Limiter',
+    sla: '1,000–10,000 msgs/day Compliance',
+    protocol: 'Redis Asynq Egress Queue',
+    description: 'Dedicated campaign worker verifying vehicle stock availability, creating PostgreSQL runs, and fanning out pre-approved Meta HSM marketing templates.',
+    responsibilities: [
+      'Bypasses Meta 24-hour customer window block using pre-approved HSM templates',
+      'Verifies vehicle stock status before dispatch to prevent marketing sold inventory',
+      'Processes unsubscribe opt-out webhooks and records delivery analytics'
+    ],
+    flows: ['all', 'broadcast'],
+    upstream: ['ingress-gateway'],
+    downstream: ['postgres-db', 'outbound-dispatcher']
+  },
+  {
+    id: 'crm-push-gateway',
+    title: 'Realtime CRM WebSocket Gateway',
+    layer: 'Outbound & Client Egress',
+    category: 'Egress',
+    tech: 'WebSockets · SSE Realtime Stream',
+    sla: '< 100ms Notification Dispatch',
+    protocol: 'WSS / REST Webhook',
+    description: 'Pushes high-priority sales leads, test-drive booking slips, and verified deposit receipts directly into the dealership sales advisor dashboard.',
+    responsibilities: [
+      'Broadcasts instant lead alerts to sales advisors with full conversation context',
+      'Pushes verified deposit receipts with vehicle reservation lock confirmation',
+      'Synchronizes appointment slot cancellations back to showroom calendars'
+    ],
+    flows: ['all', 'booking', 'ocr'],
+    upstream: ['agentic-ai-orchestrator', 'vision-ocr-engine'],
+    downstream: ['Dealership CRM Admin']
+  }
+];
 
 export const WHATSAPP_SALES_CASE_STUDY: CaseStudyData = {
   id: 'whatsapp-sales',
@@ -153,7 +581,7 @@ export const WHATSAPP_SALES_CASE_STUDY: CaseStudyData = {
         'WhatsApp interactive list limits enforced (<=24 char titles, <=72 char descriptions)'
       ],
       backendTrace: {
-        component: 'recon-social-service ➔ recon-ai-lib ➔ inventory_service.go',
+        component: 'messaging-ingress-gateway ➔ agentic-ai-engine ➔ inventory-service',
         action: 'search_vehicles(budget=110000, make="Suzuki") + send_vehicle_image',
         latency: '310ms',
         details: 'Parsed natural language budget query into SQL GORM filter; generated compliant WhatsApp interactive card and dispatched primary hero image from BytePlus TOS.'
@@ -191,7 +619,7 @@ export const WHATSAPP_SALES_CASE_STUDY: CaseStudyData = {
         'Instant slot recycling in PostgreSQL on cancellation ensures zero ghost reservations'
       ],
       backendTrace: {
-        component: 'recon-social-service ➔ pkg/flows/crypto.go + conversation_service.go',
+        component: 'messaging-ingress-gateway ➔ flows-crypto-module + appointment-service',
         action: 'action_requests.Create(type="MEETING_REQUEST") + Redlock Mutex',
         latency: '165ms (Flows) / 88ms (Commit)',
         details: 'Decrypted AES-GCM flow token, acquired Redis Redlock mutex, committed appointment row in PostgreSQL, and triggered CRM sales advisor push notification.'
@@ -229,7 +657,7 @@ export const WHATSAPP_SALES_CASE_STUDY: CaseStudyData = {
         'Cultural nuance and local idiom preservation while enforcing strict pricing guardrails'
       ],
       backendTrace: {
-        component: 'recon-ai-lib ➔ BytePlus Seed Speech ASR + Gemini 2.5 Flash',
+        component: 'agentic-ai-engine ➔ BytePlus Seed Speech ASR + Gemini 2.5 Flash',
         action: 'ASR.TranscribeAudio(raw_ogg) + dynamicPrompt.InjectLanguageContext',
         latency: '1.2s (voice pipeline) / 240ms (polyglot turn)',
         details: 'Downloaded audio before Meta 5-min link expiration, streamed PCM in-memory, identified user language intent, and injected localized vocabulary catalog.'
@@ -257,7 +685,7 @@ export const WHATSAPP_SALES_CASE_STUDY: CaseStudyData = {
         'Auto-transitions vehicle inventory status to RESERVED and alerts CRM sales manager'
       ],
       backendTrace: {
-        component: 'recon-social-service ➔ payment_verification_service.go',
+        component: 'messaging-ingress-gateway ➔ payment-verification-engine',
         action: 'validateReceipt(extracted, booking, branchBank)',
         latency: '740ms (Vision OCR)',
         details: 'Extracted Amount: SGD 5,000; Bank: Maybank; Last4: 1111. Created ADVANCE_PAYMENT_VERIFICATION action request with WebSocket alert to CRM sales manager.'
@@ -280,233 +708,21 @@ export const WHATSAPP_SALES_CASE_STUDY: CaseStudyData = {
         'Compliant outbound re-engagement bypassing Meta\'s 24-hour customer care window: under Meta Cloud API policies, once 24 hours have elapsed without a customer message, standard session messages are blocked. To re-engage dormant leads or broadcast new inventory, marketing teams initiate broadcast campaigns using pre-approved Meta HSM (Highly Structured Message) templates.',
       highlights: [
         'Meta 24-Hour Policy Compliance: Bypasses 24h session block using pre-approved Meta HSM templates',
-        'End-to-End Orchestration: UI CRM Trigger ➔ recon-api-service ➔ recon-social-service ➔ Redis Asynq',
+        'End-to-End Orchestration: CRM Admin Trigger ➔ core-platform-api ➔ messaging-ingress-gateway ➔ Redis Asynq',
         'Inventory Guardrail: Automatically verifies vehicle status before broadcast (aborts if Reserved/Sold)',
         'Asynchronous Fan-Out: Redis Asynq workers handle rate limiting, delivery receipts, and STOP opt-outs'
       ],
       backendTrace: {
-        component: 'recon-api-service ➔ recon-social-service ➔ pkg/workers/broadcast_processor.go',
+        component: 'core-platform-api ➔ messaging-ingress-gateway ➔ broadcast-worker-pool',
         action: 'TriggerBroadcast(templateID, groupID, vehicleID) ➔ QueueOutgoing',
         latency: '45ms enqueue / 100 msg/sec fan-out',
         details: 'Validated Meta template approval status, verified vehicle availability in inventory service, created BroadcastRun in PostgreSQL, and enqueued BroadcastMasterPayload to Asynq.'
       }
     }
   ],
-  nodes: [
-    {
-      id: 'meta-cloud-api',
-      title: 'Meta Cloud API (WhatsApp Webhooks)',
-      category: 'External',
-      description: 'Webhook sender delivering inbound user messages, media payloads, button clicks, and Flows cryptographic tokens. Requires HTTP 200 within 5,000ms SLA.',
-      tech: 'WhatsApp Business Platform v25.0',
-      sla: 'Must receive 200 OK in < 5,000ms'
-    },
-    {
-      id: 'messaging-ingress-service',
-      title: 'messaging-ingress-service (HTTP Ingress)',
-      category: 'Ingress',
-      description: 'High-throughput Go (Gin) service that validates Meta HMAC-SHA256 signatures, deserializes payloads, and enqueues jobs into Redis Asynq in < 45ms.',
-      tech: 'Go, Gin Web Framework',
-      sla: '< 45ms response latency'
-    },
-    {
-      id: 'redis-asynq-queue',
-      title: 'Redis Task Queue (Asynq)',
-      category: 'Queue',
-      description: 'Provides durable FIFO message scheduling, rate limiting, and exponential-backoff retries. Decouples HTTP ingress from asynchronous LLM tool execution.',
-      tech: 'Redis 7, hibiken/asynq',
-      sla: 'Zero message drop guarantee'
-    },
-    {
-      id: 'asynq-worker',
-      title: 'Asynq Message Processor Worker',
-      category: 'Queue',
-      description: 'Go worker pool consuming queued conversation tasks, maintaining Redis conversation context windows, and dispatching agentic tool calling pipelines.',
-      tech: 'Go goroutine worker pool',
-      sla: 'Automatic exponential backoff'
-    },
-    {
-      id: 'agentic-ai-engine',
-      title: 'agentic-ai-engine (Core AI Engine)',
-      category: 'Core AI',
-      description: 'Universal Go agentic library managing schema translation, system prompts, guardrails, and autonomous tool calling for automotive catalog search.',
-      tech: 'Go, Google GenAI SDK, BytePlus ARK',
-      sla: 'Dynamic schema translation'
-    },
-    {
-      id: 'gemini-flash',
-      title: 'Google Gemini 2.5 Flash',
-      category: 'Core AI',
-      description: 'Primary conversational LLM handling natural language understanding, polyglot translation, tool selection, and vehicle sales dialogue generation.',
-      tech: 'Gemini 2.5 Flash / Doubao Lite',
-      sla: 'Sub-second text generation'
-    },
-    {
-      id: 'byteplus-asr',
-      title: 'BytePlus Seed Speech ASR 2.0',
-      category: 'Core AI',
-      description: 'High-accuracy automatic speech recognition engine transcribing customer WhatsApp audio voice notes (.ogg Opus) into structured text.',
-      tech: 'Doubao ASR BigModel API',
-      sla: '2s polling loop with timeout context'
-    },
-    {
-      id: 'postgres-db',
-      title: 'PostgreSQL Relational Store',
-      category: 'Storage',
-      description: 'Primary transactional database storing vehicle inventory specifications, confirmed test-drive appointments, CRM leads, and payment receipt logs.',
-      tech: 'PostgreSQL 16, GORM ORM',
-      sla: 'ACID transaction guarantees'
-    },
-    {
-      id: 'byteplus-tos',
-      title: 'BytePlus TOS / AWS S3',
-      category: 'Storage',
-      description: 'Cloud object storage holding high-resolution vehicle photo galleries, customer audio notes, and uploaded payment transfer slips.',
-      tech: 'Torch Object Storage (S3-compatible)',
-      sla: '99.9999% durability'
-    }
-  ],
-  scenarios: [
-    {
-      id: 'appointment-flow',
-      label: 'WhatsApp Flows Test-Drive Booking',
-      icon: '📅',
-      description: 'Customer books showroom appointment via native Flows date/time picker, Redis Redlock locks slot, and calendar slip is issued.',
-      userPrompt: 'Can I book a test drive for the 2024 Toyota Harrier this Thursday afternoon?',
-      messages: [
-        {
-          id: 'm1',
-          sender: 'user',
-          time: '10:14 AM',
-          text: 'Can I book a test drive for the 2024 Toyota Harrier this Thursday afternoon?'
-        },
-        {
-          id: 'm2',
-          sender: 'agent',
-          time: '10:14 AM',
-          text: 'Here are the available showroom slots for the Toyota Harrier 2.0 Z Luxury. Please tap below to pick your preferred date and time slot:',
-          interactiveList: {
-            header: 'Select Test Drive Slot',
-            buttonText: 'Book Test Drive',
-            rows: [
-              { id: 'r1', title: '📅 Pick a Date', desc: 'Thu, May 07, 2026' },
-              { id: 'r2', title: '⏰ Available Time', desc: '5:00 PM - 7:00 PM', badge: 'Available' },
-              { id: 'r3', title: '📍 Showroom Location', desc: 'Central Flagship Showroom' }
-            ]
-          },
-          backendTrace: {
-            component: 'messaging-ingress-service ➔ pkg/flows',
-            action: 'send_whatsapp_flow("test_drive_booking_v3")',
-            latency: '165ms',
-            details: 'Dispatched native WhatsApp Flows screen payload via Meta Graph API.'
-          }
-        },
-        {
-          id: 'm3',
-          sender: 'system',
-          time: '10:15 AM',
-          text: 'Redis lock acquired: slot_lock:harrier:2026-05-07_1700 -> Slot reserved -> Appointment #APT-8821 created in PostgreSQL.'
-        },
-        {
-          id: 'm4',
-          sender: 'agent',
-          time: '10:15 AM',
-          text: '✅ Test Drive Confirmed!\n\nVehicle: 2024 Toyota Harrier 2.0 Z Luxury\nDate: Thursday, May 07, 2026\nTime: 5:00 PM - 7:00 PM\nShowroom: Central Flagship Showroom\nAdvisor: Marcus Tan (+65 9123 4567)\n\nWe look forward to seeing you!',
-          backendTrace: {
-            component: 'messaging-ingress-service ➔ appointment_service.go',
-            action: 'commit_appointment_booking',
-            latency: '88ms',
-            details: 'ACID transaction committed in PostgreSQL. Lead notification alerted sales advisor dashboard.'
-          }
-        }
-      ]
-    },
-    {
-      id: 'voice-note',
-      label: 'Audio Note Transcription & Stock Search',
-      icon: '🎙️',
-      description: 'Customer sends 3-second WhatsApp voice note. Engine transcodes in-memory via ffmpeg and transcribes via Whisper STT.',
-      userPrompt: '[3-second voice note] "Hi, do you have any Suzuki Jimny in stock right now?"',
-      messages: [
-        {
-          id: 'v1',
-          sender: 'user',
-          time: '04:10 PM',
-          audioDuration: '0:03'
-        },
-        {
-          id: 'v2',
-          sender: 'system',
-          time: '04:10 PM',
-          text: 'Audio received: 32kbps Opus -> Transcoded in-memory to 16kHz WAV mono -> Sent to ASR pipeline.'
-        },
-        {
-          id: 'v3',
-          sender: 'system',
-          time: '04:10 PM',
-          text: 'Transcribed text: "Hi, do you have any Suzuki Jimny in stock right now?" (Confidence: 99.4%)'
-        },
-        {
-          id: 'v4',
-          sender: 'agent',
-          time: '04:10 PM',
-          text: 'Yes! We have 2 units of Suzuki Jimny 1.5 Sierra available:\n\n1. 2024 Suzuki Jimny Sierra JC (Jungle Green) - SGD 142,888\n2. 2023 Suzuki Jimny Sierra JL (Chiffon Ivory) - SGD 135,888\n\nWould you like to see exterior/interior photos or book a test drive slot?',
-          backendTrace: {
-            component: 'agentic-ai-engine ➔ search_inventory',
-            action: 'search_catalog(make="Suzuki", model="Jimny")',
-            latency: '240ms',
-            details: 'Extracted vehicle parameters from transcribed audio and queried live inventory catalog.'
-          }
-        }
-      ]
-    },
-    {
-      id: 'deposit-receipt',
-      label: 'Deposit Slip Forensic OCR Verification',
-      icon: '🧾',
-      description: 'Customer uploads advance bank transfer slip image. Vision AI validates amount, beneficiary, and locks vehicle.',
-      userPrompt: '[Image Upload: Mobile Banking Fast Transfer Receipt for SGD 5,000]',
-      messages: [
-        {
-          id: 'd1',
-          sender: 'user',
-          time: '02:30 PM',
-          text: 'Please send your bank details for the SGD 5,000 deposit to hold this car.'
-        },
-        {
-          id: 'd2',
-          sender: 'agent',
-          time: '02:30 PM',
-          text: 'Here are the official dealership payment details:\n\nBank: Maybank Singapore\nAccount Name: Apex Motor Group Pte Ltd\nAccount No: 140-9988-1111\nDeposit Amount: SGD 5,000\nReference: DEPOSIT-2024-HARRIER\n\nPlease upload your bank transfer slip image here once completed.'
-        },
-        {
-          id: 'd3',
-          sender: 'user',
-          time: '02:34 PM',
-          receipt: {
-            bank: 'Maybank Singapore',
-            amount: 'SGD 5,000.00',
-            accountLast4: '1111',
-            reference: 'MB-20260507-99120',
-            verified: true,
-            confidence: 0.98
-          }
-        },
-        {
-          id: 'd4',
-          sender: 'agent',
-          time: '02:34 PM',
-          text: '🎉 Payment Verified!\n\nReceipt Ref: MB-20260507-99120\nAmount: SGD 5,000.00 (Confirmed)\nBeneficiary: Apex Motor Group Pte Ltd\nVehicle Status: Marked as RESERVED 🔒\n\nYour deposit has been credited to vehicle inventory file #VEH-9012. Our sales manager will contact you with the sales agreement.',
-          backendTrace: {
-            component: 'messaging-ingress-service ➔ payment_service.go',
-            action: 'verify_deposit_slip + reserve_vehicle',
-            latency: '3.1s',
-            details: 'Vision AI OCR extracted transaction details with 98% confidence. Vehicle status transitioned to RESERVED.'
-          }
-        }
-      ]
-    }
-  ],
+  nodes: ARCHITECTURE_NODES,
+  flows: ARCHITECTURE_FLOWS,
+  mermaidCode: MERMAID_ARCHITECTURE_CODE,
   challenges: [
     {
       title: 'WhatsApp Flows State Machine & Concurrent Slot Contention',
@@ -526,7 +742,7 @@ export const WHATSAPP_SALES_CASE_STUDY: CaseStudyData = {
       tradeOff:
         'Standard session messages are free; Meta charges per delivered marketing template conversation. Broadcasts require pre-approval and rigid schema parameters.',
       solution:
-        'Built a dual-path messaging router: (1) Inside 24h window: dynamic conversational LLM responses. (2) Outside 24h window: UI triggers broadcast campaigns via recon-api-service to recon-social-service. Verifies template approval and vehicle stock availability, creates a PostgreSQL BroadcastRun, and enqueues a BroadcastMasterPayload into Redis Asynq (QueueOutgoing). Dedicated goroutine workers fan out personalized template messages with rate-limiting compliant with Meta Cloud API tier quotas (1,000 to 10,000/day).'
+        'Built a dual-path messaging router: (1) Inside 24h window: dynamic conversational LLM responses. (2) Outside 24h window: UI triggers broadcast campaigns via core-platform-api to messaging-ingress-gateway. Verifies template approval and vehicle stock availability, creates a PostgreSQL BroadcastRun, and enqueues a BroadcastMasterPayload into Redis Asynq (QueueOutgoing). Dedicated goroutine workers fan out personalized template messages with rate-limiting compliant with Meta Cloud API tier quotas (1,000 to 10,000/day).'
     },
     {
       title: 'In-Memory Voice Audio Transcoding & Async Transcription',

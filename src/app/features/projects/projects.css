@@ -156,7 +156,7 @@
 /* Cover Styling (Left side on desktop) */
 .project-cover {
   position: relative;
-  height: 120px;
+  height: 180px;
   background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%);
   display: flex;
   align-items: center;
@@ -398,6 +398,7 @@
     width: 100%;
   }
 }
+
 /* Architecture & Demo Button */
 .project-link.arch-btn {
   background: linear-gradient(135deg, rgba(65, 209, 194, 0.15) 0%, rgba(16, 185, 129, 0.15) 100%);

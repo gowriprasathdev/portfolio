@@ -47,6 +47,7 @@
     </header>
 
     <!-- Navigation Tabs -->
+    <!-- Navigation Tabs (3 Dedicated Views) -->
     <nav class="study-nav-tabs" aria-label="Case Study Views">
       <button class="nav-tab-btn" [class.active]="activeTab() === 'gallery'" (click)="setTab('gallery')">
         <span class="tab-icon" style="padding-bottom: 5px;">📸</span>
@@ -54,11 +55,7 @@
       </button>
       <button class="nav-tab-btn" [class.active]="activeTab() === 'architecture'" (click)="setTab('architecture')">
         <span class="tab-icon" style="padding-bottom: 5px;">🏛️</span>
-        <span>System Topology & Flows</span>
-      </button>
-      <button class="nav-tab-btn" [class.active]="activeTab() === 'simulator'" (click)="setTab('simulator')">
-        <span class="tab-icon" style="padding-bottom: 5px;">⚡</span>
-        <span>Interactive Simulator</span>
+        <span>System Architecture</span>
       </button>
       <button class="nav-tab-btn" [class.active]="activeTab() === 'challenges'" (click)="setTab('challenges')">
         <span class="tab-icon" style="padding-bottom: 5px;">🛡️</span>
@@ -156,11 +153,12 @@
                         <span class="wa-status">Official Business Account &bull; Online</span>
                       </div>
                     </div>
-                    <button class="zoom-btn"
+                    <button class="phone-fullscreen-btn"
                       (click)="openLightbox(currentImageSrc(), cur.title, cur.badge, currentImageCaption())"
-                      title="View Fullscreen">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2">
+                      title="View Fullscreen"
+                      aria-label="View Fullscreen Screenshot">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                         <polyline points="15 3 21 3 21 9"></polyline>
                         <polyline points="9 21 3 21 3 15"></polyline>
                         <line x1="21" y1="3" x2="14" y2="10"></line>
@@ -281,216 +279,407 @@
       }
 
       <!-- ============================================== -->
-      <!-- TAB 2: SYSTEM TOPOLOGY & FLOWS                 -->
+      <!-- TAB 2: SYSTEM ARCHITECTURE (GITDIAGRAM & MERMAID) -->
       <!-- ============================================== -->
       @if (activeTab() === 'architecture') {
-      <section class="topology-view">
-        <div class="topology-header">
-          <h2 class="topology-title">Event-Driven Microservices Architecture</h2>
-          <p class="topology-subtitle">
-            High-throughput decoupled architecture designed around asynchronous Redis message passing, ACID PostgreSQL
-            transactions, and sub-second agentic AI execution.
-          </p>
+      <section class="architecture-view">
+
+        <!-- Architecture Header -->
+        <div class="arch-header">
+          <div class="arch-header-main">
+            <div class="arch-badge-row">
+              <span class="arch-badge-pill">Enterprise Microservices</span>
+              <span class="arch-badge-sub">Sanitized Generic Architecture</span>
+            </div>
+            <h2 class="arch-title">Event-Driven Asynchronous Architecture</h2>
+            <p class="arch-subtitle">
+              Decoupled architecture built around Go Gin edge ingress, asynchronous Redis Asynq message buffering,
+              sub-second Gemini tool-calling loops, and ACID PostgreSQL state.
+            </p>
+          </div>
+
+          <!-- Architecture Mode Switcher -->
+          <div class="arch-view-switcher" role="tablist">
+            <button class="switcher-btn" [class.active]="archViewMode() === 'diagram'"
+              (click)="setArchViewMode('diagram')">
+              <span class="switcher-icon">🗺️</span>
+              <span>Interactive Map (GitDiagram)</span>
+            </button>
+            <button class="switcher-btn" [class.active]="archViewMode() === 'mermaid'"
+              (click)="setArchViewMode('mermaid')">
+              <span class="switcher-icon">📝</span>
+              <span>Mermaid Architecture Spec</span>
+            </button>
+          </div>
         </div>
 
-        <div class="topology-grid">
-          <div class="nodes-list-col">
-            <span class="nodes-list-heading">System Components & Microservices:</span>
-            @for (node of data.nodes; track node.id) {
-            <div class="arch-node-card" [class.active]="node.id === activeNodeId()" (click)="selectNode(node.id)">
-              <div class="node-card-top">
-                <span class="node-cat-tag {{ node.category.toLowerCase() }}">{{ node.category }}</span>
-                <span class="node-sla">{{ node.sla }}</span>
+        <!-- ========================================== -->
+        <!-- VIEW 1: GITDIAGRAM INTERACTIVE CANVAS VIEW -->
+        <!-- ========================================== -->
+        @if (archViewMode() === 'diagram') {
+        <div class="diagram-workbench">
+
+          <!-- Controls Bar: Flow Filters + Zoom Controls -->
+          <div class="workbench-toolbar">
+            <div class="flow-filters-group">
+              <span class="toolbar-label">Trace Execution Flow:</span>
+              <div class="flow-pills-row">
+                @for (flow of data.flows; track flow.id) {
+                <button class="flow-pill-btn" [class.active]="selectedFlowId() === flow.id"
+                  (click)="selectFlow(flow.id)" [title]="flow.description">
+                  <span class="flow-pill-name">{{ flow.name }}</span>
+                  <span class="flow-pill-badge">{{ flow.badge }}</span>
+                </button>
+                }
               </div>
-              <h3 class="node-title">{{ node.title }}</h3>
-              <p class="node-tech">{{ node.tech }}</p>
+            </div>
+
+            <div class="canvas-zoom-controls">
+              <button class="zoom-btn" (click)="zoomOut()" title="Zoom Out" [disabled]="zoomLevel() <= 0.7">−</button>
+              <span class="zoom-display">{{ Math.round(zoomLevel() * 100) }}%</span>
+              <button class="zoom-btn" (click)="zoomIn()" title="Zoom In" [disabled]="zoomLevel() >= 1.4">+</button>
+              <button class="zoom-btn reset" (click)="resetZoom()" title="Reset Zoom">↺</button>
+            </div>
+          </div>
+
+          <!-- Active Flow Context Banner -->
+          <div class="flow-context-banner">
+            <div class="flow-banner-left">
+              <span class="flow-indicator-dot"></span>
+              <span class="flow-banner-title">{{ activeFlow().name }}</span>
+              <span class="flow-banner-badge">{{ activeFlow().badge }}</span>
+            </div>
+            <p class="flow-banner-desc">{{ activeFlow().description }}</p>
+          </div>
+
+          <!-- Canvas Viewport -->
+          <div class="canvas-viewport">
+            <div class="canvas-grid-stage" [style.transform]="'scale(' + zoomLevel() + ')'"
+              [style.transformOrigin]="'top center'">
+
+              <!-- TIER 1: CLIENTS & EXTERNAL EDGE -->
+              <div class="arch-tier-block tier-edge">
+                <div class="tier-label-bar">
+                  <span class="tier-number">TIER 1</span>
+                  <span class="tier-title">Clients & External Edge</span>
+                  <span class="tier-tag">External Channels</span>
+                </div>
+                <div class="tier-cards-row">
+                  @for (node of tier1Nodes(); track node.id) {
+                  <div class="diagram-node-card" [class.selected]="node.id === activeNodeId()"
+                    [class.in-flow]="isNodeActiveInFlow(node.id)" [class.dimmed]="!isNodeActiveInFlow(node.id)"
+                    (click)="selectNode(node.id)">
+                    <div class="node-status-row">
+                      <span class="node-cat-pill {{ node.category.toLowerCase() }}">{{ node.category }}</span>
+                      <span class="node-sla-chip">{{ node.sla }}</span>
+                    </div>
+                    <h3 class="node-heading">{{ node.title }}</h3>
+                    <div class="node-tech-mono">{{ node.tech }}</div>
+                    <div class="node-protocol-tag">{{ node.protocol }}</div>
+                    @if (isNodeActiveInFlow(node.id)) {
+                    <span class="node-pulse-badge">Active in Flow</span>
+                    }
+                  </div>
+                  }
+                </div>
+              </div>
+
+              <!-- Animated Data Stream Connector Arrow -->
+              <div class="tier-connector-arrow">
+                <svg viewBox="0 0 100 24" class="connector-svg">
+                  <path d="M 50 0 L 50 20" class="connector-line" />
+                  <polygon points="46,16 50,22 54,16" class="connector-head" />
+                </svg>
+                <span class="connector-label">HTTPS Webhooks · HMAC-SHA256 Signed · &lt; 45ms Response</span>
+              </div>
+
+              <!-- TIER 2: INGRESS & QUEUE DECOUPLING -->
+              <div class="arch-tier-block tier-ingress">
+                <div class="tier-label-bar">
+                  <span class="tier-number">TIER 2</span>
+                  <span class="tier-title">Ingress & Decoupling Layer</span>
+                  <span class="tier-tag">SLA &lt; 45ms ACK</span>
+                </div>
+                <div class="tier-cards-row">
+                  @for (node of tier2Nodes(); track node.id) {
+                  <div class="diagram-node-card" [class.selected]="node.id === activeNodeId()"
+                    [class.in-flow]="isNodeActiveInFlow(node.id)" [class.dimmed]="!isNodeActiveInFlow(node.id)"
+                    (click)="selectNode(node.id)">
+                    <div class="node-status-row">
+                      <span class="node-cat-pill {{ node.category.toLowerCase() }}">{{ node.category }}</span>
+                      <span class="node-sla-chip">{{ node.sla }}</span>
+                    </div>
+                    <h3 class="node-heading">{{ node.title }}</h3>
+                    <div class="node-tech-mono">{{ node.tech }}</div>
+                    <div class="node-protocol-tag">{{ node.protocol }}</div>
+                    @if (isNodeActiveInFlow(node.id)) {
+                    <span class="node-pulse-badge">Active in Flow</span>
+                    }
+                  </div>
+                  }
+                </div>
+              </div>
+
+              <!-- Animated Data Stream Connector Arrow -->
+              <div class="tier-connector-arrow">
+                <svg viewBox="0 0 100 24" class="connector-svg">
+                  <path d="M 50 0 L 50 20" class="connector-line" />
+                  <polygon points="46,16 50,22 54,16" class="connector-head" />
+                </svg>
+                <span class="connector-label">Asynchronous FIFO Task Scheduling · Worker Dispatch</span>
+              </div>
+
+              <!-- TIER 3: PROCESSING & ORCHESTRATION CORE -->
+              <div class="arch-tier-block tier-orchestration">
+                <div class="tier-label-bar">
+                  <span class="tier-number">TIER 3</span>
+                  <span class="tier-title">Asynchronous Processing & Agentic AI Core</span>
+                  <span class="tier-tag">Autonomous Loop</span>
+                </div>
+                <div class="tier-cards-row">
+                  @for (node of tier3Nodes(); track node.id) {
+                  <div class="diagram-node-card" [class.selected]="node.id === activeNodeId()"
+                    [class.in-flow]="isNodeActiveInFlow(node.id)" [class.dimmed]="!isNodeActiveInFlow(node.id)"
+                    (click)="selectNode(node.id)">
+                    <div class="node-status-row">
+                      <span class="node-cat-pill {{ node.category.toLowerCase() }}">{{ node.category }}</span>
+                      <span class="node-sla-chip">{{ node.sla }}</span>
+                    </div>
+                    <h3 class="node-heading">{{ node.title }}</h3>
+                    <div class="node-tech-mono">{{ node.tech }}</div>
+                    <div class="node-protocol-tag">{{ node.protocol }}</div>
+                    @if (isNodeActiveInFlow(node.id)) {
+                    <span class="node-pulse-badge">Active in Flow</span>
+                    }
+                  </div>
+                  }
+                </div>
+              </div>
+
+              <!-- Split Connector: AI Engines & State -->
+              <div class="tier-connector-arrow split">
+                <svg viewBox="0 0 200 24" class="connector-svg wide">
+                  <path d="M 100 0 L 50 20" class="connector-line" />
+                  <path d="M 100 0 L 150 20" class="connector-line" />
+                  <polygon points="46,16 50,22 54,16" class="connector-head" />
+                  <polygon points="146,16 150,22 154,16" class="connector-head" />
+                </svg>
+                <span class="connector-label">Dynamic Tool Calling ⇄ Multimodal AI Inference & State
+                  Synchronization</span>
+              </div>
+
+              <!-- TWO-COLUMN TIER: TIER 4 (COGNITIVE AI) & TIER 5 (STATE & PERSISTENCE) -->
+              <div class="tier-split-columns">
+
+                <!-- TIER 4: COGNITIVE & MULTIMODAL AI -->
+                <div class="arch-tier-block tier-ai-engines">
+                  <div class="tier-label-bar">
+                    <span class="tier-number">TIER 4</span>
+                    <span class="tier-title">Multimodal AI Engines</span>
+                    <span class="tier-tag">Inference Layer</span>
+                  </div>
+                  <div class="tier-cards-stack">
+                    @for (node of tier4Nodes(); track node.id) {
+                    <div class="diagram-node-card" [class.selected]="node.id === activeNodeId()"
+                      [class.in-flow]="isNodeActiveInFlow(node.id)" [class.dimmed]="!isNodeActiveInFlow(node.id)"
+                      (click)="selectNode(node.id)">
+                      <div class="node-status-row">
+                        <span class="node-cat-pill {{ node.category.toLowerCase() }}">{{ node.category }}</span>
+                        <span class="node-sla-chip">{{ node.sla }}</span>
+                      </div>
+                      <h3 class="node-heading">{{ node.title }}</h3>
+                      <div class="node-tech-mono">{{ node.tech }}</div>
+                      <div class="node-protocol-tag">{{ node.protocol }}</div>
+                      @if (isNodeActiveInFlow(node.id)) {
+                      <span class="node-pulse-badge">Active in Flow</span>
+                      }
+                    </div>
+                    }
+                  </div>
+                </div>
+
+                <!-- TIER 5: STATE & PERSISTENCE -->
+                <div class="arch-tier-block tier-persistence">
+                  <div class="tier-label-bar">
+                    <span class="tier-number">TIER 5</span>
+                    <span class="tier-title">State & Persistence Tier</span>
+                    <span class="tier-tag">ACID & Mutex Locks</span>
+                  </div>
+                  <div class="tier-cards-stack">
+                    @for (node of tier5Nodes(); track node.id) {
+                    <div class="diagram-node-card" [class.selected]="node.id === activeNodeId()"
+                      [class.in-flow]="isNodeActiveInFlow(node.id)" [class.dimmed]="!isNodeActiveInFlow(node.id)"
+                      (click)="selectNode(node.id)">
+                      <div class="node-status-row">
+                        <span class="node-cat-pill {{ node.category.toLowerCase() }}">{{ node.category }}</span>
+                        <span class="node-sla-chip">{{ node.sla }}</span>
+                      </div>
+                      <h3 class="node-heading">{{ node.title }}</h3>
+                      <div class="node-tech-mono">{{ node.tech }}</div>
+                      <div class="node-protocol-tag">{{ node.protocol }}</div>
+                      @if (isNodeActiveInFlow(node.id)) {
+                      <span class="node-pulse-badge">Active in Flow</span>
+                      }
+                    </div>
+                    }
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- Animated Data Stream Connector Arrow -->
+              <div class="tier-connector-arrow">
+                <svg viewBox="0 0 100 24" class="connector-svg">
+                  <path d="M 50 0 L 50 20" class="connector-line" />
+                  <polygon points="46,16 50,22 54,16" class="connector-head" />
+                </svg>
+                <span class="connector-label">Outbound WhatsApp Graph Dispatch & Realtime Advisor WebSockets</span>
+              </div>
+
+              <!-- TIER 6: OUTBOUND DISPATCH & EGRESS -->
+              <div class="arch-tier-block tier-egress">
+                <div class="tier-label-bar">
+                  <span class="tier-number">TIER 6</span>
+                  <span class="tier-title">Outbound Dispatch & Client Egress</span>
+                  <span class="tier-tag">Encrypted Egress</span>
+                </div>
+                <div class="tier-cards-row">
+                  @for (node of tier6Nodes(); track node.id) {
+                  <div class="diagram-node-card" [class.selected]="node.id === activeNodeId()"
+                    [class.in-flow]="isNodeActiveInFlow(node.id)" [class.dimmed]="!isNodeActiveInFlow(node.id)"
+                    (click)="selectNode(node.id)">
+                    <div class="node-status-row">
+                      <span class="node-cat-pill {{ node.category.toLowerCase() }}">{{ node.category }}</span>
+                      <span class="node-sla-chip">{{ node.sla }}</span>
+                    </div>
+                    <h3 class="node-heading">{{ node.title }}</h3>
+                    <div class="node-tech-mono">{{ node.tech }}</div>
+                    <div class="node-protocol-tag">{{ node.protocol }}</div>
+                    @if (isNodeActiveInFlow(node.id)) {
+                    <span class="node-pulse-badge">Active in Flow</span>
+                    }
+                  </div>
+                  }
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- NODE INSPECTOR HUD DOCK -->
+          @if (activeNode(); as n) {
+          <div class="node-inspector-hud">
+            <div class="hud-top-bar">
+              <div class="hud-id-badges">
+                <span class="hud-layer-tag">{{ n.layer }}</span>
+                <span class="node-cat-pill {{ n.category.toLowerCase() }}">{{ n.category }}</span>
+                <span class="hud-sla-chip">SLA: {{ n.sla }}</span>
+              </div>
+              <span class="hud-protocol-badge">{{ n.protocol }}</span>
+            </div>
+
+            <h3 class="hud-node-title">{{ n.title }}</h3>
+            <div class="hud-tech-line">
+              <span class="hud-k">Tech Stack:</span>
+              <span class="hud-v mono">{{ n.tech }}</span>
+            </div>
+
+            <p class="hud-description">{{ n.description }}</p>
+
+            <div class="hud-responsibilities-box">
+              <span class="hud-resp-title">Architectural Guarantees & Responsibilities:</span>
+              <ul class="hud-resp-list">
+                @for (resp of n.responsibilities; track resp) {
+                <li>
+                  <span class="resp-bullet">▹</span>
+                  <span>{{ resp }}</span>
+                </li>
+                }
+              </ul>
+            </div>
+
+            <div class="hud-dependencies-grid">
+              <div class="hud-dep-col">
+                <span class="dep-label">Upstream Sources:</span>
+                <div class="dep-tags-row">
+                  @for (up of n.upstream; track up) {
+                  <span class="dep-chip in">← {{ up }}</span>
+                  }
+                </div>
+              </div>
+              <div class="hud-dep-col">
+                <span class="dep-label">Downstream Targets:</span>
+                <div class="dep-tags-row">
+                  @for (down of n.downstream; track down) {
+                  <span class="dep-chip out">→ {{ down }}</span>
+                  }
+                </div>
+              </div>
+            </div>
+          </div>
+          }
+
+        </div>
+        }
+
+        <!-- ========================================== -->
+        <!-- VIEW 2: MERMAID ARCHITECTURE SPEC VIEW     -->
+        <!-- ========================================== -->
+        @if (archViewMode() === 'mermaid') {
+        <div class="mermaid-workbench">
+
+          <!-- Mermaid Toolbar -->
+          <div class="mermaid-top-bar">
+            <div class="mermaid-title-info">
+              <span class="mermaid-badge">Mermaid v11 Flowchart Spec</span>
+              <span class="mermaid-sub">Official standards-compliant diagram definition · Clean generic naming</span>
+            </div>
+
+            <div class="mermaid-actions">
+              <button class="copy-code-btn" [class.copied]="copiedMermaid()" (click)="copyMermaidCode()">
+                @if (copiedMermaid()) {
+                <span>✓ Copied to Clipboard</span>
+                } @else {
+                <span>📋 Copy Mermaid Code</span>
+                }
+              </button>
+            </div>
+          </div>
+
+          <!-- Mermaid Rendered Diagram Container -->
+          <div class="mermaid-rendered-container">
+            <div class="rendered-header">
+              <span class="rendered-label">Live Visual Render:</span>
+              <span class="rendered-hint">Dark theme styled with CSS custom variables</span>
+            </div>
+
+            @if (isMermaidRendering()) {
+            <div class="mermaid-loading-state">
+              <span class="spinner"></span>
+              <span>Rendering Mermaid diagram...</span>
+            </div>
+            } @else if (mermaidSvg()) {
+            <div class="mermaid-svg-viewport" [innerHTML]="mermaidSvg()"></div>
+            } @else {
+            <div class="mermaid-fallback-box">
+              <button class="render-trigger-btn" (click)="renderMermaid()">
+                <span>⚡ Click to Render Visual Flowchart</span>
+              </button>
             </div>
             }
           </div>
 
-          @if (activeNode(); as node) {
-          <div class="node-inspector-col">
-            <div class="node-inspector-card">
-              <div class="inspector-badge-row">
-                <span class="node-cat-tag {{ node.category.toLowerCase() }}">{{ node.category }}</span>
-                <span class="node-sla-badge">SLA: {{ node.sla }}</span>
-              </div>
-
-              <h3 class="inspector-title">{{ node.title }}</h3>
-              <div class="tech-spec-row">
-                <span class="spec-label">Technology Stack:</span>
-                <span class="spec-value mono">{{ node.tech }}</span>
-              </div>
-
-              <p class="inspector-desc">{{ node.description }}</p>
-
-              <div class="data-flow-box">
-                <h4 class="flow-heading">Pipeline Flow Context</h4>
-                <div class="flow-steps-diagram">
-                  <div class="flow-step">1. Meta Webhook Ingress</div>
-                  <div class="flow-arrow">➔</div>
-                  <div class="flow-step active-flow">2. Redis Asynq Buffer</div>
-                  <div class="flow-arrow">➔</div>
-                  <div class="flow-step">3. Agentic AI & Tools</div>
-                  <div class="flow-arrow">➔</div>
-                  <div class="flow-step">4. Storage & Outbound ACK</div>
-                </div>
-              </div>
+          <!-- Raw Mermaid Markdown Code Block -->
+          <!-- <div class="mermaid-code-container">
+            <div class="code-box-header">
+              <span class="code-box-title">Mermaid Source Markdown (Copy & Paste to GitHub / Mermaid.live)</span>
             </div>
-          </div>
-          }
-        </div>
-      </section>
-      }
-
-      <!-- ============================================== -->
-      <!-- TAB 3: INTERACTIVE SIMULATOR                   -->
-      <!-- ============================================== -->
-      @if (activeTab() === 'simulator') {
-      <section class="simulator-view">
-
-        <div class="scenario-buttons-row">
-          @for (sc of data.scenarios; track sc.id) {
-          <button class="sc-tab-btn" [class.active]="sc.id === activeScenarioId()" (click)="selectScenario(sc.id)">
-            <span class="sc-tab-icon">{{ sc.icon }}</span>
-            <span class="sc-tab-title">{{ sc.label }}</span>
-          </button>
-          }
-        </div>
-
-        @if (activeScenario(); as sc) {
-        <div class="simulator-split-layout">
-
-          <!-- Left: Scenario Details -->
-          <div class="sim-left-pane">
-            <div class="sim-card-intro">
-              <h2 class="sim-title">{{ sc.label }}</h2>
-              <p class="sim-desc">{{ sc.description }}</p>
-            </div>
-
-            <div class="sim-prompt-box">
-              <span class="prompt-badge">Inbound Customer Query</span>
-              <p class="prompt-quote">"{{ sc.userPrompt }}"</p>
-
-              <button class="replay-btn" (click)="runScenarioAnimation()">
-                <span>▶️ Replay Execution Flow</span>
-              </button>
-            </div>
-
-            <div class="sim-specs-card">
-              <h3 class="specs-title">Microservice Execution Guarantees</h3>
-              <div class="specs-grid">
-                <div class="spec-item">
-                  <span class="spec-k">Webhook Response</span>
-                  <span class="spec-v">
-                    < 50ms async ACK</span>
-                </div>
-                <div class="spec-item">
-                  <span class="spec-k">Orchestrator</span>
-                  <span class="spec-v">Go 1.22 + Gin</span>
-                </div>
-                <div class="spec-item">
-                  <span class="spec-k">Session Memory</span>
-                  <span class="spec-v">Redis Cluster 7.0</span>
-                </div>
-                <div class="spec-item">
-                  <span class="spec-k">Queue Mechanism</span>
-                  <span class="spec-v">hibiken/asynq</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Right: Simulated Chat Viewport -->
-          <div class="sim-right-pane">
-            <div class="sim-phone-frame">
-              <div class="sim-wa-header">
-                <div class="sim-avatar">🤖</div>
-                <div class="sim-contact">
-                  <span class="sim-name">Automotive AI Concierge</span>
-                  <span class="sim-status">Live Telemetry Simulation</span>
-                </div>
-              </div>
-
-              <div class="sim-messages-scroll">
-                @for (msg of sc.messages.slice(0, visibleMessagesCount()); track msg.id) {
-                <div class="chat-row" [class.user]="msg.sender === 'user'" [class.agent]="msg.sender === 'agent'"
-                  [class.system]="msg.sender === 'system'">
-                  @if (msg.sender === 'system') {
-                  <div class="system-event-bubble">
-                    <span class="sys-icon">⚡</span>
-                    <span class="sys-text">{{ msg.text }}</span>
-                  </div>
-                  } @else {
-                  <div class="msg-bubble">
-                    @if (msg.audioDuration) {
-                    <div class="audio-note-bubble">
-                      <span class="audio-play-icon">▶</span>
-                      <div class="audio-waveform-bar"></div>
-                      <span class="audio-time">{{ msg.audioDuration }}</span>
-                    </div>
-                    }
-
-                    @if (msg.text) {
-                    <p class="bubble-text">{{ msg.text }}</p>
-                    }
-
-                    @if (msg.interactiveList; as list) {
-                    <div class="interactive-list-card">
-                      <div class="list-head">{{ list.header }}</div>
-                      <div class="list-rows">
-                        @for (row of list.rows; track row.id) {
-                        <div class="list-row-item">
-                          <div class="row-text">
-                            <div class="row-title">{{ row.title }}</div>
-                            <div class="row-desc">{{ row.desc }}</div>
-                          </div>
-                          @if (row.badge) {
-                          <span class="row-badge">{{ row.badge }}</span>
-                          }
-                        </div>
-                        }
-                      </div>
-                      <button class="list-action-btn">{{ list.buttonText }}</button>
-                    </div>
-                    }
-
-                    @if (msg.receipt; as rec) {
-                    <div class="receipt-verify-card">
-                      <div class="receipt-title-line">
-                        <span>🧾 {{ rec.bank }}</span>
-                        <span class="verified-tag">✓ Confirmed</span>
-                      </div>
-                      <div class="receipt-amount-line">{{ rec.amount }}</div>
-                      <div class="receipt-details-list">
-                        <div>Ref: {{ rec.reference }}</div>
-                        <div>Account Ending: {{ rec.accountLast4 }}</div>
-                        <div>Confidence: {{ rec.confidence * 100 }}%</div>
-                      </div>
-                    </div>
-                    }
-
-                    <span class="bubble-time">{{ msg.time }}</span>
-                  </div>
-                  }
-                </div>
-                }
-
-                @if (isTyping()) {
-                <div class="typing-indicator-row">
-                  <div class="typing-bubble">
-                    <span class="typing-dot"></span>
-                    <span class="typing-dot"></span>
-                    <span class="typing-dot"></span>
-                  </div>
-                </div>
-                }
-              </div>
-            </div>
-          </div>
+            <pre class="mermaid-code-pre"><code>{{ mermaidCode() }}</code></pre>
+          </div> -->
 
         </div>
         }
+
       </section>
       }
 
