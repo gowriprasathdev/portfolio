@@ -180,13 +180,17 @@
       "tags": [
         "Go",
         "LLM ETL",
+        "Google Drive API",
         "Prompt Engineering",
         "Batch Processing",
+        "Redis Delta Hash",
         "Concurrency",
         "PostgreSQL",
-        "Data Normalization"
+        "Cloud Storage (TOS)"
       ],
-      "featured": true
+      "featured": true,
+      "hasArchitecture": true,
+      "architectureId": "inventory-etl-pipeline"
     },
     {
       "title": "CDR (Canadian Depositary Receipts)",

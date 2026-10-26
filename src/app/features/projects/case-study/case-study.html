@@ -16,7 +16,7 @@
         <span class="crumb-sep">/</span>
         <button (click)="goBackToProjects()" class="crumb-btn">Projects</button>
         <span class="crumb-sep">/</span>
-        <span class="crumb-current">WhatsApp Conversational AI Sales</span>
+        <span class="crumb-current">{{ data.title }}</span>
       </div>
     </nav>
 
@@ -24,10 +24,16 @@
     <header class="page-hero">
       <div class="hero-badge-row">
         <span class="system-badge">{{ data.badge }}</span>
-        <span class="tech-pill">Go 1.22 + Meta Cloud API</span>
-        <span class="tech-pill">WhatsApp Flows v3</span>
-        <span class="tech-pill">Redis Distributed Lock</span>
-        <span class="tech-pill">BytePlus TOS</span>
+        @if (data.techPills && data.techPills.length > 0) {
+          @for (pill of data.techPills; track pill) {
+            <span class="tech-pill">{{ pill }}</span>
+          }
+        } @else {
+          <span class="tech-pill">Go 1.22 + Meta Cloud API</span>
+          <span class="tech-pill">WhatsApp Flows v3</span>
+          <span class="tech-pill">Redis Distributed Lock</span>
+          <span class="tech-pill">BytePlus TOS</span>
+        }
       </div>
 
       <h1 class="page-title">{{ data.title }}</h1>
@@ -50,8 +56,8 @@
     <!-- Navigation Tabs (3 Dedicated Views) -->
     <nav class="study-nav-tabs" aria-label="Case Study Views">
       <button class="nav-tab-btn" [class.active]="activeTab() === 'gallery'" (click)="setTab('gallery')">
-        <span class="tab-icon" style="padding-bottom: 5px;">📸</span>
-        <span>WhatsApp Traces ({{ data.gallery.length }})</span>
+        <span class="tab-icon" style="padding-bottom: 5px;">{{ data.type === 'pipeline' ? '⚡' : '📸' }}</span>
+        <span>{{ data.type === 'pipeline' ? 'Pipeline Traces (' + (data.pipelineTraces?.length || 5) + ')' : 'WhatsApp Traces (' + data.gallery.length + ')' }}</span>
       </button>
       <button class="nav-tab-btn" [class.active]="activeTab() === 'architecture'" (click)="setTab('architecture')">
         <span class="tab-icon" style="padding-bottom: 5px;">🏛️</span>
@@ -67,9 +73,145 @@
     <div class="study-content-container">
 
       <!-- ============================================== -->
-      <!-- TAB 1: WHATSAPP GALLERY             -->
+      <!-- TAB 1: WHATSAPP GALLERY / PIPELINE STUDIO       -->
       <!-- ============================================== -->
       @if (activeTab() === 'gallery') {
+      @if (data.type === 'pipeline') {
+      <section class="pipeline-view">
+
+        <!-- Studio Layout: Left Stages List + Right Transformation Workbench -->
+        <div class="pipeline-studio-layout">
+
+          <!-- Left Column: Pipeline Stages List -->
+          <aside class="pipeline-stages-col" aria-label="Pipeline Transformation Stages">
+            <div class="pipeline-col-header">
+              <span class="pipeline-col-title">Pipeline Stages:</span>
+              <span class="pipeline-col-count">{{ data.pipelineTraces?.length || 5 }} Phases</span>
+            </div>
+            @for (stage of data.pipelineTraces || []; track stage.id; let idx = $index) {
+            <div class="pipeline-stage-card" [class.active]="stage.id === activePipelineTraceId()"
+              (click)="selectPipelineTrace(stage.id)">
+              <div class="stage-num-badge">Phase {{ idx + 1 }}</div>
+              <div class="stage-card-body">
+                <div class="stage-meta-row">
+                  <span class="stage-cat">{{ stage.category }}</span>
+                  <span class="stage-badge">{{ stage.badge }}</span>
+                </div>
+                <h3 class="stage-title">{{ stage.title }}</h3>
+                <p class="stage-summary">{{ stage.summary }}</p>
+                <div class="stage-latency-pill">⏱️ {{ stage.backendTrace.latency }}</div>
+              </div>
+            </div>
+            }
+          </aside>
+
+          <!-- Right Column: Transformation Workbench -->
+          @if (activePipelineTrace(); as curTrace) {
+          <div class="pipeline-workbench-col">
+
+            <!-- Stage Header Line -->
+            <div class="workbench-header">
+              <div class="workbench-title-box">
+                <div class="workbench-badges">
+                  <span class="stage-cat-badge">{{ curTrace.category }}</span>
+                  <span class="stage-badge-pill">{{ curTrace.badge }}</span>
+                </div>
+                <h2 class="workbench-title">{{ curTrace.title }}</h2>
+              </div>
+              <div class="workbench-latency-box">
+                <span class="latency-label">Phase SLA / Latency</span>
+                <span class="latency-val">{{ curTrace.backendTrace.latency }}</span>
+              </div>
+            </div>
+
+            <p class="workbench-desc">{{ curTrace.description }}</p>
+
+            <!-- Technical Highlights -->
+            <div class="workbench-highlights-box">
+              <span class="highlights-heading">Architectural Highlights & Guardrails:</span>
+              <ul class="highlights-list">
+                @for (h of curTrace.highlights; track h) {
+                <li>
+                  <span class="bullet">▹</span>
+                  <span>{{ h }}</span>
+                </li>
+                }
+              </ul>
+            </div>
+
+            <!-- Transformation Code/Diff Workbench (Input -> Transformation Flow -> Output) -->
+            <div class="pipeline-diff-grid">
+
+              <!-- Panel 1: Input -->
+              <div class="code-panel input-panel">
+                <div class="code-panel-header">
+                  <div class="panel-tag-box">
+                    <span class="panel-dot in"></span>
+                    <span class="panel-name">{{ curTrace.inputSnippet.title }}</span>
+                  </div>
+                  <div class="panel-actions">
+                    <span class="lang-chip">{{ curTrace.inputSnippet.badge || curTrace.inputSnippet.language }}</span>
+                    <button class="copy-btn" (click)="copySnippet(curTrace.inputSnippet.code, curTrace.id + '-in')"
+                      [title]="'Copy ' + curTrace.inputSnippet.title">
+                      <span>{{ copiedSnippetKey() === curTrace.id + '-in' ? '✓ Copied' : 'Copy' }}</span>
+                    </button>
+                  </div>
+                </div>
+                <pre class="code-pre"><code>{{ curTrace.inputSnippet.code }}</code></pre>
+              </div>
+
+              <!-- Transformation Divider Arrow -->
+              <div class="pipeline-flow-divider">
+                <div class="divider-line"></div>
+                <div class="divider-chip">
+                  <span class="divider-icon">⚡</span>
+                  <span class="divider-text">Cognitive LLM & State Pipeline</span>
+                </div>
+                <div class="divider-line"></div>
+              </div>
+
+              <!-- Panel 2: Output -->
+              <div class="code-panel output-panel">
+                <div class="code-panel-header">
+                  <div class="panel-tag-box">
+                    <span class="panel-dot out"></span>
+                    <span class="panel-name">{{ curTrace.outputSnippet.title }}</span>
+                  </div>
+                  <div class="panel-actions">
+                    <span class="lang-chip output">{{ curTrace.outputSnippet.badge || curTrace.outputSnippet.language }}</span>
+                    <button class="copy-btn" (click)="copySnippet(curTrace.outputSnippet.code, curTrace.id + '-out')"
+                      [title]="'Copy ' + curTrace.outputSnippet.title">
+                      <span>{{ copiedSnippetKey() === curTrace.id + '-out' ? '✓ Copied' : 'Copy' }}</span>
+                    </button>
+                  </div>
+                </div>
+                <pre class="code-pre output"><code>{{ curTrace.outputSnippet.code }}</code></pre>
+              </div>
+
+            </div>
+
+            <!-- Live Backend Trace Execution Details Bar -->
+            <div class="backend-trace-bar">
+              <div class="trace-item">
+                <span class="trace-k">Component:</span>
+                <span class="trace-v mono">{{ curTrace.backendTrace.component }}</span>
+              </div>
+              <div class="trace-item">
+                <span class="trace-k">Action:</span>
+                <span class="trace-v mono">{{ curTrace.backendTrace.action }}</span>
+              </div>
+              <div class="trace-item full">
+                <span class="trace-k">Execution Details:</span>
+                <span class="trace-v">{{ curTrace.backendTrace.details }}</span>
+              </div>
+            </div>
+
+          </div>
+          }
+
+        </div>
+      </section>
+      } @else {
       <section class="gallery-view">
 
         <!-- Category Filter Bar (5 Flows in User-Specified Order) -->
@@ -277,6 +419,7 @@
         </div>
       </section>
       }
+      }
 
       <!-- ============================================== -->
       <!-- TAB 2: SYSTEM ARCHITECTURE (GITDIAGRAM & MERMAID) -->
@@ -291,10 +434,9 @@
               <span class="arch-badge-pill">Enterprise Microservices</span>
               <span class="arch-badge-sub">Sanitized Generic Architecture</span>
             </div>
-            <h2 class="arch-title">Event-Driven Asynchronous Architecture</h2>
+            <h2 class="arch-title">{{ data.type === 'pipeline' ? 'Cloud-Native Distributed Pipeline Architecture' : 'Event-Driven Asynchronous Architecture' }}</h2>
             <p class="arch-subtitle">
-              Decoupled architecture built around Go Gin edge ingress, asynchronous Redis Asynq message buffering,
-              sub-second Gemini tool-calling loops, and ACID PostgreSQL state.
+              {{ data.type === 'pipeline' ? 'Serverless Go microservices on BytePlus Cloud Functions with Redis split-cache delta detection, cognitive LLM extraction, Google Drive media streaming, and PostgreSQL ACID upsert.' : 'Decoupled architecture built around Go Gin edge ingress, asynchronous Redis Asynq message buffering, sub-second Gemini tool-calling loops, and ACID PostgreSQL state.' }}
             </p>
           </div>
 
@@ -303,12 +445,14 @@
             <button class="switcher-btn" [class.active]="archViewMode() === 'diagram'"
               (click)="setArchViewMode('diagram')">
               <span class="switcher-icon">🗺️</span>
-              <span>Interactive Map (GitDiagram)</span>
+              <span class="btn-text-full">Interactive Map</span>
+              <span class="btn-text-short">Interactive</span>
             </button>
             <button class="switcher-btn" [class.active]="archViewMode() === 'mermaid'"
               (click)="setArchViewMode('mermaid')">
               <span class="switcher-icon">📝</span>
-              <span>Mermaid Architecture Spec</span>
+              <span class="btn-text-full">Mermaid Architecture</span>
+              <span class="btn-text-short">Mermaid</span>
             </button>
           </div>
         </div>
@@ -390,7 +534,7 @@
                   <path d="M 50 0 L 50 20" class="connector-line" />
                   <polygon points="46,16 50,22 54,16" class="connector-head" />
                 </svg>
-                <span class="connector-label">HTTPS Webhooks · HMAC-SHA256 Signed · &lt; 45ms Response</span>
+                <span class="connector-label">{{ data.connectorLabels?.tier1To2 || 'HTTPS Webhooks · HMAC-SHA256 Signed · &lt; 45ms Response' }}</span>
               </div>
 
               <!-- TIER 2: INGRESS & QUEUE DECOUPLING -->
@@ -426,7 +570,7 @@
                   <path d="M 50 0 L 50 20" class="connector-line" />
                   <polygon points="46,16 50,22 54,16" class="connector-head" />
                 </svg>
-                <span class="connector-label">Asynchronous FIFO Task Scheduling · Worker Dispatch</span>
+                <span class="connector-label">{{ data.connectorLabels?.tier2To3 || 'Asynchronous FIFO Task Scheduling · Worker Dispatch' }}</span>
               </div>
 
               <!-- TIER 3: PROCESSING & ORCHESTRATION CORE -->
@@ -464,8 +608,7 @@
                   <polygon points="46,16 50,22 54,16" class="connector-head" />
                   <polygon points="146,16 150,22 154,16" class="connector-head" />
                 </svg>
-                <span class="connector-label">Dynamic Tool Calling ⇄ Multimodal AI Inference & State
-                  Synchronization</span>
+                <span class="connector-label">{{ data.connectorLabels?.tier3To45 || 'Dynamic Tool Calling ⇄ Multimodal AI Inference & State Synchronization' }}</span>
               </div>
 
               <!-- TWO-COLUMN TIER: TIER 4 (COGNITIVE AI) & TIER 5 (STATE & PERSISTENCE) -->
@@ -533,7 +676,7 @@
                   <path d="M 50 0 L 50 20" class="connector-line" />
                   <polygon points="46,16 50,22 54,16" class="connector-head" />
                 </svg>
-                <span class="connector-label">Outbound WhatsApp Graph Dispatch & Realtime Advisor WebSockets</span>
+                <span class="connector-label">{{ data.connectorLabels?.tier45To6 || 'Outbound WhatsApp Graph Dispatch & Realtime Advisor WebSockets' }}</span>
               </div>
 
               <!-- TIER 6: OUTBOUND DISPATCH & EGRESS -->
@@ -631,11 +774,18 @@
           <!-- Mermaid Toolbar -->
           <div class="mermaid-top-bar">
             <div class="mermaid-title-info">
-              <span class="mermaid-badge">Mermaid v11 Flowchart Spec</span>
-              <span class="mermaid-sub">Official standards-compliant diagram definition · Clean generic naming</span>
+              <span class="mermaid-badge">Mermaid Flowchart Architecture</span>
+              <span class="mermaid-sub">Standards-compliant system topology · Clean decoupled naming</span>
             </div>
 
             <div class="mermaid-actions">
+              <div class="canvas-zoom-controls mermaid-zoom">
+                <button class="zoom-btn" (click)="zoomOutMermaid()" title="Zoom Out" [disabled]="mermaidZoomLevel() <= 0.6">−</button>
+                <span class="zoom-display">{{ Math.round(mermaidZoomLevel() * 100) }}%</span>
+                <button class="zoom-btn" (click)="zoomInMermaid()" title="Zoom In" [disabled]="mermaidZoomLevel() >= 1.5">+</button>
+                <button class="zoom-btn reset" (click)="resetMermaidZoom()" title="Reset Zoom">↺</button>
+              </div>
+
               <button class="copy-code-btn" [class.copied]="copiedMermaid()" (click)="copyMermaidCode()">
                 @if (copiedMermaid()) {
                 <span>✓ Copied to Clipboard</span>
@@ -650,7 +800,7 @@
           <div class="mermaid-rendered-container">
             <div class="rendered-header">
               <span class="rendered-label">Live Visual Render:</span>
-              <span class="rendered-hint">Dark theme styled with CSS custom variables</span>
+              <span class="rendered-hint">Scroll horizontally to inspect full topology · Use zoom controls above</span>
             </div>
 
             @if (isMermaidRendering()) {
@@ -659,7 +809,9 @@
               <span>Rendering Mermaid diagram...</span>
             </div>
             } @else if (mermaidSvg()) {
-            <div class="mermaid-svg-viewport" [innerHTML]="mermaidSvg()"></div>
+            <div class="mermaid-svg-viewport">
+              <div class="mermaid-svg-scaler" [style.transform]="'scale(' + mermaidZoomLevel() + ')'" [innerHTML]="mermaidSvg()"></div>
+            </div>
             } @else {
             <div class="mermaid-fallback-box">
               <button class="render-trigger-btn" (click)="renderMermaid()">

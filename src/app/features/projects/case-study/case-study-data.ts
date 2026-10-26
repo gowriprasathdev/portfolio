@@ -52,17 +52,52 @@ export interface ArchitectureFlow {
   activeNodeIds: string[];
 }
 
+export interface PipelineSnippet {
+  title: string;
+  language: string;
+  code: string;
+  caption?: string;
+  badge?: string;
+}
+
+export interface PipelineTraceStage {
+  id: string;
+  title: string;
+  category: string;
+  badge: string;
+  summary: string;
+  description: string;
+  highlights: string[];
+  inputSnippet: PipelineSnippet;
+  outputSnippet: PipelineSnippet;
+  backendTrace: {
+    component: string;
+    action: string;
+    latency: string;
+    details: string;
+  };
+}
+
 export interface CaseStudyData {
   id: string;
+  type?: 'conversational' | 'pipeline';
   title: string;
   subtitle: string;
   badge: string;
+  techPills?: string[];
   overview: string;
   gallery: ProductionScreenshot[];
+  pipelineTraces?: PipelineTraceStage[];
   challenges: EngineeringChallenge[];
   nodes: ArchitectureNode[];
   flows: ArchitectureFlow[];
   mermaidCode: string;
+  connectorLabels?: {
+    tier1To2?: string;
+    tier2To3?: string;
+    tier3To45?: string;
+    tier45To6?: string;
+  };
   metrics: {
     stat: string;
     label: string;
@@ -110,39 +145,39 @@ export function getMermaidArchitectureCode(theme: 'light' | 'dark' = 'dark'): st
     MetaCloud["☁️ Meta WhatsApp Cloud Platform"]:::edgeClass
   end
 
-  subgraph IngressTier ["Ingress & Decoupling Layer (SLA < 45ms)"]
-    IngressGW["⚡ API Ingress Gateway\\n(Go 1.22 + Gin · HMAC-SHA256)"]:::ingressClass
-    RedisQueue[("📬 Redis Asynq FIFO Queue\\n(Buffer & Rate-Limiting)")]:::queueClass
+  subgraph IngressTier ["Ingress & Decoupling Layer (Sub-45ms SLA)"]
+    IngressGW["⚡ API Ingress Gateway<br/>Go 1.22 + Gin · HMAC-SHA256"]:::ingressClass
+    RedisQueue[("📬 Redis Asynq FIFO Queue<br/>Buffer & Rate-Limiting")]:::queueClass
   end
 
   subgraph OrchestrationCore ["Asynchronous Processing Core"]
-    WorkerPool["⚙️ Asynq Message Consumer Pool\\n(Goroutine Worker Pool)"]:::queueClass
-    BroadcastPool["📢 Outbound HSM Broadcast Worker\\n(Meta Tier Rate Limiter)"]:::queueClass
-    AIOrchestrator["🧠 Agentic AI Orchestrator\\n(Function Calling & Guardrails)"]:::coreClass
+    WorkerPool["⚙️ Asynq Consumer Pool<br/>Goroutine Worker Pool"]:::queueClass
+    BroadcastPool["📢 Outbound HSM Worker<br/>Meta Tier Rate Limiter"]:::queueClass
+    AIOrchestrator["🧠 Agentic AI Orchestrator<br/>Tools & Guardrails Core"]:::coreClass
   end
 
   subgraph SpecializedAI ["Cognitive & Multimodal AI Engines"]
-    LLMEngine["💬 Conversational LLM\\n(Gemini 2.5 Flash)"]:::aiClass
-    ASREngine["🎙️ In-Memory Audio Transcoder\\n(io.Pipe ffmpeg + Doubao ASR)"]:::aiClass
-    VisionOCR["🧾 Forensic Vision OCR\\n(Deposit Slip Verifier & pHash)"]:::aiClass
+    LLMEngine["💬 Conversational LLM<br/>Gemini 2.5 Flash"]:::aiClass
+    ASREngine["🎙️ Audio Transcoder<br/>io.Pipe + Doubao ASR"]:::aiClass
+    VisionOCR["🧾 Forensic Vision OCR<br/>Deposit Slip & pHash"]:::aiClass
   end
 
   subgraph DataPersistence ["State & Persistence Tier"]
-    PostgreSQL[("🗄️ PostgreSQL 16 Relational Store\\n(Inventory, Appointments, Leads)")]:::storageClass
-    RedisState[("⚡ Redis Session & Mutex Store\\n(Context Window & Redlock Mutex)")]:::storageClass
-    ObjectStore[("📦 Cloud Object Storage\\n(BytePlus TOS / S3 Gallery & Audio)")]:::storageClass
+    PostgreSQL[("🗄️ PostgreSQL 16 Store<br/>Inventory & ACID State")]:::storageClass
+    RedisState[("⚡ Redis Session & Mutex<br/>Context & Redlock")]:::storageClass
+    ObjectStore[("📦 Cloud Object Storage<br/>TOS / S3 Media Bucket")]:::storageClass
   end
 
   subgraph OutboundTier ["Outbound Dispatch & Egress"]
-    OutboundDispatcher["🚀 Outbound Message Dispatcher\\n(Flows v3 Crypto & HSM Templates)"]:::egressClass
-    CRMPush["🔔 Realtime CRM WebSocket Gateway\\n(Advisor Push Notifications)"]:::egressClass
+    OutboundDispatcher["🚀 Outbound Dispatcher<br/>Flows v3 & HSM Templates"]:::egressClass
+    CRMPush["🔔 Realtime CRM Push<br/>WebSocket Gateway"]:::egressClass
   end
 
   %% Flow Connections
   Customer -->|Inbound Message / Audio / Slip| MetaCloud
   MetaCloud -->|HTTP POST Webhook| IngressGW
   CRMAdmin -->|Trigger Broadcast / CRM Action| IngressGW
-  IngressGW -->|Instant 200 OK ACK < 45ms| MetaCloud
+  IngressGW -->|Instant 200 OK ACK under 45ms| MetaCloud
   IngressGW -->|Enqueue Conversation Job| RedisQueue
   IngressGW -->|Enqueue HSM Fan-Out| BroadcastPool
 
@@ -526,9 +561,17 @@ export const ARCHITECTURE_NODES: ArchitectureNode[] = [
 
 export const WHATSAPP_SALES_CASE_STUDY: CaseStudyData = {
   id: 'whatsapp-sales',
+  type: 'conversational',
   title: 'Conversational WhatsApp AI Sales Platform',
   subtitle: 'Event-Driven Microservices Architecture — Conversational Commerce & Lead Intelligence',
   badge: 'Distributed Architecture',
+  techPills: [
+    'Go 1.22 + Meta Cloud API',
+    'WhatsApp Flows v3',
+    'Redis Distributed Lock',
+    'BytePlus TOS',
+    'Gemini 2.5 Flash'
+  ],
   overview:
     'An enterprise automotive sales platform engineered in Go (Gin, GORM, Asynq, Redis, PostgreSQL). Decouples aggressive 5-second Meta Cloud API timeouts into sub-50ms queue ingresses, drives multi-turn agentic tool calling with multilingual and vernacular dialect adaptation, manages interactive test-drive appointment bookings/reschedules via WhatsApp Flows v3 with distributed mutex locking, and runs asynchronous debounced lead scoring, forensic payment receipt verification, and pre-approved HSM broadcast fan-outs.',
   metrics: [
