@@ -17,6 +17,11 @@ export const routes: Routes = [
     pathMatch: 'full'
   },
   {
+    path: 'projects/inventory-etl-pipeline',
+    loadComponent: () => import('./features/projects/case-study/case-study').then(m => m.CaseStudyComponent),
+    title: 'LLM-Powered Inventory ETL Pipeline | Architecture & Case Study'
+  },
+  {
     path: '**',
     redirectTo: ''
   }

@@ -19,9 +19,14 @@ import {
   ArchitectureNode,
   ArchitectureFlow,
   ProductionScreenshot,
+  PipelineTraceStage,
   CaseStudyData,
   getMermaidArchitectureCode
 } from './case-study-data';
+import {
+  INVENTORY_ETL_CASE_STUDY,
+  getInventoryEtlMermaidCode
+} from './inventory-etl-case-study-data';
 
 @Component({
   selector: 'app-case-study',
@@ -37,27 +42,65 @@ export class CaseStudyComponent implements OnInit {
   private sanitizer = inject(DomSanitizer);
   themeService = inject(ThemeService);
 
-  data: CaseStudyData = WHATSAPP_SALES_CASE_STUDY;
+  dataSignal = signal<CaseStudyData>(WHATSAPP_SALES_CASE_STUDY);
+  get data(): CaseStudyData {
+    return this.dataSignal();
+  }
+
   Math = Math;
 
+  // Pipeline Trace State
+  activePipelineTraceId = signal<string>('model-parsing');
+  copiedSnippetKey = signal<string | null>(null);
+
+  activePipelineTrace = computed<PipelineTraceStage | undefined>(() => {
+    const list = this.dataSignal().pipelineTraces || [];
+    return list.find(t => t.id === this.activePipelineTraceId()) || list[0];
+  });
+
   // Dynamically themed Mermaid syntax
-  mermaidCode = computed(() => getMermaidArchitectureCode(this.themeService.theme()));
+  mermaidCode = computed(() => {
+    const isLight = this.themeService.theme() === 'light';
+    if (this.dataSignal().id === 'inventory-etl-pipeline') {
+      return getInventoryEtlMermaidCode(isLight ? 'light' : 'dark');
+    }
+    return getMermaidArchitectureCode(isLight ? 'light' : 'dark');
+  });
 
   private lastRenderedTheme: 'light' | 'dark' | null = null;
+  private lastRenderedCaseStudyId: string | null = null;
 
   constructor() {
+    this.initCaseStudyFromUrl();
     effect(() => {
-      // Track theme signal
+      // Track theme & case study changes
       const currentTheme = this.themeService.theme();
+      const currentCaseStudyId = this.dataSignal().id;
       if (
         isPlatformBrowser(this.platformId) &&
         this.activeTab() === 'architecture' &&
         this.archViewMode() === 'mermaid' &&
-        this.lastRenderedTheme !== currentTheme
+        (this.lastRenderedTheme !== currentTheme || this.lastRenderedCaseStudyId !== currentCaseStudyId)
       ) {
         this.renderMermaid();
       }
     });
+  }
+
+  private initCaseStudyFromUrl() {
+    this.mermaidSvg.set(null);
+    this.lastRenderedCaseStudyId = null;
+    const url = this.router.url;
+    if (url.includes('inventory-etl-pipeline')) {
+      this.dataSignal.set(INVENTORY_ETL_CASE_STUDY);
+      this.activeNodeId.set('faas-ingress-daemon');
+      this.activePipelineTraceId.set('model-parsing');
+      this.selectedFlowId.set('all');
+    } else {
+      this.dataSignal.set(WHATSAPP_SALES_CASE_STUDY);
+      this.activeNodeId.set('ingress-gateway');
+      this.selectedFlowId.set('all');
+    }
   }
 
   // Active Main Navigation Tab (Simulator & Old Topology removed)
@@ -74,6 +117,7 @@ export class CaseStudyComponent implements OnInit {
   selectedFlowId = signal<string>('all');
   activeNodeId = signal<string>('ingress-gateway');
   zoomLevel = signal<number>(1);
+  mermaidZoomLevel = signal<number>(1);
   copiedMermaid = signal<boolean>(false);
   mermaidSvg = signal<SafeHtml | null>(null);
   isMermaidRendering = signal<boolean>(false);
@@ -203,9 +247,23 @@ export class CaseStudyComponent implements OnInit {
   setTab(tab: 'gallery' | 'architecture' | 'challenges') {
     this.activeTab.set(tab);
     if (tab === 'architecture' && this.archViewMode() === 'mermaid') {
-      if (!this.mermaidSvg() || this.lastRenderedTheme !== this.themeService.theme()) {
+      if (!this.mermaidSvg() || this.lastRenderedTheme !== this.themeService.theme() || this.lastRenderedCaseStudyId !== this.dataSignal().id) {
         this.renderMermaid();
       }
+    }
+  }
+
+  // Pipeline Trace Methods
+  selectPipelineTrace(id: string) {
+    this.activePipelineTraceId.set(id);
+  }
+
+  copySnippet(code: string, key: string) {
+    if (isPlatformBrowser(this.platformId) && navigator?.clipboard) {
+      navigator.clipboard.writeText(code).then(() => {
+        this.copiedSnippetKey.set(key);
+        setTimeout(() => this.copiedSnippetKey.set(null), 2000);
+      });
     }
   }
 
@@ -286,7 +344,7 @@ export class CaseStudyComponent implements OnInit {
   setArchViewMode(mode: 'diagram' | 'mermaid') {
     this.archViewMode.set(mode);
     if (mode === 'mermaid') {
-      if (!this.mermaidSvg() || this.lastRenderedTheme !== this.themeService.theme()) {
+      if (!this.mermaidSvg() || this.lastRenderedTheme !== this.themeService.theme() || this.lastRenderedCaseStudyId !== this.dataSignal().id) {
         this.renderMermaid();
       }
     }
@@ -322,6 +380,18 @@ export class CaseStudyComponent implements OnInit {
     this.zoomLevel.set(1);
   }
 
+  zoomInMermaid() {
+    this.mermaidZoomLevel.update(z => Math.min(1.5, Number((z + 0.1).toFixed(2))));
+  }
+
+  zoomOutMermaid() {
+    this.mermaidZoomLevel.update(z => Math.max(0.6, Number((z - 0.1).toFixed(2))));
+  }
+
+  resetMermaidZoom() {
+    this.mermaidZoomLevel.set(1);
+  }
+
   copyMermaidCode() {
     if (isPlatformBrowser(this.platformId) && navigator?.clipboard) {
       navigator.clipboard.writeText(this.mermaidCode()).then(() => {
@@ -341,7 +411,15 @@ export class CaseStudyComponent implements OnInit {
         startOnLoad: false,
         theme: isLight ? 'default' : 'dark',
         securityLevel: 'loose',
-        fontFamily: "'Plus Jakarta Sans', sans-serif",
+        fontFamily: "'Plus Jakarta Sans', system-ui, -apple-system, sans-serif",
+        flowchart: {
+          htmlLabels: true,
+          useMaxWidth: false,
+          curve: 'basis',
+          nodeSpacing: 45,
+          rankSpacing: 45,
+          padding: 16
+        },
         themeVariables: isLight
           ? {
               darkMode: false,
@@ -352,7 +430,8 @@ export class CaseStudyComponent implements OnInit {
               clusterBorder: 'rgba(13, 148, 136, 0.25)',
               titleColor: '#0f172a',
               textColor: '#0f172a',
-              lineColor: '#0d9488'
+              lineColor: '#0d9488',
+              fontSize: '12px'
             }
           : {
               darkMode: true,
@@ -363,13 +442,15 @@ export class CaseStudyComponent implements OnInit {
               clusterBorder: 'rgba(65, 209, 194, 0.25)',
               titleColor: '#f1f5f9',
               textColor: '#f1f5f9',
-              lineColor: '#41d1c2'
+              lineColor: '#41d1c2',
+              fontSize: '12px'
             }
       });
       const id = 'mermaid-render-' + Date.now();
       const { svg } = await mermaid.render(id, this.mermaidCode());
       this.mermaidSvg.set(this.sanitizer.bypassSecurityTrustHtml(svg));
       this.lastRenderedTheme = isLight ? 'light' : 'dark';
+      this.lastRenderedCaseStudyId = this.dataSignal().id;
     } catch (err) {
       console.error('Error rendering Mermaid diagram:', err);
     } finally {
