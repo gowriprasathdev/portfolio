@@ -158,22 +158,6 @@
       "architectureId": "whatsapp-ai-sales"
     },
     {
-      "title": "Universal Go AI & Agentic Engine",
-      "subtitle": "Domain-Agnostic Core Library — Provider Abstraction, Tool Calling & Multimodal Vision",
-      "description": "An enterprise-grade, provider-agnostic Go library abstracting Cloud and Local AI inference (Google Gemini, BytePlus Doubao, Ollama, LM Studio). Engineered an autonomous agentic loop with dynamic function calling and schema translation, deep-reasoning mode control, multimodal vision processing for document OCR and vehicle aesthetic scoring, generative multi-page brochure rendering (Imagen 3 / Seedream), and asynchronous speech-to-text (ASR) transcription.",
-      "tags": [
-        "Go",
-        "Agentic AI",
-        "Function Calling",
-        "Gemini API",
-        "BytePlus ARK",
-        "Ollama",
-        "Computer Vision",
-        "ASR"
-      ],
-      "featured": true
-    },
-    {
       "title": "LLM-Powered Inventory ETL Pipeline",
       "subtitle": "High-Throughput Batch Processing — Unstructured Data Ingestion & Normalization",
       "description": "An asynchronous batch-processing pipeline designed to ingest noisy, unstructured automotive auction spreadsheets into normalized relational records. Employs prompt engineering with negative constraint mapping to eliminate price and variant hallucination, context-sticky date header propagation, and a concurrent goroutine chunking architecture (AI_CHUNK_SIZE, AI_CHUNK_CONCURRENCY_LIMIT) to process massive catalogs within LLM token and rate limits.",
@@ -191,6 +175,26 @@
       "featured": true,
       "hasArchitecture": true,
       "architectureId": "inventory-etl-pipeline"
+    },
+    {
+      "title": "Automated AI Vehicle Poster & Multi-Platform Social Publishing Engine",
+      "subtitle": "Autonomous Creative Studio — Multimodal Poster Generation & Omni-Channel Social Distribution",
+      "description": "A distributed cloud platform combining an intuitive web poster studio with a high-throughput Go backend for automated automotive marketing. Orchestrates multimodal AI generation for dynamic 2-page marketing posters (curated themes, macro detail framing), contextual AI caption & hashtag synthesis (Gemini 2.5 / Doubao LLM), and automated omni-channel publishing to Instagram, Facebook, Twitter/X (OAuth 2.0 PKCE), and LinkedIn via Redis Asynq worker pools, zero-disk direct OSS streaming, and real-time job telemetry.",
+      "tags": [
+        "Go",
+        "Web Management UI",
+        "Gemini Vision AI",
+        "Meta Graph API",
+        "Twitter/X API v2",
+        "LinkedIn REST API",
+        "OAuth 2.0 PKCE",
+        "Redis (asynq)",
+        "PostgreSQL",
+        "Cloud Storage (TOS/S3)"
+      ],
+      "featured": true,
+      "hasArchitecture": true,
+      "architectureId": "social-poster-publisher"
     },
     {
       "title": "CDR (Canadian Depositary Receipts)",

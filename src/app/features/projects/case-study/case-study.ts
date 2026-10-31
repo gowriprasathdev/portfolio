@@ -27,6 +27,10 @@ import {
   INVENTORY_ETL_CASE_STUDY,
   getInventoryEtlMermaidCode
 } from './inventory-etl-case-study-data';
+import {
+  SOCIAL_POSTER_CASE_STUDY,
+  getSocialPosterMermaidCode
+} from './social-poster-case-study-data';
 
 @Component({
   selector: 'app-case-study',
@@ -64,6 +68,9 @@ export class CaseStudyComponent implements OnInit {
     if (this.dataSignal().id === 'inventory-etl-pipeline') {
       return getInventoryEtlMermaidCode(isLight ? 'light' : 'dark');
     }
+    if (this.dataSignal().id === 'social-poster-publisher') {
+      return getSocialPosterMermaidCode(isLight ? 'light' : 'dark');
+    }
     return getMermaidArchitectureCode(isLight ? 'light' : 'dark');
   });
 
@@ -95,6 +102,11 @@ export class CaseStudyComponent implements OnInit {
       this.dataSignal.set(INVENTORY_ETL_CASE_STUDY);
       this.activeNodeId.set('faas-ingress-daemon');
       this.activePipelineTraceId.set('model-parsing');
+      this.selectedFlowId.set('all');
+    } else if (url.includes('social-poster-publisher') || url.includes('social-poster') || url.includes('promotional-poster')) {
+      this.dataSignal.set(SOCIAL_POSTER_CASE_STUDY);
+      this.activeNodeId.set('poster-studio-ui');
+      this.activePipelineTraceId.set('asset-framing');
       this.selectedFlowId.set('all');
     } else {
       this.dataSignal.set(WHATSAPP_SALES_CASE_STUDY);

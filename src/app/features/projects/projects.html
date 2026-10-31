@@ -113,7 +113,7 @@
 
               <div class="project-links">
                 @if (project.hasArchitecture) {
-                <a [routerLink]="['/projects', 'whatsapp-ai-sales']"
+                <a [routerLink]="['/projects', project.architectureId || 'whatsapp-ai-sales']"
                   (click)="openArchitecture(project.architectureId, $event)" class="project-link primary-link arch-btn"
                   [attr.aria-label]="'Explore Architecture and Case Study for ' + project.title">
                   <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none"

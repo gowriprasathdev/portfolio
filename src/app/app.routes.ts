@@ -22,6 +22,16 @@ export const routes: Routes = [
     title: 'LLM-Powered Inventory ETL Pipeline | Architecture & Case Study'
   },
   {
+    path: 'projects/social-poster-publisher',
+    loadComponent: () => import('./features/projects/case-study/case-study').then(m => m.CaseStudyComponent),
+    title: 'Automated AI Vehicle Poster & Multi-Platform Social Publishing Engine | Architecture & Case Study'
+  },
+  {
+    path: 'projects/social-poster',
+    redirectTo: 'projects/social-poster-publisher',
+    pathMatch: 'full'
+  },
+  {
     path: '**',
     redirectTo: ''
   }
