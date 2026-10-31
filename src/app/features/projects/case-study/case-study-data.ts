@@ -88,6 +88,7 @@ export interface CaseStudyData {
   overview: string;
   gallery: ProductionScreenshot[];
   pipelineTraces?: PipelineTraceStage[];
+  tracesLabel?: string;
   challenges: EngineeringChallenge[];
   nodes: ArchitectureNode[];
   flows: ArchitectureFlow[];

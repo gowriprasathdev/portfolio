@@ -57,7 +57,7 @@
     <nav class="study-nav-tabs" aria-label="Case Study Views">
       <button class="nav-tab-btn" [class.active]="activeTab() === 'gallery'" (click)="setTab('gallery')">
         <span class="tab-icon" style="padding-bottom: 5px;">{{ data.type === 'pipeline' ? '⚡' : '📸' }}</span>
-        <span>{{ data.type === 'pipeline' ? 'Pipeline Traces (' + (data.pipelineTraces?.length || 5) + ')' : 'WhatsApp Traces (' + data.gallery.length + ')' }}</span>
+        <span>{{ data.tracesLabel || (data.type === 'pipeline' ? 'Pipeline Traces (' + (data.pipelineTraces?.length || 5) + ')' : 'WhatsApp Traces (' + data.gallery.length + ')') }}</span>
       </button>
       <button class="nav-tab-btn" [class.active]="activeTab() === 'architecture'" (click)="setTab('architecture')">
         <span class="tab-icon" style="padding-bottom: 5px;">🏛️</span>
